@@ -1,3 +1,8 @@
+from webshop.core.models import ProductBase
+
 from django.db import models
 
-# Create your models here.
+class Product(ProductBase):
+    """ Basic product model """
+
+    pass
