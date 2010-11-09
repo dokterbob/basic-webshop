@@ -1,16 +1,20 @@
-from webshop.core.models import ProductBase, CartBase, OrderBase
-from webshop.core.basemodels import NamedItemBase
-
-from webshop.extensions.category.simple.models import CategoryBase, \
-                                                      CategorizedProductBase
-
 from django.db import models
 
 
-class Product(CategorizedProductBase, NamedItemBase):
+from webshop.core.models import ProductBase, CartBase, CartItemBase, \
+                                OrderBase, OrderItemBase
+                                
+from webshop.core.basemodels import NamedItemBase
+
+from webshop.extensions.category.simple.models import CategoryBase, \
+                                                      CategorizedItemBase
+from webshop.extensions.price.simple.models import PricedItemBase
+
+
+class Product(CategorizedItemBase, PricedItemBase, NamedItemBase):
     """ Basic product model. """
     
-    class Meta(CategorizedProductBase.Meta):
+    class Meta:
         unique_together = ('category', 'slug')
         
     slug = models.SlugField()
@@ -20,8 +24,18 @@ class Cart(CartBase):
     
     pass
 
+class CartItem(CartItemBase):
+    """ Item in a shopping cart. """
+    
+    pass
+
 class Order(OrderBase):
     """ Basic order model. """
+    
+    pass
+
+class OrderItem(OrderItemBase):
+    """ Item in an order. """
     
     pass
 
