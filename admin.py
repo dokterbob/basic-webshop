@@ -6,7 +6,7 @@ from basic_webshop.models import *
 class ProductAdmin(admin.ModelAdmin):
     """ Model admin for products. """
     
-    fields = ('name', 'slug', 'category', 'price', 'description')
+    fields = ('name', 'slug', 'active', 'category', 'price', 'description')
     prepopulated_fields = {"slug": ("name",)}
 
     
