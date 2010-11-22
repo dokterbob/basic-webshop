@@ -19,7 +19,7 @@ from webshop.extensions.price.simple.models import PricedItemBase
 >>> c.product_set.all()
 [<Product: Banana>]
 """
-class Product(CategorizedItemBase, PricedItemBase, NamedItemBase):
+class Product(ProductBase, CategorizedItemBase, PricedItemBase, NamedItemBase):
     """ Basic product model. """
     
     class Meta:
