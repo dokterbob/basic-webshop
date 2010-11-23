@@ -17,5 +17,5 @@ urlpatterns = patterns('basic_webshop.views',
     
     surl(r'^cart/$',
          CartDetail.as_view(), name='cart_detail'),
-    #surl(r'^cart/add/$', CartAdd.as_view(), name='cart_add'),
+    surl(r'^cart/add/$', CartAdd.as_view(), name='cart_add'),
 )
