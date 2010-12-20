@@ -12,4 +12,5 @@ WEBSHOP_CARTITEM_MODEL = 'basic_webshop.CartItem'
 WEBSHOP_ORDER_MODEL = 'basic_webshop.Order'
 WEBSHOP_ORDERITEM_MODEL = 'basic_webshop.OrderItem'
 WEBSHOP_CATEGORY_MODEL = 'basic_webshop.Category'
+WEBSHOP_PRICE_MODEL = 'basic_webshop.Price'
 

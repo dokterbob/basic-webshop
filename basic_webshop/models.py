@@ -8,14 +8,20 @@ from webshop.core.basemodels import NamedItemBase
 
 from webshop.extensions.category.simple.models import CategoryBase, \
                                                       CategorizedItemBase
-from webshop.extensions.price.simple.models import PricedItemBase
+from webshop.extensions.price.advanced.models import PricedItemBase, \
+                                                     QuantifiedPriceBase
 
+class Price(QuantifiedPriceBase):
+    """ Price valid for certain quantities. """
+    
+    pass
+    
 
 class Customer(UserCustomerBase):
     """ Basic webshop customer. """
     pass
 
-class Product(ProductBase, CategorizedItemBase, PricedItemBase, NamedItemBase):
+class Product(ProductBase, CategorizedItemBase, NamedItemBase):
     """ Basic product model. 
     
     >>> c = Category(name='Fruit', slug='fruit')
