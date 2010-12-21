@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils.translation import ugettext_lazy as _
 
 from webshop.core.models import ProductBase, CartBase, CartItemBase, \
                                 OrderBase, OrderItemBase, UserCustomerBase
@@ -10,16 +10,19 @@ from webshop.extensions.category.simple.models import CategoryBase, \
                                                       CategorizedItemBase
 from webshop.extensions.price.advanced.models import PricedItemBase, \
                                                      QuantifiedPriceBase
+from webshop.extensions.variations.models import ProductVariationBase
+
 
 class Price(QuantifiedPriceBase):
     """ Price valid for certain quantities. """
     
     pass
-    
+
 
 class Customer(UserCustomerBase):
     """ Basic webshop customer. """
     pass
+
 
 class Product(ProductBase, CategorizedItemBase, NamedItemBase):
     """ Basic product model. 
@@ -46,25 +49,34 @@ class Product(ProductBase, CategorizedItemBase, NamedItemBase):
             {'category_slug': self.category.slug,
              'slug': self.slug}
 
+
+class ProductVariation(ProductVariationBase, NamedItemBase, PricedItemBase):
+    pass
+
+
 class Cart(CartBase):
     """ Basic shopping cart model. """
     
     pass
+
 
 class CartItem(CartItemBase):
     """ Item in a shopping cart. """
     
     pass
 
+
 class Order(OrderBase):
     """ Basic order model. """
     
     pass
 
+
 class OrderItem(OrderItemBase):
     """ Item in an order. """
     
     pass
+
 
 class Category(CategoryBase, NamedItemBase):
     """ Basic category model. """
@@ -79,4 +91,5 @@ class Category(CategoryBase, NamedItemBase):
     def get_absolute_url(self):
         return 'category_detail', None, \
             {'slug': self.slug}
+
 
