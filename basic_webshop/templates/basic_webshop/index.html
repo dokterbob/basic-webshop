@@ -4,11 +4,11 @@
     <h1>Shop index</h1>
     
     <h2>Categories</h2>
-    <ul>
-        {% for category in categories %}
-            <li><a href="{{ category.get_absolute_url }}">{{ category }}</a></li>
-        {% empty %}
-            <li>No categories created yet.</li>
-        {% endfor %}
-    </ul>
+    {% with main_categories as categories %}
+        {% if categories %}
+            {% include "basic_webshop/include/category_list.html" %}
+        {% else %}
+            <p>No categories defined (yet).</p>
+        {% endif %}
+    {% endwith %}
 {% endblock content %}
