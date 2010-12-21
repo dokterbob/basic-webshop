@@ -6,7 +6,7 @@ from webshop.core.models import ProductBase, CartBase, CartItemBase, \
                                 
 from webshop.core.basemodels import NamedItemBase
 
-from webshop.extensions.category.advanced.models import CategoryBase, \
+from webshop.extensions.category.advanced.models import NestedCategoryBase, \
                                                         CategorizedItemBase
 from webshop.extensions.price.advanced.models import PriceBase, \
                                                      QuantifiedPriceMixin, \
@@ -85,18 +85,17 @@ class OrderItem(OrderItemBase):
     pass
 
 
-class Category(CategoryBase, NamedItemBase):
+class Category(NestedCategoryBase, NamedItemBase):
     """ Basic category model. """
     
-    slug = models.SlugField(unique=True)
-    
-    def get_products(self):
-        """ Get all active products for the current category. """
-        return Product.in_shop.filter(category_set=self)
+    class Meta(NestedCategoryBase.Meta, NamedItemBase.Meta):
+        unique_together = ('parent', 'slug')
+        
+    slug = models.SlugField()
     
     @models.permalink
     def get_absolute_url(self):
         return 'category_detail', None, \
             {'slug': self.slug}
-
+    
 
