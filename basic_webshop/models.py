@@ -8,15 +8,10 @@ from webshop.core.basemodels import NamedItemBase
 
 from webshop.extensions.category.simple.models import CategoryBase, \
                                                       CategorizedItemBase
-from webshop.extensions.price.advanced.models import PricedItemBase, \
-                                                     QuantifiedPriceBase
-from webshop.extensions.variations.models import ProductVariationBase
-
-
-class Price(QuantifiedPriceBase):
-    """ Price valid for certain quantities. """
-    
-    pass
+from webshop.extensions.price.advanced.models import PriceBase, \
+                                                     QuantifiedPriceMixin, \
+                                                     ProductPriceMixin
+from webshop.extensions.variations.models import OrderedProductVariationBase
 
 
 class Customer(UserCustomerBase):
@@ -50,7 +45,8 @@ class Product(ProductBase, CategorizedItemBase, NamedItemBase):
              'slug': self.slug}
 
 
-class ProductVariation(ProductVariationBase, NamedItemBase, PricedItemBase):
+class ProductVariation(OrderedProductVariationBase, 
+                       NamedItemBase):
     pass
 
 
@@ -58,6 +54,15 @@ class Cart(CartBase):
     """ Basic shopping cart model. """
     
     pass
+
+
+class Price(PriceBase, ProductPriceMixin, QuantifiedPriceMixin):
+    """ Price valid for certain quantities. """
+
+    class Meta(PriceBase.Meta):
+        unique_together = ('product', 'variation', 'quantity')
+    
+    variation = models.ForeignKey(ProductVariation, null=True, blank=True)
 
 
 class CartItem(CartItemBase):
