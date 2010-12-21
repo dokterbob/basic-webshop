@@ -8,9 +8,10 @@ from webshop.extensions.variations.admin import ProductVariationInline
 class ProductAdmin(admin.ModelAdmin):
     """ Model admin for products. """
     
-    fields = ('name', 'slug', 'active', 'category', 'description')
+    fields = ('name', 'slug', 'active', 'categories', 'description', 'display_price')
     prepopulated_fields = {"slug": ("name",)}
     inlines = (ProductVariationInline, PriceInline, )
+    filter_horizontal = ('categories', )
 
 admin.site.register(Product, ProductAdmin)
 

@@ -6,8 +6,8 @@ from webshop.core.models import ProductBase, CartBase, CartItemBase, \
                                 
 from webshop.core.basemodels import NamedItemBase
 
-from webshop.extensions.category.simple.models import CategoryBase, \
-                                                      CategorizedItemBase
+from webshop.extensions.category.advanced.models import CategoryBase, \
+                                                        CategorizedItemBase
 from webshop.extensions.price.advanced.models import PriceBase, \
                                                      QuantifiedPriceMixin, \
                                                      ProductPriceMixin
@@ -31,12 +31,13 @@ class Product(ProductBase, CategorizedItemBase, NamedItemBase):
     [<Product: Banana>]
     
     """
-    
-    class Meta:
-        unique_together = ('category', 'slug')
-   
-    slug = models.SlugField()
+       
+    slug = models.SlugField(unique=True)
     description = models.TextField(blank=False)
+    display_price = models.ForeignKey('Price', null=True, blank=True,
+                                      related_name='display_price_product',
+                                      help_text=_('Price displayed as \
+                                              default for this product.'))
 
     @models.permalink
     def get_absolute_url(self):
@@ -60,10 +61,11 @@ class Price(PriceBase, ProductPriceMixin, QuantifiedPriceMixin):
     """ Price valid for certain quantities. """
 
     class Meta(PriceBase.Meta):
-        unique_together = ('product', 'variation', 'quantity')
+        unique_together = (('product', 'variation', 'quantity'),)
     
-    variation = models.ForeignKey(ProductVariation, null=True, blank=True)
-
+    variation = models.ForeignKey(ProductVariation, null=True, blank=True,
+                                  verbose_name=_('variation'))
+    
 
 class CartItem(CartItemBase):
     """ Item in a shopping cart. """
@@ -90,7 +92,7 @@ class Category(CategoryBase, NamedItemBase):
     
     def get_products(self):
         """ Get all active products for the current category. """
-        return Product.in_shop.filter(category=self)
+        return Product.in_shop.filter(category_set=self)
     
     @models.permalink
     def get_absolute_url(self):
