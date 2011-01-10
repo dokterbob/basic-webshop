@@ -12,7 +12,8 @@ from webshop.extensions.price.advanced.models import PriceBase, \
                                                      QuantifiedPriceMixin, \
                                                      ProductPriceMixin
 from webshop.extensions.variations.models import OrderedProductVariationBase
-from webshop.extensions.images.models import OrderedProductImageBase
+from webshop.extensions.images.models import OrderedProductImageBase, \
+                                             ImagesProductMixin
 
 
 
@@ -21,7 +22,8 @@ class Customer(UserCustomerBase):
     pass
 
 
-class Product(ProductBase, CategorizedItemBase, NamedItemBase):
+class Product(ProductBase, CategorizedItemBase, NamedItemBase, \
+              ImagesProductMixin):
     """ Basic product model. 
     
     >>> c = Category(name='Fruit', slug='fruit')
