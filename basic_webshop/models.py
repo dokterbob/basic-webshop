@@ -12,6 +12,8 @@ from webshop.extensions.price.advanced.models import PriceBase, \
                                                      QuantifiedPriceMixin, \
                                                      ProductPriceMixin
 from webshop.extensions.variations.models import OrderedProductVariationBase
+from webshop.extensions.images.models import OrderedProductImageBase
+
 
 
 class Customer(UserCustomerBase):
@@ -51,6 +53,11 @@ class ProductVariation(OrderedProductVariationBase,
     pass
 
 
+class ProductImage(OrderedProductImageBase,
+                   NamedItemBase):
+    pass
+
+
 class Cart(CartBase):
     """ Basic shopping cart model. """
     
@@ -65,7 +72,23 @@ class Price(PriceBase, ProductPriceMixin, QuantifiedPriceMixin):
     
     variation = models.ForeignKey(ProductVariation, null=True, blank=True,
                                   verbose_name=_('variation'))
-    
+
+    def __unicode__(self):
+        """ Return the formatted value of the price. If a variation
+            and/or a (minimum) quantity are specified, these are added
+            to the representation.
+        """
+        
+        price = super(Price, self).__unicode__()
+        
+        if self.variation:
+            price += u' - %s' % self.variation
+        
+        if self.quantity:
+            price += u' - per %d' % self.quantity
+        
+        return price
+
 
 class CartItem(CartItemBase):
     """ Item in a shopping cart. """
