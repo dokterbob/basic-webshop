@@ -20,6 +20,7 @@ admin.site.register(Product, ProductAdmin)
 class CategoryAdmin(admin.ModelAdmin):
     """ Model admin for categories. """
 
+    fields = ('parent', 'name', 'slug')
     prepopulated_fields = {"slug": ("name",)}
 
 admin.site.register(Category, CategoryAdmin)
