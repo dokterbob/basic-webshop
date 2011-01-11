@@ -51,18 +51,27 @@ class Product(MultilingualModel, ProductBase, CategorizedItemBase, \
              'slug': self.slug}
 
 
+    def __unicode__(self):
+        name = self.name
+        
+        if not name:
+                name = u''
+        
+        return name
+
+
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
     parent = models.ForeignKey(Product, related_name='translations')
     description = models.TextField(blank=False)
 
 
-class ProductVariation(MultilingualModel,
-                       OrderedProductVariationBase):
+class ProductVariation(OrderedProductVariationBase, NamedItemBase):
+    # TODO: Figure out how to use translations here - someway, somehow
     pass
 
 
-class ProductVariationTranslation(MultilingualTranslation, NamedItemBase):
-    parent = models.ForeignKey(ProductVariation, related_name='translations')
+# class ProductVariationTranslation(MultilingualTranslation, NamedItemBase):
+#     parent = models.ForeignKey(ProductVariation, related_name='translations')
 
 
 class ProductImage(OrderedProductImageBase,
@@ -132,6 +141,14 @@ class Category(MultilingualModel, NestedCategoryBase):
     def get_absolute_url(self):
         return 'category_detail', None, \
             {'slug': self.slug}
+    
+    def __unicode__(self):
+        name = self.name
+        
+        if not name:
+                name = u''
+        
+        return name
 
 
 class CategoryTranslation(NamedItemBase, MultilingualTranslation):

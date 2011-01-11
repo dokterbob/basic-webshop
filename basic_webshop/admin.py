@@ -5,25 +5,44 @@ from webshop.extensions.price.advanced.admin import PriceInline
 from webshop.extensions.variations.admin import ProductVariationInline
 from webshop.extensions.images.admin import ProductImageInline, ImagesProductMixin
 
+from multilingual_model.admin import TranslationInline
+
+
+class ProductTranslationInline(TranslationInline):
+    model = ProductTranslation
+
 
 class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
     """ Model admin for products. """
     
-    fields = ('name', 'slug', 'active', 'categories', 'description', 'display_price')
-    prepopulated_fields = {"slug": ("name",)}
-    inlines = (ProductImageInline, ProductVariationInline, PriceInline, )
+    fields = ('slug', 'active', 'categories', 'display_price')
+    # prepopulated_fields = {"slug": ("name",)}
+    inlines = (ProductTranslationInline,
+               ProductImageInline, 
+               ProductVariationInline, 
+               PriceInline, )
     filter_horizontal = ('categories', )
     
     list_display = ('default_image', 'name')
-    list_display_links = ('name', )
+    # list_display_links = ('name', )
+    
+    def name(self, obj):
+        return u'<a href="%d/">%s</a>' % \
+            (obj.pk, obj.name)
+    name.allow_tags = True
 
 admin.site.register(Product, ProductAdmin)
+
+
+class CategoryTranslationInlineInline(TranslationInline):
+    model = CategoryTranslation
 
 
 class CategoryAdmin(admin.ModelAdmin):
     """ Model admin for categories. """
 
-    fields = ('parent', 'name', 'slug')
-    prepopulated_fields = {"slug": ("name",)}
+    fields = ('parent', 'slug')
+    # prepopulated_fields = {"slug": ("name",)}
+    inlines = (CategoryTranslationInlineInline, )
 
 admin.site.register(Category, CategoryAdmin)
