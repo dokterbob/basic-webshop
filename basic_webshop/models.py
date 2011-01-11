@@ -65,13 +65,22 @@ class ProductTranslation(MultilingualTranslation, NamedItemBase):
     description = models.TextField(blank=False)
 
 
-class ProductVariation(OrderedProductVariationBase, NamedItemBase):
-    # TODO: Figure out how to use translations here - someway, somehow
-    pass
+class ProductVariation(MultilingualModel, OrderedProductVariationBase):
+    class Meta(MultilingualModel.Meta, OrderedProductVariationBase.Meta):
+        unique_together = (('product', 'slug',), )
+    
+    slug = models.SlugField()
+    
+    def __unicode__(self):
+        return self.slug
 
 
-# class ProductVariationTranslation(MultilingualTranslation, NamedItemBase):
-#     parent = models.ForeignKey(ProductVariation, related_name='translations')
+class ProductVariationTranslation(MultilingualTranslation, NamedItemBase):
+    class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):
+        unique_together = (('language_code', 'parent',), )
+
+    parent = models.ForeignKey(ProductVariation, related_name='translations')
+    product = models.ForeignKey(Product)
 
 
 class ProductImage(OrderedProductImageBase,

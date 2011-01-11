@@ -8,6 +8,13 @@ from webshop.extensions.images.admin import ProductImageInline, ImagesProductMix
 from multilingual_model.admin import TranslationInline
 
 
+class ProductVariationTranslationInline(admin.TabularInline):
+    # TODO: Limit the selection of parents to those associated with the 
+    # current product.
+    model = ProductVariationTranslation
+    extra = 0
+
+
 class ProductTranslationInline(TranslationInline):
     model = ProductTranslation
 
@@ -18,8 +25,9 @@ class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
     fields = ('slug', 'active', 'categories', 'display_price')
     # prepopulated_fields = {"slug": ("name",)}
     inlines = (ProductTranslationInline,
-               ProductImageInline, 
-               ProductVariationInline, 
+               ProductImageInline,
+               ProductVariationInline,
+               ProductVariationTranslationInline,
                PriceInline, )
     filter_horizontal = ('categories', )
     
