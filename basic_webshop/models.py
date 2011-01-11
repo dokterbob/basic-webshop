@@ -15,6 +15,8 @@ from webshop.extensions.variations.models import OrderedProductVariationBase
 from webshop.extensions.images.models import OrderedProductImageBase, \
                                              ImagesProductMixin
 
+from multilingual_model.models import MultilingualModel, \
+                                      MultilingualTranslation
 
 
 class Customer(UserCustomerBase):
@@ -22,7 +24,7 @@ class Customer(UserCustomerBase):
     pass
 
 
-class Product(ProductBase, CategorizedItemBase, NamedItemBase, \
+class Product(MultilingualModel, ProductBase, CategorizedItemBase, \
               ImagesProductMixin):
     """ Basic product model. 
     
@@ -37,7 +39,6 @@ class Product(ProductBase, CategorizedItemBase, NamedItemBase, \
     """
        
     slug = models.SlugField(unique=True)
-    description = models.TextField(blank=False)
     display_price = models.ForeignKey('Price', null=True, blank=True,
                                       related_name='display_price_product',
                                       help_text=_('Price displayed as \
@@ -50,9 +51,18 @@ class Product(ProductBase, CategorizedItemBase, NamedItemBase, \
              'slug': self.slug}
 
 
-class ProductVariation(OrderedProductVariationBase, 
-                       NamedItemBase):
+class ProductTranslation(MultilingualTranslation, NamedItemBase):
+    parent = models.ForeignKey(Product, related_name='translations')
+    description = models.TextField(blank=False)
+
+
+class ProductVariation(MultilingualModel,
+                       OrderedProductVariationBase):
     pass
+
+
+class ProductVariationTranslation(MultilingualTranslation, NamedItemBase):
+    parent = models.ForeignKey(ProductVariation, related_name='translations')
 
 
 class ProductImage(OrderedProductImageBase,
@@ -110,7 +120,7 @@ class OrderItem(OrderItemBase):
     pass
 
 
-class Category(NestedCategoryBase, NamedItemBase):
+class Category(MultilingualModel, NestedCategoryBase):
     """ Basic category model. """
     
     class Meta(NestedCategoryBase.Meta, NamedItemBase.Meta):
@@ -122,5 +132,8 @@ class Category(NestedCategoryBase, NamedItemBase):
     def get_absolute_url(self):
         return 'category_detail', None, \
             {'slug': self.slug}
-    
+
+
+class CategoryTranslation(NamedItemBase, MultilingualTranslation):
+    parent = models.ForeignKey(Category, related_name='translations')
 
