@@ -1,3 +1,6 @@
+import logging
+
+
 from django.contrib import admin
 
 from basic_webshop.models import *
@@ -14,20 +17,27 @@ class VariationInlineMixin(object):
         
         This should be part of the django-webshop variations extension.
     """
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        # TODO: Somehow figure out the current product
-
-        if db_field.name == "variation":
-            # If no instance is given, it makes sense to not be able to
-            # select any of its variations.
-            if self.instance:
-                qs = Variation.objects.filter(product=self.instance)
-            else:
-                qs = Variation.objects.none()
-            
-            kwargs["queryset"] = qs
-        
-        return super(VariationPriceInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
+    # http://stackoverflow.com/questions/1824267/limit-foreign-key-choices-in-select-in-an-inline-form-in-admin
+    # 
+    # def formfield_for_foreignkey(self, *args, **kwargs):
+    #     logger.debug('kaas')
+    #     return super(VariationInlineMixin).formfield_for_foreignkey(self, *args, **kwargs)
+    # def formfield_for_foreignkey(self, db_field, request, **kwargs):
+    #     # # TODO: Somehow figure out the current product
+    #     
+    #     logger.debug('Dingding')
+    #     
+    #     # if db_field.name == "variation":
+    #     #     # If no instance is given, it makes sense to not be able to
+    #     #     # select any of its variations.
+    #     #     if self.instance:
+    #     #         qs = Variation.objects.filter(product=self.instance)
+    #     #     else:
+    #     #         qs = Variation.objects.none()
+    #     #     
+    #     #     kwargs["queryset"] = qs
+    #     
+    #     return super(VariationInlineMixin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class VariationPriceInline(PriceInline, VariationInlineMixin):
