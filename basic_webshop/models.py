@@ -2,7 +2,8 @@ from django.db import models
 
 
 from webshop.core.models import ProductBase, CartBase, CartItemBase, \
-                                OrderBase, OrderItemBase, UserCustomerBase
+                                OrderBase, OrderItemBase, UserCustomerBase, \
+                                OrderStateChangeBase
                                 
 from webshop.core.basemodels import NamedItemBase
 
@@ -47,6 +48,11 @@ class Cart(CartBase):
 
 class CartItem(CartItemBase):
     """ Item in a shopping cart. """
+    
+    pass
+
+class OrderStateChange(OrderStateChangeBase):
+    """ Basic order state change. """
     
     pass
 
