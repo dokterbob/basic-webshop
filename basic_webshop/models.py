@@ -2,7 +2,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from webshop.core.models import ProductBase, CartBase, CartItemBase, \
-                                OrderBase, OrderItemBase, UserCustomerBase
+                                OrderBase, OrderItemBase, UserCustomerBase, \
+                                OrderStateChangeBase
                                 
 from webshop.core.basemodels import NamedItemBase
 
@@ -122,6 +123,12 @@ class Price(PriceBase, ProductPriceMixin, QuantifiedPriceMixin):
 
 class CartItem(CartItemBase):
     """ Item in a shopping cart. """
+    
+    pass
+
+
+class OrderStateChange(OrderStateChangeBase):
+    """ Basic order state change. """
     
     pass
 
