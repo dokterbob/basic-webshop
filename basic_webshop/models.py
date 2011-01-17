@@ -67,6 +67,9 @@ class ProductTranslation(MultilingualTranslation, NamedItemBase):
 
 
 class ProductVariation(MultilingualModel, OrderedProductVariationBase):
+    """
+    TODO: Fix sortorder bug here. The sortorder default fucks up...
+    """
     class Meta(MultilingualModel.Meta, OrderedProductVariationBase.Meta):
         unique_together = (('product', 'slug',), )
     
