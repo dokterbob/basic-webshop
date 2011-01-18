@@ -38,7 +38,7 @@ class Product(MultilingualModel, ProductBase, CategorizedItemBase, \
     [<Product: Banana>]
     
     """
-       
+    
     slug = models.SlugField(unique=True)
     display_price = models.ForeignKey('Price', null=True, blank=True,
                                       related_name='display_price_product',
@@ -62,6 +62,9 @@ class Product(MultilingualModel, ProductBase, CategorizedItemBase, \
 
 
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
+    class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):
+        pass
+    
     parent = models.ForeignKey(Product, related_name='translations')
     description = models.TextField(blank=False)
 
