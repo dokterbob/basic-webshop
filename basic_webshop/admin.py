@@ -41,12 +41,12 @@ class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
                VariationPriceInline, )
     filter_horizontal = ('categories', )
     
-    list_display = ('default_image', 'name')
+    list_display = ('name', 'slug', 'default_image')
     # list_display_links = ('name', )
     
     def name(self, obj):
         return u'<a href="%d/">%s</a>' % \
-            (obj.pk, obj.name)
+            (obj.pk, obj)
     name.allow_tags = True
 
 
