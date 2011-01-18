@@ -23,7 +23,6 @@ class ProductVariationTranslationInline(VariationInlineMixin, admin.TabularInlin
     # TODO: Limit the selection of parents to those associated with the 
     # current product.
     model = ProductVariationTranslation
-    extra = 0
 
 
 class ProductTranslationInline(TranslationInline):
