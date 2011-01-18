@@ -53,12 +53,7 @@ class Product(MultilingualModel, ProductBase, CategorizedItemBase, \
 
 
     def __unicode__(self):
-        name = self.name
-        
-        if not name:
-                name = u''
-        
-        return name
+        return self.unicode_wrapper('name')
 
 
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
