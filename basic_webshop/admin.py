@@ -10,7 +10,7 @@ from webshop.extensions.images.admin import ProductImageInline, ImagesProductMix
 
 from multilingual_model.admin import TranslationInline
 
-from basic_webshop.forms import VariationInlineForm
+# from basic_webshop.forms import VariationInlineForm
 
 class VariationInlineMixin(object):
     #form = VariationInlineForm
