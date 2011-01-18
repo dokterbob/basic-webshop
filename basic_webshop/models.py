@@ -63,7 +63,7 @@ class Product(MultilingualModel, ProductBase, CategorizedItemBase, \
 
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
     class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):
-        pass
+        unique_together = (('language_code', 'parent',), )
     
     parent = models.ForeignKey(Product, related_name='translations')
     description = models.TextField(blank=False)
@@ -174,5 +174,8 @@ class Category(MultilingualModel, NestedCategoryBase):
 
 
 class CategoryTranslation(NamedItemBase, MultilingualTranslation):
+    class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):
+        unique_together = (('language_code', 'parent',), )
+
     parent = models.ForeignKey(Category, related_name='translations')
 
