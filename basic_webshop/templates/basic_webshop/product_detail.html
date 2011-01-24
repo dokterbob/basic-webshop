@@ -8,7 +8,7 @@
     
     <p>{{ product.description }}</p>
     
-    <p>Price: {{ product.price|format_price }}</p>
+    <p>Price: {{ product.get_price|format_price }}</p>
     
     <p>Add to cart: 
         <form action="{% url cart_add %}" method="post">

@@ -53,6 +53,17 @@ class Product(MultilingualModel, ProductBase, CategorizedItemBase, \
 
     def __unicode__(self):
         return self.unicode_wrapper('name')
+    
+    def get_price(self, *args, **kwargs):
+        if self.display_price:
+            price = self.display_price
+        
+        else:
+            kwargscopy = kwargs.copy()
+            kwargscopy.update({'product': self})
+            price = Price.get_cheapest(**kwargscopy)
+        
+        return price.get_price(**kwargs)
 
 
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
