@@ -48,8 +48,7 @@ class Product(MultilingualModel, ProductBase, CategorizedItemBase, \
     @models.permalink
     def get_absolute_url(self):
         return 'product_detail', None, \
-            {'category_slug': self.category.slug,
-             'slug': self.slug}
+            {'slug': self.slug}
 
 
     def __unicode__(self):
@@ -160,6 +159,9 @@ class Category(MultilingualModel, NestedCategoryBase):
             {'slug': self.slug}
     
     def __unicode__(self):
+        """
+        TODO: Make sure we include the full category hierarchy here.
+        """
         return self.unicode_wrapper('name')
 
 

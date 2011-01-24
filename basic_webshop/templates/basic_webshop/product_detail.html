@@ -3,6 +3,7 @@
 {% load currency_tags %}
 
 {% block content %}
+    {% if category %}<h2>Category: <a href="{{ category.get_absolute_url }}">{{ category }}</a></h2>{% endif %}
     <h1>Product: {{ product }}</h1>
     
     <p>{{ product.description }}</p>
@@ -21,5 +22,5 @@
         </form>
     </p>
     
-    <p><a href="{% url category_detail product.category.slug %}">Back to category {{ product.category }}</a></p>
+    {# <p><a href="{% url category_detail product.category.slug %}">Back to category {{ product.category }}</a></p> #}
 {% endblock content %}

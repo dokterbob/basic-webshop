@@ -1,14 +1,15 @@
 {% extends "basic_webshop/base.html" %}
 
 {% block content %}
+    <h2><a href="{% url category_list %}">Category list</a></h2>
     <h1>Category: {{ category }}</h1>
     
     <h2>Products</h2>
-    <ul>
-        {% for product in category.get_products %}
-            <li><a href="{{ product.get_absolute_url }}">{{ product }}</a></li>
-        {% empty %}
-            <li>No products so far.</li>
-        {% endfor %}
-    </ul>
+    {% with category.get_products as products %}
+        {% if products %}
+            {% include "basic_webshop/include/product_list.html" %}
+        {% else %}
+            <p>No products found in this category.</p>
+        {% endif %}
+    {% endwith %}
 {% endblock content %}

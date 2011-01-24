@@ -33,13 +33,26 @@ class ProductDetail(CartAddFormMixin, DetailView):
     
     model = Product
     
-    def get_queryset(self):
-        category_slug = self.kwargs.get('category_slug')
+    def get_context_data(self, **kwargs):
+        """ 
+        Add an eventual category to the request when the 
+        `category` GET-parameter has been specified. 
+        """
         
-        category = get_object_or_404(Category, slug=category_slug)
+        context = super(ProductDetail, self).get_context_data(**kwargs)
         
-        queryset = Product.in_shop.all()
-        return queryset.filter(category=category)
+        category_slug = self.request.GET.get('category', None)
+        
+        if category_slug:
+            # See whether we can find this category. 
+            try:
+                category = Category.objects.get(slug=category_slug)
+                context['category'] = category
+                
+            except Category.DoesNotExist:
+                pass
+        
+        return context
 
 
 # Just added ProductDetail as a base class, as errors for this 
