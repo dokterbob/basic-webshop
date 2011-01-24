@@ -1,5 +1,5 @@
 {% extends "basic_webshop/base.html" %}
-
+{% load thumbnail %}
 {% load currency_tags %}
 
 {% block content %}
@@ -9,6 +9,14 @@
     <p>{{ product.description }}</p>
     
     <p>Price: {{ product.get_price|format_price }}</p>
+    
+    <ul>
+        {% for productimage in product.images.all %}
+            {% thumbnail productimage.image "120x120" as thumb %}
+                <li><img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}"></li>
+            {% endthumbnail %}
+        {% endfor %}
+    </ul>
     
     <p>Add to cart: 
         <form action="{% url cart_add %}" method="post">
