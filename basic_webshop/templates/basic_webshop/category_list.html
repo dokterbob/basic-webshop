@@ -5,6 +5,10 @@
     
     <h2>Categories</h2>
     {% with main_categories as categories %}
-        {% include "basic_webshop/include/category_list.html" %}
+        {% if categories %}
+            {% include "basic_webshop/include/category_list.html" %}
+        {% else %}
+            <p>No categories defined.</p>
+        {% endif %}
     {% endwith %}
 {% endblock content %}
