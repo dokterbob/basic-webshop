@@ -5,7 +5,7 @@ from webshop.core.models import ProductBase, CartBase, CartItemBase, \
                                 OrderBase, OrderItemBase, UserCustomerBase, \
                                 OrderStateChangeBase
                                 
-from webshop.core.basemodels import NamedItemBase
+from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase
 
 from webshop.extensions.category.advanced.models import NestedCategoryBase, \
                                                         CategorizedItemBase
@@ -25,8 +25,8 @@ class Customer(UserCustomerBase):
     pass
 
 
-class Product(MultilingualModel, ProductBase, CategorizedItemBase, \
-              ImagesProductMixin):
+class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
+              CategorizedItemBase, ImagesProductMixin, ):
     """ Basic product model. 
     
     >>> c = Category(name='Fruit', slug='fruit')
@@ -38,7 +38,7 @@ class Product(MultilingualModel, ProductBase, CategorizedItemBase, \
     [<Product: Banana>]
     
     """
-    
+
     slug = models.SlugField(unique=True)
     display_price = models.ForeignKey('Price', null=True, blank=True,
                                       related_name='display_price_product',
@@ -156,9 +156,9 @@ class OrderItem(OrderItemBase):
     pass
 
 
-class Category(MultilingualModel, NestedCategoryBase):
+class Category(MultilingualModel, ActiveItemInShopBase, NestedCategoryBase):
     """ Basic category model. """
-    
+
     class Meta(NestedCategoryBase.Meta, NamedItemBase.Meta):
         unique_together = ('parent', 'slug')
         

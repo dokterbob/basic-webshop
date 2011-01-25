@@ -1,6 +1,7 @@
 import logging
 logger = logging.getLogger('basic_webshop')
 
+from django.utils.functional import SimpleLazyObject
 
 from django.shortcuts import get_object_or_404
 
@@ -15,6 +16,13 @@ from basic_webshop.models import Product, Category, Cart, CartItem
 from webshop.core.views import CartAddFormMixin, CartAddBase
 
 
+class InShopViewMixin(object):
+    """ Mixin using the `in_shop` manager rather than the default `objects`. """
+    
+    def get_queryset(self):
+        return self.model.in_shop.all()
+
+
 class CategoryList(TemplateView):
     """ A dummy view taking the list of categories from the Mixin
         and displaying it using a simple template. """
@@ -22,13 +30,13 @@ class CategoryList(TemplateView):
     template_name = 'basic_webshop/category_list.html'
 
 
-class CategoryDetail(DetailView):
+class CategoryDetail(InShopViewMixin, DetailView):
     """ List products for a category. """
     
     model = Category
 
 
-class ProductDetail(CartAddFormMixin, DetailView):
+class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
     """ List details for a product. """
     
     model = Product
@@ -44,13 +52,20 @@ class ProductDetail(CartAddFormMixin, DetailView):
         category_slug = self.request.GET.get('category', None)
         
         if category_slug:
-            # See whether we can find this category. 
-            try:
-                category = Category.objects.get(slug=category_slug)
-                context['category'] = category
+            def get_category():
+                # See whether we can find this category. 
+                try:
+                    category_set = Category.in_shop.filter(slug=category_slug)
+
+                    return category_set[0]
                 
-            except Category.DoesNotExist:
-                pass
+                except IndexError:
+                    # Category not found or something else went wrong
+                    assert category_set.count() == 0, \
+                        'More than one category returned'
+            
+            context['category'] = SimpleLazyObject(get_category)
+            
         
         return context
 

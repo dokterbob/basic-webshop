@@ -71,7 +71,7 @@ class CategoryTranslationInlineInline(TranslationInline):
 class CategoryAdmin(admin.ModelAdmin):
     """ Model admin for categories. """
 
-    fields = ('parent', 'slug')
+    fields = ('parent', 'slug', 'active')
     # prepopulated_fields = {"slug": ("name",)}
     inlines = (CategoryTranslationInlineInline, )
 
