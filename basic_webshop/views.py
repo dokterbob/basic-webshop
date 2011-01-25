@@ -46,7 +46,7 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
         
         if category_slug:
             def get_category():
-                # See whether we can find this category. 
+                # See whether we can find this category, but do it lazyly 
                 try:
                     category_set = Category.in_shop.filter(slug=category_slug)
 
