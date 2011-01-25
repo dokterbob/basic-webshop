@@ -13,14 +13,7 @@ from django.views.generic import DetailView, ListView, \
 from basic_webshop.models import Product, Category, Cart, CartItem
 
 
-from webshop.core.views import CartAddFormMixin, CartAddBase
-
-
-class InShopViewMixin(object):
-    """ Mixin using the `in_shop` manager rather than the default `objects`. """
-    
-    def get_queryset(self):
-        return self.model.in_shop.all()
+from webshop.core.views import InShopViewMixin, CartAddFormMixin, CartAddBase
 
 
 class CategoryList(TemplateView):
