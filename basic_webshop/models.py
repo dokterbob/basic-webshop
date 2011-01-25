@@ -9,7 +9,8 @@ from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase
 
 from webshop.extensions.category.advanced.models import NestedCategoryBase, \
                                                         CategorizedItemBase
-from webshop.extensions.price.advanced.models import PriceBase, \
+from webshop.extensions.price.advanced.models import PricedItemBase, \
+                                                     PriceBase, \
                                                      QuantifiedPriceMixin, \
                                                      ProductPriceMixin
 from webshop.extensions.variations.models import OrderedProductVariationBase
@@ -133,10 +134,21 @@ class Price(PriceBase, ProductPriceMixin, QuantifiedPriceMixin):
 
 
 class CartItem(CartItemBase):
-    """ Item in a shopping cart. """
+    """ 
+    Item in a shopping cart. 
+    """
     
-    pass
-
+    variation = models.ForeignKey(ProductVariation, null=True, blank=True,
+                                  verbose_name=_('variation'))
+    
+    def addProduct(self, product, quantity=1, variation=None):
+        """ Make sure we store the variation, if applicable. """
+        
+        cartitem = super(CartItem, self).addProduct(product, quantity)
+        cartitem.variation = variation
+        
+        assert self.product.variation_set.exists() and variation, \
+            'Product has variations but no variation specified here.'
 
 class OrderStateChange(OrderStateChangeBase):
     """ Basic order state change. """
@@ -150,10 +162,29 @@ class Order(OrderBase):
     pass
 
 
-class OrderItem(OrderItemBase):
-    """ Item in an order. """
+class OrderItem(OrderItemBase, NamedItemBase, PricedItemBase):
+    """ 
+    Order items should have:
     
-    pass
+    * From Product:
+      1. slug
+      2. name
+      3. description
+    * From Variation:
+      1. variation_slug
+      2. variation_name
+    * From Cart:
+      1. quantity
+      2. price
+    
+    """
+    
+    variation = models.ForeignKey(ProductVariation, null=True, blank=True,
+                                  verbose_name=_('variation'))
+    """ TODO: Move variation up to the variations extension of django-webshop. """
+    
+    slug = models.SlugField(unique=True)
+    description = models.TextField(blank=False)
 
 
 class Category(MultilingualModel, ActiveItemInShopBase, NestedCategoryBase):
