@@ -11,7 +11,7 @@
     <p>Price: {{ product.get_price|format_price }}</p>
     
     <ul>
-        {% for productimage in product.images.all %}
+        {% for productimage in product.productimage_set.all %}
             {% thumbnail productimage.image "120x120" as thumb %}
                 <li><img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}"></li>
             {% endthumbnail %}
