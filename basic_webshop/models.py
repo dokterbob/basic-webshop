@@ -40,10 +40,6 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
     """
 
     slug = models.SlugField(unique=True)
-    display_price = models.ForeignKey('Price', null=True, blank=True,
-                                      related_name='display_price_product',
-                                      help_text=_('Price displayed as \
-                                              default for this product.'))
 
     @models.permalink
     def get_absolute_url(self):
@@ -53,17 +49,6 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
 
     def __unicode__(self):
         return self.unicode_wrapper('name')
-    
-    def get_price(self, *args, **kwargs):
-        if self.display_price:
-            price = self.display_price
-        
-        else:
-            kwargscopy = kwargs.copy()
-            kwargscopy.update({'product': self})
-            price = Price.get_cheapest(**kwargscopy)
-        
-        return price.get_price(**kwargs)
 
 
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
