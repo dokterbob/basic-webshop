@@ -9,10 +9,7 @@ from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase
 
 from webshop.extensions.category.advanced.models import NestedCategoryBase, \
                                                         CategorizedItemBase
-from webshop.extensions.price.advanced.models import PricedItemBase, \
-                                                     PriceBase, \
-                                                     QuantifiedPriceMixin, \
-                                                     ProductPriceMixin
+from webshop.extensions.price.simple.models import PricedItemBase
 from webshop.extensions.variations.models import OrderedProductVariationBase
 from webshop.extensions.images.models import OrderedProductImageBase, \
                                              ImagesProductMixin
@@ -27,7 +24,8 @@ class Customer(UserCustomerBase):
 
 
 class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
-              CategorizedItemBase, ImagesProductMixin, ):
+              CategorizedItemBase, OrderedItemBase, PricedItemBase, \
+              ImagesProductMixin, ):
     """ Basic product model. 
     
     >>> c = Category(name='Fruit', slug='fruit')
@@ -105,32 +103,6 @@ class Cart(CartBase):
     """ Basic shopping cart model. """
     
     pass
-
-
-class Price(PriceBase, ProductPriceMixin, QuantifiedPriceMixin):
-    """ Price valid for certain quantities. """
-
-    class Meta(PriceBase.Meta):
-        unique_together = (('product', 'variation', 'quantity'),)
-    
-    variation = models.ForeignKey(ProductVariation, null=True, blank=True,
-                                  verbose_name=_('variation'))
-
-    def __unicode__(self):
-        """ Return the formatted value of the price. If a variation
-            and/or a (minimum) quantity are specified, these are added
-            to the representation.
-        """
-        
-        price = super(Price, self).__unicode__()
-        
-        if self.variation:
-            price += u' - %s' % self.variation
-        
-        if self.quantity:
-            price += u' - per %d' % self.quantity
-        
-        return price
 
 
 class CartItem(CartItemBase):

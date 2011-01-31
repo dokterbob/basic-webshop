@@ -4,19 +4,12 @@ logger = logging.getLogger(__name__)
 from django.contrib import admin
 
 from basic_webshop.models import *
-from webshop.extensions.price.advanced.admin import PriceInline
 from webshop.extensions.variations.admin import ProductVariationInline, \
                                                 VariationInlineMixin
 from webshop.extensions.images.admin import ProductImageInline, \
                                             ImagesProductMixin
 
 from multilingual_model.admin import TranslationInline
-
-
-
-
-class VariationPriceInline(VariationInlineMixin, PriceInline):
-    pass
 
 
 class ProductVariationTranslationInline(VariationInlineMixin, admin.TabularInline):
@@ -32,13 +25,13 @@ class ProductTranslationInline(TranslationInline):
 class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
     """ Model admin for products. """
     
-    fields = ('slug', 'active', 'categories', 'display_price')
+    fields = ('slug', 'active', 'categories', 'sort_order', 'price')
     # prepopulated_fields = {"slug": ("name",)}
     inlines = (ProductTranslationInline,
                ProductImageInline,
                ProductVariationInline,
                ProductVariationTranslationInline,
-               VariationPriceInline, )
+              )
     filter_horizontal = ('categories', )
     
     list_display = ('name', 'slug', 'default_image')
