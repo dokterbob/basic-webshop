@@ -32,7 +32,7 @@ class ProductTranslationInline(TranslationInline):
 class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
     """ Model admin for products. """
     
-    fields = ('slug', 'active', 'categories', 'display_price')
+    fields = ('slug', 'active', 'categories', 'display_price', 'sort_order')
     # prepopulated_fields = {"slug": ("name",)}
     inlines = (ProductTranslationInline,
                ProductImageInline,
@@ -71,8 +71,13 @@ class CategoryTranslationInlineInline(TranslationInline):
 class CategoryAdmin(admin.ModelAdmin):
     """ Model admin for categories. """
 
-    fields = ('parent', 'slug', 'active')
+    fields = ('parent', 'slug', 'active', 'sort_order')
     # prepopulated_fields = {"slug": ("name",)}
     inlines = (CategoryTranslationInlineInline, )
+
+    def name(self, obj):
+        return u'<a href="%d/">%s</a>' % \
+            (obj.pk, obj)
+    name.allow_tags = True
 
 admin.site.register(Category, CategoryAdmin)

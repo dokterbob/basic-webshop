@@ -5,7 +5,8 @@ from webshop.core.models import ProductBase, CartBase, CartItemBase, \
                                 OrderBase, OrderItemBase, UserCustomerBase, \
                                 OrderStateChangeBase
                                 
-from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase
+from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase, \
+                                    OrderedItemBase
 
 from webshop.extensions.category.advanced.models import NestedCategoryBase, \
                                                         CategorizedItemBase
@@ -27,7 +28,7 @@ class Customer(UserCustomerBase):
 
 
 class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
-              CategorizedItemBase, ImagesProductMixin, ):
+              CategorizedItemBase, OrderedItemBase, ImagesProductMixin, ):
     """ Basic product model. 
     
     >>> c = Category(name='Fruit', slug='fruit')
@@ -76,11 +77,9 @@ class ProductTranslation(MultilingualTranslation, NamedItemBase):
 
 
 class ProductVariation(MultilingualModel, OrderedProductVariationBase):
-    """
-    TODO: Fix sortorder bug here. The sortorder default fucks up...
-    """
     class Meta(MultilingualModel.Meta, OrderedProductVariationBase.Meta):
-        unique_together = (('product', 'slug',), )
+        unique_together = (('product', 'slug',), 
+                           ('product', 'sort_order'),)
     
     slug = models.SlugField()
     
@@ -187,7 +186,8 @@ class OrderItem(OrderItemBase, NamedItemBase, PricedItemBase):
     description = models.TextField(blank=False)
 
 
-class Category(MultilingualModel, ActiveItemInShopBase, NestedCategoryBase):
+class Category(MultilingualModel, ActiveItemInShopBase, OrderedItemBase, 
+               NestedCategoryBase):
     """ Basic category model. """
 
     class Meta(NestedCategoryBase.Meta, NamedItemBase.Meta):
