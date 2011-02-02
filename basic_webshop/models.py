@@ -218,6 +218,10 @@ class Category(MultilingualModel, ActiveItemInShopBase, OrderedItemBase,
         
     slug = models.SlugField()
     
+    def display_name(self):
+        return self
+    display_name.short_description = _('name')
+    
     @models.permalink
     def get_absolute_url(self):
         return 'category_detail', None, \
