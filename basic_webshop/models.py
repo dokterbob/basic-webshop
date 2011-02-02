@@ -186,8 +186,23 @@ class OrderItem(OrderItemBase, NamedItemBase, PricedItemBase):
     description = models.TextField(blank=False)
 
 
+class NamedItemTranslationMixin(object):
+    """ 
+    Mixin for translated items with a name. 
+    This makes sure that abstract base classes that rely on __unicode__
+    will work with the translated __unicode__ name.
+    
+    Usage::
+        class Banana(AbstractBaseClass, NamedItemTranslationMixin):
+            ...
+    
+    """
+    def __unicode__(self):
+        return self.unicode_wrapper('name')
+
+
 class Category(MultilingualModel, ActiveItemInShopBase, OrderedItemBase, 
-               NestedCategoryBase):
+               NestedCategoryBase, NamedItemTranslationMixin):
     """ Basic category model. """
 
     class Meta(NestedCategoryBase.Meta, NamedItemBase.Meta):
@@ -200,11 +215,6 @@ class Category(MultilingualModel, ActiveItemInShopBase, OrderedItemBase,
         return 'category_detail', None, \
             {'slug': self.slug}
     
-    def __unicode__(self):
-        """
-        TODO: Make sure we include the full category hierarchy here.
-        """
-        return self.unicode_wrapper('name')
 
 
 class CategoryTranslation(NamedItemBase, MultilingualTranslation):
