@@ -41,6 +41,13 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
     
     """
 
+    class Meta(MultilingualModel.Meta, ActiveItemInShopBase.Meta, \
+               ProductBase.Meta, CategorizedItemBase.Meta, \
+               OrderedItemBase.Meta):
+        """ Should'nt this stuff happen automatically? ;) """
+        
+        pass
+    
     slug = models.SlugField(unique=True)
     display_price = models.ForeignKey('Price', null=True, blank=True,
                                       related_name='display_price_product',
@@ -205,7 +212,7 @@ class Category(MultilingualModel, ActiveItemInShopBase, OrderedItemBase,
                NestedCategoryBase, NamedItemTranslationMixin):
     """ Basic category model. """
 
-    class Meta(NestedCategoryBase.Meta, NamedItemBase.Meta):
+    class Meta(NestedCategoryBase.Meta, NamedItemBase.Meta, OrderedItemBase.Meta):
         unique_together = ('parent', 'slug')
         
     slug = models.SlugField()
