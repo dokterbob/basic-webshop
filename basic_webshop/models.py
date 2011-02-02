@@ -98,7 +98,8 @@ class ProductVariationTranslation(MultilingualTranslation, NamedItemBase):
     class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):
         unique_together = (('language_code', 'parent',), )
 
-    parent = models.ForeignKey(ProductVariation, related_name='translations')
+    parent = models.ForeignKey(ProductVariation, related_name='translations',
+                               verbose_name=_('variation'))
     product = models.ForeignKey(Product)
 
 
