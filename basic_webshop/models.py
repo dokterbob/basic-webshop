@@ -62,6 +62,10 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
 
     def __unicode__(self):
         return self.unicode_wrapper('name')
+
+    def display_name(self):
+        return self
+    display_name.short_description = _('name')
     
     def get_price(self, *args, **kwargs):
         if self.display_price:

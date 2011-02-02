@@ -43,14 +43,39 @@ class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
                VariationPriceInline, )
     filter_horizontal = ('categories', )
     
-    list_display = ('name', 'slug', 'default_image')
+    list_display = ('display_name', 'default_image', 'admin_categories', 'sort_order', 'active', )
     # list_display_links = ('name', )
-    
-    def name(self, obj):
-        return u'<a href="%d/">%s</a>' % \
-            (obj.pk, obj)
-    name.allow_tags = True
-    
+    list_filter = ('categories', 'active',)
+    list_editable = ('sort_order', 'active')
+    search_fields = ('slug', 'translations__name', \
+                     'categories__translations__name', 'categories__slug')
+
+    max_categories_display = 2
+    def admin_categories(self, obj):
+        """ TODO: Move this over to django-webshop's extension. """
+        categories = obj.categories.all()
+        categories_count = categories.count()
+        
+        def category_link(obj):
+            return u'<a href="../category/?category__id__exact=%d">%s</a>' % \
+                (obj.pk, obj)
+            
+        if categories_count == 0:
+            return _('None')
+        else:
+            category_list = category_link(categories[0])
+            
+            for category in categories[1:self.max_categories_display]:
+                category_list += u', %s' % category_link(category)
+            
+            if categories_count > self.max_categories_display:
+                category_list += u', ...'
+            
+            return category_list
+    admin_categories.allow_tags = True
+    admin_categories.short_description = _('categories')
+
+        
     def get_form(self, request, obj=None, **kwargs):
         """ Make sure we can only select a default price pertaining to the
             current Product.
@@ -80,6 +105,8 @@ class CategoryAdmin(admin.ModelAdmin):
     list_editable = ('sort_order', 'active')
     list_display = ('display_name',  'admin_parent', 'admin_products', \
                     'sort_order', 'active')
+    search_fields = ('slug', 'translations__name', )
+
 
     def admin_parent(self, obj):
         """ TODO: Move this over to django-webshop's extension. """
