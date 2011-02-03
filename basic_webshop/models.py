@@ -18,6 +18,7 @@ from webshop.extensions.images.models import OrderedProductImageBase, \
 from multilingual_model.models import MultilingualModel, \
                                       MultilingualTranslation
 
+from tinymce import models as tinymce_models
 
 class Customer(UserCustomerBase):
     """ Basic webshop customer. """
@@ -78,7 +79,14 @@ class ProductTranslation(MultilingualTranslation, NamedItemBase):
         unique_together = (('language_code', 'parent',), )
     
     parent = models.ForeignKey(Product, related_name='translations')
-    description = models.TextField(blank=False)
+    
+    # TinyMCE HTML fields
+    # TODO: Make sure we use a custom widget with limited possibilities here
+    # (We don't want users to use images and tables here, ideally.)
+    description = tinymce_models.HTMLField(_('description'), blank=False)
+    manual = tinymce_models.HTMLField(_('manual'), blank=True)
+    ingredients = tinymce_models.HTMLField(_('ingredients'), blank=True)
+    media = tinymce_models.HTMLField(_('media'), blank=True)
 
 
 class ProductVariation(MultilingualModel, OrderedProductVariationBase):
