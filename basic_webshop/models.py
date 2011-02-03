@@ -17,6 +17,7 @@ from webshop.extensions.images.models import OrderedProductImageBase, \
 from webshop.extensions.stock.simple.models import StockedCartItemMixin, \
                                                    StockedItemMixin
 from webshop.extensions.related.models import RelatedProductsMixin
+from webshop.extensions.brands.models import BrandBase, BrandedProductMixin
 
 from multilingual_model.models import MultilingualModel, \
                                       MultilingualTranslation
@@ -29,10 +30,15 @@ class Customer(UserCustomerBase):
     pass
 
 
+class Brand(BrandBase, OrderedItemBase, NamedItemBase):
+    """ Brand in the webshop """
+    pass
+
+
 class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
               CategorizedItemBase, OrderedItemBase, PricedItemBase, \
               DatedItemBase, ImagesProductMixin, StockedItemMixin, \
-              RelatedProductsMixin):
+              RelatedProductsMixin, BrandedProductMixin):
     """ Basic product model. 
     
     >>> c = Category(name='Fruit', slug='fruit')

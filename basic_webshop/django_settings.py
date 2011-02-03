@@ -29,4 +29,4 @@ WEBSHOP_CATEGORY_MODEL = 'basic_webshop.Category'
 WEBSHOP_PRICE_MODEL = 'basic_webshop.Price'
 WEBSHOP_PRODUCTVARIATION_MODEL = 'basic_webshop.ProductVariation'
 WEBSHOP_PRODUCTIMAGE_MODEL = 'basic_webshop.ProductImage'
-
+WEBSHOP_BRAND_MODEL = 'basic_webshop.Brand'
