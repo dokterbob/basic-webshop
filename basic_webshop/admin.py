@@ -68,18 +68,6 @@ class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
     admin_categories.allow_tags = True
     admin_categories.short_description = _('categories')
 
-        
-    def get_form(self, request, obj=None, **kwargs):
-        """ Make sure we can only select a default price pertaining to the
-            current Product.
-        """
-        form = super(ProductAdmin, self).get_form(request, obj=None, **kwargs)
-
-        if obj:
-            form.base_fields['display_price'].queryset = \
-                form.base_fields['display_price'].queryset.filter(product=obj)
-
-        return form
 
 admin.site.register(Product, ProductAdmin)
 
