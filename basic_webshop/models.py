@@ -39,6 +39,13 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
     
     """
 
+    class Meta(MultilingualModel.Meta, ActiveItemInShopBase.Meta, \
+               ProductBase.Meta, CategorizedItemBase.Meta, \
+               OrderedItemBase.Meta):
+        """ Should'nt this stuff happen automatically? ;) """
+        
+        pass
+    
     slug = models.SlugField(unique=True)
 
     @models.permalink
@@ -49,6 +56,21 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
 
     def __unicode__(self):
         return self.unicode_wrapper('name')
+
+    def display_name(self):
+        return self
+    display_name.short_description = _('name')
+    
+    def get_price(self, *args, **kwargs):
+        if self.display_price:
+            price = self.display_price
+        
+        else:
+            kwargscopy = kwargs.copy()
+            kwargscopy.update({'product': self})
+            price = Price.get_cheapest(**kwargscopy)
+        
+        return price.get_price(**kwargs)
 
 
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
@@ -74,7 +96,8 @@ class ProductVariationTranslation(MultilingualTranslation, NamedItemBase):
     class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):
         unique_together = (('language_code', 'parent',), )
 
-    parent = models.ForeignKey(ProductVariation, related_name='translations')
+    parent = models.ForeignKey(ProductVariation, related_name='translations',
+                               verbose_name=_('variation'))
     product = models.ForeignKey(Product)
 
 
@@ -143,25 +166,39 @@ class OrderItem(OrderItemBase, NamedItemBase, PricedItemBase):
     description = models.TextField(blank=False)
 
 
+class NamedItemTranslationMixin(object):
+    """ 
+    Mixin for translated items with a name. 
+    This makes sure that abstract base classes that rely on __unicode__
+    will work with the translated __unicode__ name.
+    
+    Usage::
+        class Banana(AbstractBaseClass, NamedItemTranslationMixin):
+            ...
+    
+    """
+    def __unicode__(self):
+        return self.unicode_wrapper('name')
+
+
 class Category(MultilingualModel, ActiveItemInShopBase, OrderedItemBase, 
-               NestedCategoryBase):
+               NestedCategoryBase, NamedItemTranslationMixin):
     """ Basic category model. """
 
-    class Meta(NestedCategoryBase.Meta, NamedItemBase.Meta):
+    class Meta(NestedCategoryBase.Meta, NamedItemBase.Meta, OrderedItemBase.Meta):
         unique_together = ('parent', 'slug')
         
     slug = models.SlugField()
+    
+    def display_name(self):
+        return self
+    display_name.short_description = _('name')
     
     @models.permalink
     def get_absolute_url(self):
         return 'category_detail', None, \
             {'slug': self.slug}
     
-    def __unicode__(self):
-        """
-        TODO: Make sure we include the full category hierarchy here.
-        """
-        return self.unicode_wrapper('name')
 
 
 class CategoryTranslation(NamedItemBase, MultilingualTranslation):
