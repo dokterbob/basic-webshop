@@ -14,11 +14,15 @@ from webshop.extensions.price.simple.models import PricedItemBase
 from webshop.extensions.variations.models import OrderedProductVariationBase
 from webshop.extensions.images.models import OrderedProductImageBase, \
                                              ImagesProductMixin
+from webshop.extensions.stock.simple.models import StockedCartItemMixin, \
+                                                   StockedItemMixin
+from webshop.extensions.related.models import RelatedProductsMixin
 
 from multilingual_model.models import MultilingualModel, \
                                       MultilingualTranslation
 
 from tinymce import models as tinymce_models
+
 
 class Customer(UserCustomerBase):
     """ Basic webshop customer. """
@@ -27,7 +31,8 @@ class Customer(UserCustomerBase):
 
 class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
               CategorizedItemBase, OrderedItemBase, PricedItemBase, \
-              DatedItemBase, ImagesProductMixin, ):
+              DatedItemBase, ImagesProductMixin, StockedItemMixin, \
+              RelatedProductsMixin):
     """ Basic product model. 
     
     >>> c = Category(name='Fruit', slug='fruit')
@@ -38,6 +43,10 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
     >>> c.product_set.all()
     [<Product: Banana>]
     
+    TODO: the stock can be kept for both variations as well as
+    for variations. When the stock is specified for variations, this
+    overrides the stock for the product. We should make note of this in the
+    Admin interface.
     """
 
     class Meta(MultilingualModel.Meta, ActiveItemInShopBase.Meta, \
@@ -89,7 +98,8 @@ class ProductTranslation(MultilingualTranslation, NamedItemBase):
     media = tinymce_models.HTMLField(_('media'), blank=True)
 
 
-class ProductVariation(MultilingualModel, OrderedProductVariationBase):
+class ProductVariation(MultilingualModel, OrderedProductVariationBase, \
+                       StockedItemMixin):
     class Meta(MultilingualModel.Meta, OrderedProductVariationBase.Meta):
         unique_together = (('product', 'slug',), 
                            ('product', 'sort_order'),)
@@ -120,14 +130,22 @@ class Cart(CartBase):
     pass
 
 
-class CartItem(CartItemBase):
+class CartItem(CartItemBase, StockedCartItemMixin):
     """ 
     Item in a shopping cart. 
     """
     
     variation = models.ForeignKey(ProductVariation, null=True, blank=True,
                                   verbose_name=_('variation'))
-    
+
+    def get_stocked_item(self):
+        """ Return the relevant item for which the stock is kept. """
+        if self.variation:
+            return self.variation.is_available()
+        
+        return self.product.is_available()
+        
+        
     def addProduct(self, product, quantity=1, variation=None):
         """ Make sure we store the variation, if applicable. """
         
