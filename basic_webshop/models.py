@@ -24,21 +24,80 @@ from multilingual_model.models import MultilingualModel, \
 
 from tinymce import models as tinymce_models
 
+from sorl.thumbnail import ImageField    
+
+
+### All the stuff below should end up in django-webshop, eventually
 
 class Customer(UserCustomerBase):
     """ Basic webshop customer. """
     pass
 
 
-class Brand(BrandBase, OrderedItemBase, NamedItemBase):
+class UniqueSlugItemBase(models.Model):
+    """ Base class for items which require a slug field which should be unique. """
+    
+    class Meta:
+        abstract = True
+
+    slug = models.SlugField(unique=True, help_text=_('Short name for an item, \
+            used for constructing its web addres. A slug should be unique and may only \
+            contain letters, numbers and \'-\'.'))
+
+
+class NonUniqueSlugItemBase(models.Model):
+    """ Base class for items which require a slug field which should not be unique. """
+    
+    class Meta:
+        abstract = True
+
+    slug = models.SlugField(unique=False, help_text=_('Short name for an item, \
+            used for constructing its web addres. A slug may only \
+            contain letters, numbers and \'-\'.'))
+
+### All the stuff above should end up in django-webshop, eventually
+
+
+class NamedItemTranslationMixin(object):
+    """ 
+    Mixin for translated items with a name. 
+    This makes sure that abstract base classes that rely on __unicode__
+    will work with the translated __unicode__ name.
+    
+    Usage::
+        class Banana(AbstractBaseClass, NamedItemTranslationMixin):
+            ...
+    
+    """
+    def __unicode__(self):
+        return self.unicode_wrapper('name')
+
+
+class Brand(MultilingualModel, BrandBase, OrderedItemBase, \
+            UniqueSlugItemBase, NamedItemTranslationMixin):
     """ Brand in the webshop """
-    pass
+
+    logo = ImageField(verbose_name=_('logo'), 
+                       upload_to='brand_logos')
+
+
+class BrandTranslation(MultilingualTranslation, NamedItemBase):
+    class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):
+        unique_together = (('language_code', 'parent',), )
+    
+    parent = models.ForeignKey(Brand, related_name='translations')
+
+    # TinyMCE HTML fields
+    # TODO: Make sure we use a custom widget with limited possibilities here
+    # (We don't want users to use images and tables here, ideally.)
+    description = tinymce_models.HTMLField(_('description'), blank=False)
 
 
 class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
               CategorizedItemBase, OrderedItemBase, PricedItemBase, \
               DatedItemBase, ImagesProductMixin, StockedItemMixin, \
-              RelatedProductsMixin, BrandedProductMixin):
+              RelatedProductsMixin, BrandedProductMixin, UniqueSlugItemBase, \
+              NamedItemTranslationMixin):
     """ Basic product model. 
     
     >>> c = Category(name='Fruit', slug='fruit')
@@ -54,7 +113,7 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
     overrides the stock for the product. We should make note of this in the
     Admin interface.
     """
-
+    
     class Meta(MultilingualModel.Meta, ActiveItemInShopBase.Meta, \
                ProductBase.Meta, CategorizedItemBase.Meta, \
                OrderedItemBase.Meta):
@@ -62,18 +121,10 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
         
         pass
     
-    slug = models.SlugField(unique=True, help_text=_('Short name for an item, \
-            used for constructing its web addres. A slug should be unique and may only \
-            contain letters, numbers and \'-\'.'))
-
     @models.permalink
     def get_absolute_url(self):
         return 'product_detail', None, \
             {'slug': self.slug}
-
-
-    def __unicode__(self):
-        return self.unicode_wrapper('name')
 
     def display_name(self):
         return self
@@ -107,15 +158,16 @@ class ProductTranslation(MultilingualTranslation, NamedItemBase):
 
 
 class ProductVariation(MultilingualModel, OrderedProductVariationBase, \
-                       StockedItemMixin):
+                       StockedItemMixin, NonUniqueSlugItemBase):
     class Meta(MultilingualModel.Meta, OrderedProductVariationBase.Meta):
         unique_together = (('product', 'slug',), 
                            ('product', 'sort_order'),)
     
-    slug = models.SlugField()
-    
     def __unicode__(self):
         return self.slug
+    
+    image = models.ForeignKey('ProductImage', verbose_name=_('image'),
+                              blank=True, null=True)
 
 
 class ProductVariationTranslation(MultilingualTranslation, NamedItemBase):
@@ -175,7 +227,7 @@ class Order(OrderBase):
     pass
 
 
-class OrderItem(OrderItemBase, NamedItemBase, PricedItemBase):
+class OrderItem(OrderItemBase, UniqueSlugItemBase, NamedItemBase, PricedItemBase):
     """ 
     Order items should have:
     
@@ -196,33 +248,15 @@ class OrderItem(OrderItemBase, NamedItemBase, PricedItemBase):
                                   verbose_name=_('variation'))
     """ TODO: Move variation up to the variations extension of django-webshop. """
     
-    slug = models.SlugField(unique=True)
     description = models.TextField(blank=False)
 
 
-class NamedItemTranslationMixin(object):
-    """ 
-    Mixin for translated items with a name. 
-    This makes sure that abstract base classes that rely on __unicode__
-    will work with the translated __unicode__ name.
-    
-    Usage::
-        class Banana(AbstractBaseClass, NamedItemTranslationMixin):
-            ...
-    
-    """
-    def __unicode__(self):
-        return self.unicode_wrapper('name')
-
-
-class Category(MultilingualModel, ActiveItemInShopBase, OrderedItemBase, 
+class Category(MultilingualModel, NonUniqueSlugItemBase, ActiveItemInShopBase, OrderedItemBase, 
                NestedCategoryBase, NamedItemTranslationMixin):
     """ Basic category model. """
 
     class Meta(NestedCategoryBase.Meta, NamedItemBase.Meta, OrderedItemBase.Meta):
         unique_together = ('parent', 'slug')
-        
-    slug = models.SlugField()
     
     def display_name(self):
         return self

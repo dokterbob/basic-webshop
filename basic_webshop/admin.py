@@ -13,17 +13,26 @@ from webshop.extensions.images.admin import ProductImageInline, \
 
 from multilingual_model.admin import TranslationInline
 
+from sorl.thumbnail.admin import AdminInlineImageMixin
 
-class BrandAdmin(admin.ModelAdmin):
+
+class BrandTranslationInline(TranslationInline):
+    model = BrandTranslation
+
+
+class BrandAdmin(AdminInlineImageMixin, admin.ModelAdmin):
     """ Model admin for brands """
-    pass
+    inlines = (BrandTranslationInline, )
 
 admin.site.register(Brand, BrandAdmin)
 
 
 class ProductVariationTranslationInline(VariationInlineMixin, admin.TabularInline):
-    # TODO: Limit the selection of parents to those associated with the 
-    # current product.
+    """ 
+    TODO:
+    1) Limit selection of parents to the variations related to the current product
+    2) Limit selection of image to the images related to the current product
+    """
     model = ProductVariationTranslation
 
 
@@ -78,7 +87,6 @@ class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
             return category_list
     admin_categories.allow_tags = True
     admin_categories.short_description = _('categories')
-
 
 admin.site.register(Product, ProductAdmin)
 
