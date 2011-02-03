@@ -56,7 +56,9 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
         
         pass
     
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, help_text=_('Short name for an item, \
+            used for constructing its web addres. A slug should be unique and may only \
+            contain letters, numbers and \'-\'.'))
 
     @models.permalink
     def get_absolute_url(self):
