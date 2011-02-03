@@ -55,6 +55,26 @@ class NonUniqueSlugItemBase(models.Model):
             used for constructing its web addres. A slug may only \
             contain letters, numbers and \'-\'.'))
 
+
+class FeaturedProductMixin(models.Model):
+    """ 
+    Mixin for products which have a boolean featured property and an
+    `is_featured` manager, filtering the items from the `in_shop` manager
+    so that only featured items are returned.
+    
+    .. todo::
+        Write the `is_featured` manager - and test it.
+    
+    """
+    
+    class Meta:
+        abstract = True
+    
+    featured = models.BooleanField(_('featured'), default=False,
+                               help_text=_('Whether this product will be \
+                               shown on the shop\'s frontpage.'))
+
+
 ### All the stuff above should end up in django-webshop, eventually
 
 
@@ -97,8 +117,9 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
               CategorizedItemBase, OrderedItemBase, PricedItemBase, \
               DatedItemBase, ImagesProductMixin, StockedItemMixin, \
               RelatedProductsMixin, BrandedProductMixin, UniqueSlugItemBase, \
-              NamedItemTranslationMixin):
-    """ Basic product model. 
+              NamedItemTranslationMixin, FeaturedProductMixin):
+    """ 
+    Basic product model. 
     
     >>> c = Category(name='Fruit', slug='fruit')
     >>> c.save()
