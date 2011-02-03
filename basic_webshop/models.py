@@ -6,7 +6,7 @@ from webshop.core.models import ProductBase, CartBase, CartItemBase, \
                                 OrderStateChangeBase
                                 
 from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase, \
-                                    OrderedItemBase
+                                    OrderedItemBase, DatedItemBase
 
 from webshop.extensions.category.advanced.models import NestedCategoryBase, \
                                                         CategorizedItemBase
@@ -28,7 +28,8 @@ class Customer(UserCustomerBase):
 
 
 class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
-              CategorizedItemBase, OrderedItemBase, ImagesProductMixin, ):
+              CategorizedItemBase, OrderedItemBase, ImagesProductMixin, \
+              DatedItemBase):
     """ Basic product model. 
     
     >>> c = Category(name='Fruit', slug='fruit')

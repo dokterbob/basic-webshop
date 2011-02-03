@@ -34,7 +34,9 @@ class ProductTranslationInline(TranslationInline):
 class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
     """ Model admin for products. """
     
-    fields = ('slug', 'active', 'categories', 'display_price', 'sort_order')
+    fields = ('slug', 'active', 'date_added', 'date_modified', 'categories', 'display_price', 'sort_order')
+    readonly_fields = ('date_added', 'date_modified', )
+    date_hierarchy = 'date_added'
     # prepopulated_fields = {"slug": ("name",)}
     inlines = (ProductTranslationInline,
                ProductImageInline,
@@ -45,7 +47,7 @@ class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
     
     list_display = ('display_name', 'default_image', 'admin_categories', 'sort_order', 'active', )
     # list_display_links = ('name', )
-    list_filter = ('categories', 'active',)
+    list_filter = ('categories', 'active', 'date_added', 'date_modified')
     list_editable = ('sort_order', 'active')
     search_fields = ('slug', 'translations__name', \
                      'categories__translations__name', 'categories__slug')
