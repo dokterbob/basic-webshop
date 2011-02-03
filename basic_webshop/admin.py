@@ -26,12 +26,17 @@ class BrandAdmin(AdminInlineImageMixin, admin.ModelAdmin):
 
 admin.site.register(Brand, BrandAdmin)
 
+"""
+TODO/bug:
+    Overriode ProductVariationInline so that we can only select images
+    associated with the current product.
+""" 
 
 class ProductVariationTranslationInline(VariationInlineMixin, admin.TabularInline):
     """ 
-    TODO:
-    1) Limit selection of parents to the variations related to the current product
-    2) Limit selection of image to the images related to the current product
+    TODO/bug:
+        VariationInlineMixin should limit the variations we can select to those 
+        associated with the current product, but this doesn't work.
     """
     model = ProductVariationTranslation
 
