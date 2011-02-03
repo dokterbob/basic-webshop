@@ -43,7 +43,7 @@ class ProductTranslationInline(TranslationInline):
 class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
     """ Model admin for products. """
     
-    fields = ('slug', 'active', 'date_added', 'date_modified', 'categories', \
+    fields = ('slug', 'active', 'featured', 'date_added', 'date_modified', 'categories', \
               'sort_order', 'price', 'stock', 'related', 'brand', 'unit')
     readonly_fields = ('date_added', 'date_modified', )
     date_hierarchy = 'date_added'
