@@ -32,13 +32,59 @@ TODO/bug:
     associated with the current product.
 """ 
 
-class ProductVariationTranslationInline(VariationInlineMixin, admin.TabularInline):
+class LimitedAdminInlineMixin(object):
+    @staticmethod
+    def limit_inline_choices(formset, field, empty=False, **filters):
+        assert formset.form.base_fields.has_key(field)
+
+        qs = formset.form.base_fields[field].queryset
+        if empty:
+            logger.debug('Limiting the queryset to none')
+            formset.form.base_fields[field].queryset = qs.none()
+        else:
+            qs = qs.filter(**filters)
+            logger.debug('Limiting queryset for formset to: %s', qs)
+        
+            formset.form.base_fields[field].queryset = qs
+
+
+class ImageProductVariationInline(LimitedAdminInlineMixin, ProductVariationInline):
+    def get_formset(self, request, obj=None, **kwargs):
+        """
+        Make sure we can only select variations that relate to the current
+        item.
+        """
+        formset = super(ImageProductVariationInline, self).get_formset(request, obj=None, **kwargs)
+        
+        if obj:
+            self.limit_inline_choices(formset, 'image', product=obj)
+        else:
+            self.limit_inline_choices(formset, 'image', empty=True)
+
+        return formset
+
+
+class ProductVariationTranslationInline(LimitedAdminInlineMixin, admin.TabularInline):
     """ 
     TODO/bug:
         VariationInlineMixin should limit the variations we can select to those 
         associated with the current product, but this doesn't work.
     """
     model = ProductVariationTranslation
+
+    def get_formset(self, request, obj=None, **kwargs):
+        """
+        Make sure we can only select variations that relate to the current
+        item.
+        """
+        formset = super(ProductVariationTranslationInline, self).get_formset(request, obj=None, **kwargs)
+        
+        if obj:
+            self.limit_inline_choices(formset, 'parent', product=obj)
+        else:
+            self.limit_inline_choices(formset, 'parent', empty=True)
+
+        return formset
 
 
 class ProductTranslationInline(TranslationInline):
@@ -55,7 +101,7 @@ class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
     # prepopulated_fields = {"slug": ("name",)}
     inlines = (ProductTranslationInline,
                ProductImageInline,
-               ProductVariationInline,
+               ImageProductVariationInline,
                ProductVariationTranslationInline,
               )
     filter_horizontal = ('categories', 'related')
