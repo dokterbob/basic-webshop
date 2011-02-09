@@ -19,7 +19,7 @@ from webshop.extensions.price.simple.models import PricedItemBase
 from webshop.extensions.variations.models import OrderedProductVariationBase
 from webshop.extensions.images.models import OrderedProductImageBase, \
                                              ImagesProductMixin
-from webshop.extensions.stock.simple.models import StockedCartItemMixin, \
+from webshop.extensions.stock.advanced.models import StockedCartItemMixin, \
                                                    StockedItemMixin
 from webshop.extensions.related.models import RelatedProductsMixin
 from webshop.extensions.brands.models import BrandBase, BrandedProductMixin
