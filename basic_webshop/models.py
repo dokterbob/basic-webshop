@@ -304,3 +304,16 @@ class CategoryTranslation(NamedItemBase, MultilingualTranslation):
 
     parent = models.ForeignKey(Category, related_name='translations')
 
+
+from webshop.extensions.discounts.models import DiscountBase, \
+                                                ManyProductDiscountMixin, \
+                                                DateRangeDiscountMixin, \
+                                                ManyCategoryDiscountMixin, \
+                                                LimitedUseDiscountMixin, \
+                                                CouponDiscountMixin
+
+
+class Discount(NamedItemBase, ManyCategoryDiscountMixin, CouponDiscountMixin, \
+               LimitedUseDiscountMixin, ManyProductDiscountMixin, \
+               DateRangeDiscountMixin, DiscountBase):
+    pass

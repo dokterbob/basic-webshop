@@ -192,3 +192,34 @@ class CategoryAdmin(admin.ModelAdmin):
     admin_products.short_description = _('products')
    
 admin.site.register(Category, CategoryAdmin)
+
+
+class DiscountAdmin(admin.ModelAdmin):
+    """ Model admin for discounts. """
+    
+    readonly_fields = ('used', )
+    filter_horizontal = ('categories', 'products')
+    list_filter = ('start_date', 'end_date', 'use_coupon')
+
+    max_products_display = 2
+    def admin_products(self, obj):
+        """ TODO: Move this over to django-webshop's extension. """
+        products = obj.products
+        products_count = products.count()
+        if products_count == 0:
+            product_list = _('None')
+        else:
+            product_list = unicode(products[0])
+            
+            for product in products[1:self.max_products_display]:
+                product_list += u', %s' % product
+            
+            if products_count > self.max_products_display:
+                product_list += u', ...'
+        
+        return u'<a href="%d/">%s</a>' % (obj.pk, product_list)
+    admin_products.allow_tags = True
+    admin_products.short_description = _('products')
+
+
+admin.site.register(Discount, DiscountAdmin)
