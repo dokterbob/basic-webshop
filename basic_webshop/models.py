@@ -10,7 +10,8 @@ from webshop.core.models import ProductBase, CartBase, CartItemBase, \
                                 OrderStateChangeBase
                                 
 from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase, \
-                                    OrderedItemBase, DatedItemBase
+                                    OrderedItemBase, DatedItemBase, \
+                                    PublishDateItemBase
 
 from webshop.extensions.category.advanced.models import NestedCategoryBase, \
                                                         CategorizedItemBase
@@ -121,7 +122,8 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
               CategorizedItemBase, OrderedItemBase, PricedItemBase, \
               DatedItemBase, ImagesProductMixin, StockedItemMixin, \
               RelatedProductsMixin, BrandedProductMixin, UniqueSlugItemBase, \
-              NamedItemTranslationMixin, FeaturedProductMixin):
+              NamedItemTranslationMixin, FeaturedProductMixin, \
+              PublishDateItemBase):
     """ 
     Basic product model. 
     
