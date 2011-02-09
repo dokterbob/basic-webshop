@@ -7,7 +7,7 @@ from django.contrib import admin
 from webshop.extensions.variations.admin import ProductVariationInline, \
                                                 VariationInlineMixin
 from webshop.extensions.images.admin import ProductImageInline, \
-                                            ImagesProductMixin
+                                            ImagesProductAdminMixin
 
 from multilingual_model.admin import TranslationInline
 
@@ -91,8 +91,9 @@ class ProductTranslationInline(TranslationInline):
     model = ProductTranslation
 
 
-class ProductAdmin(admin.ModelAdmin, ImagesProductMixin):
+class ProductAdmin(ImagesProductAdminMixin, admin.ModelAdmin):
     """ Model admin for products. """
+    
     
     fields = ('slug', 'active', 'featured', 'date_added', 'date_modified', 'categories', \
               'sort_order', 'price', 'stock', 'related', 'brand', 'unit')
