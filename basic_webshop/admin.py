@@ -2,10 +2,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 from django.utils.translation import ugettext_lazy as _
-
 from django.contrib import admin
 
-from basic_webshop.models import *
 from webshop.extensions.variations.admin import ProductVariationInline, \
                                                 VariationInlineMixin
 from webshop.extensions.images.admin import ProductImageInline, \
@@ -14,6 +12,8 @@ from webshop.extensions.images.admin import ProductImageInline, \
 from multilingual_model.admin import TranslationInline
 
 from sorl.thumbnail.admin import AdminInlineImageMixin
+
+from basic_webshop.models import *
 
 
 class BrandTranslationInline(TranslationInline):
