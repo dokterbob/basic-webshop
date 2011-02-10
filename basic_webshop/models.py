@@ -47,7 +47,7 @@ class UniqueSlugItemBase(models.Model):
 
     slug = models.SlugField(unique=True, help_text=_('Short name for an item, \
             used for constructing its web addres. A slug should be unique and may only \
-            contain letters, numbers and \'-\'.'))
+            contain letters, numbers and \'-\'.'), blank=True)
 
 
 class NonUniqueSlugItemBase(models.Model):
@@ -58,7 +58,7 @@ class NonUniqueSlugItemBase(models.Model):
 
     slug = models.SlugField(unique=False, help_text=_('Short name for an item, \
             used for constructing its web addres. A slug may only \
-            contain letters, numbers and \'-\'.'))
+            contain letters, numbers and \'-\'.'), blank=True)
 
 
 class FeaturedProductMixin(models.Model):
@@ -305,6 +305,16 @@ class CategoryTranslation(NamedItemBase, MultilingualTranslation):
         unique_together = (('language_code', 'parent',), )
 
     parent = models.ForeignKey(Category, related_name='translations')
+    
+    def save(self):
+        super(CategoryTranslation, self).save()
+        
+        
+        parent = self.parent
+        
+        if not parent.slug:
+            parent.slug = 'kanariepiet'
+            parent.save()
 
 
 from webshop.extensions.discounts.models import DiscountBase, \
