@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from webshop.core.models import ProductBase, CartBase, CartItemBase, \
                                 OrderBase, OrderItemBase, UserCustomerBase, \
                                 OrderStateChangeBase
-                                
+
 from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase, \
                                     OrderedItemBase, DatedItemBase, \
                                     PublishDateItemBase
@@ -29,7 +29,7 @@ from multilingual_model.models import MultilingualModel, \
 
 from tinymce import models as tinymce_models
 
-from sorl.thumbnail import ImageField    
+from sorl.thumbnail import ImageField
 
 
 ### All the stuff below should end up in django-webshop, eventually
@@ -41,7 +41,7 @@ class Customer(UserCustomerBase):
 
 class UniqueSlugItemBase(models.Model):
     """ Base class for items which require a slug field which should be unique. """
-    
+
     class Meta:
         abstract = True
 
@@ -50,9 +50,45 @@ class UniqueSlugItemBase(models.Model):
             contain letters, numbers and \'-\'.'), blank=True)
 
 
+from django.template.defaultfilters import slugify
+class AutoSlugMixin(object):
+    """ Automatically set slug to slugified version of the name if left empty. """
+
+    def slugify(self, name):
+        return slugify(name)
+
+    def generate_slug(self):
+        return self.slugify(self.name)
+
+    def update_slug(self, commit=True):
+        if not self.slug and self.name:
+            self.slug = self.generate_slug()
+            
+            if commit:
+                self.save()
+
+
+class AutoUniqueSlugMixin(AutoSlugMixin):
+    """ Make sure that the generated slug is unique. """
+
+    def is_unique_slug(self, slug):
+        return not self.__class__.objects.filter(slug=slug).exists()
+
+    def generate_slug(self):
+        original_slug = super(AutoUniqueSlugMixin, self).generate_slug()
+        slug = original_slug
+
+        iteration = 1
+        while not self.is_unique_slug(slug):
+            slug = "%s-%d" % (original_slug, iteration)
+            iteration += 1
+
+        return slug
+
+
 class NonUniqueSlugItemBase(models.Model):
     """ Base class for items which require a slug field which should not be unique. """
-    
+
     class Meta:
         abstract = True
 
@@ -62,19 +98,19 @@ class NonUniqueSlugItemBase(models.Model):
 
 
 class FeaturedProductMixin(models.Model):
-    """ 
+    """
     Mixin for products which have a boolean featured property and an
     `is_featured` manager, filtering the items from the `in_shop` manager
     so that only featured items are returned.
-    
+
     .. todo::
         Write the `is_featured` manager - and test it.
-    
+
     """
-    
+
     class Meta:
         abstract = True
-    
+
     featured = models.BooleanField(_('featured'), default=False,
                                help_text=_('Whether this product will be \
                                shown on the shop\'s frontpage.'))
@@ -84,32 +120,32 @@ class FeaturedProductMixin(models.Model):
 
 
 class NamedItemTranslationMixin(object):
-    """ 
-    Mixin for translated items with a name. 
+    """
+    Mixin for translated items with a name.
     This makes sure that abstract base classes that rely on __unicode__
     will work with the translated __unicode__ name.
-    
+
     Usage::
         class Banana(AbstractBaseClass, NamedItemTranslationMixin):
             ...
-    
+
     """
     def __unicode__(self):
         return self.unicode_wrapper('name')
 
 
-class Brand(MultilingualModel, BrandBase, OrderedItemBase, \
-            UniqueSlugItemBase, NamedItemTranslationMixin):
+class Brand(AutoUniqueSlugMixin, NamedItemTranslationMixin, MultilingualModel, \
+            BrandBase, OrderedItemBase, UniqueSlugItemBase, ):
     """ Brand in the webshop """
 
-    logo = ImageField(verbose_name=_('logo'), 
+    logo = ImageField(verbose_name=_('logo'),
                        upload_to='brand_logos')
 
 
 class BrandTranslation(MultilingualTranslation, NamedItemBase):
     class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):
         unique_together = (('language_code', 'parent',), )
-    
+
     parent = models.ForeignKey(Brand, related_name='translations')
 
     # TinyMCE HTML fields
@@ -124,9 +160,9 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
               RelatedProductsMixin, BrandedProductMixin, UniqueSlugItemBase, \
               NamedItemTranslationMixin, FeaturedProductMixin, \
               PublishDateItemBase):
-    """ 
-    Basic product model. 
-    
+    """
+    Basic product model.
+
     >>> c = Category(name='Fruit', slug='fruit')
     >>> c.save()
     >>> p = Product(category=c, name='Banana', slug='banana', price="15.00")
@@ -134,13 +170,13 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
     >>> p.save()
     >>> c.product_set.all()
     [<Product: Banana>]
-    
+
     TODO: the stock can be kept for both variations as well as
     for variations. When the stock is specified for variations, this
     overrides the stock for the product. We should make note of this in the
     Admin interface.
     """
-    
+
     unit = models.CharField(_('unit'), blank=True, max_length=80,
                             help_text=_('Unit in which a specific article is \
                             sold, eg. \'100 ml\' or \'0.75 g\'.'))
@@ -149,9 +185,9 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
                ProductBase.Meta, CategorizedItemBase.Meta, \
                OrderedItemBase.Meta):
         """ Should'nt this stuff happen automatically? ;) """
-        
+
         pass
-    
+
     @models.permalink
     def get_absolute_url(self):
         return 'product_detail', None, \
@@ -160,25 +196,25 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
     def display_name(self):
         return self
     display_name.short_description = _('name')
-    
+
     def get_price(self, *args, **kwargs):
         if self.display_price:
             price = self.display_price
-        
+
         else:
             kwargscopy = kwargs.copy()
             kwargscopy.update({'product': self})
             price = Price.get_cheapest(**kwargscopy)
-        
+
         return price.get_price(**kwargs)
 
 
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
     class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):
         unique_together = (('language_code', 'parent',), )
-    
+
     parent = models.ForeignKey(Product, related_name='translations')
-    
+
     # TinyMCE HTML fields
     # TODO: Make sure we use a custom widget with limited possibilities here
     # (We don't want users to use images and tables here, ideally.)
@@ -191,12 +227,12 @@ class ProductTranslation(MultilingualTranslation, NamedItemBase):
 class ProductVariation(MultilingualModel, OrderedProductVariationBase, \
                        StockedItemMixin, NonUniqueSlugItemBase):
     class Meta(MultilingualModel.Meta, OrderedProductVariationBase.Meta):
-        unique_together = (('product', 'slug',), 
+        unique_together = (('product', 'slug',),
                            ('product', 'sort_order'),)
-    
+
     def __unicode__(self):
         return self.slug
-    
+
     image = models.ForeignKey('ProductImage', verbose_name=_('image'),
                               blank=True, null=True)
 
@@ -217,15 +253,15 @@ class ProductImage(OrderedProductImageBase,
 
 class Cart(CartBase):
     """ Basic shopping cart model. """
-    
+
     pass
 
 
 class CartItem(CartItemBase, StockedCartItemMixin):
-    """ 
-    Item in a shopping cart. 
     """
-    
+    Item in a shopping cart.
+    """
+
     variation = models.ForeignKey(ProductVariation, null=True, blank=True,
                                   verbose_name=_('variation'))
 
@@ -233,35 +269,35 @@ class CartItem(CartItemBase, StockedCartItemMixin):
         """ Return the relevant item for which the stock is kept. """
         if self.variation:
             return self.variation.is_available()
-        
+
         return self.product.is_available()
-        
-        
+
+
     def addProduct(self, product, quantity=1, variation=None):
         """ Make sure we store the variation, if applicable. """
-        
+
         cartitem = super(CartItem, self).addProduct(product, quantity)
         cartitem.variation = variation
-        
+
         assert self.product.variation_set.exists() and variation, \
             'Product has variations but no variation specified here.'
 
 class OrderStateChange(OrderStateChangeBase):
     """ Basic order state change. """
-    
+
     pass
 
 
 class Order(OrderBase):
     """ Basic order model. """
-    
+
     pass
 
 
 class OrderItem(OrderItemBase, UniqueSlugItemBase, NamedItemBase, PricedItemBase):
-    """ 
+    """
     Order items should have:
-    
+
     * From Product:
       1. slug
       2. name
@@ -272,32 +308,35 @@ class OrderItem(OrderItemBase, UniqueSlugItemBase, NamedItemBase, PricedItemBase
     * From Cart:
       1. quantity
       2. price
-    
+
     """
-    
+
     variation = models.ForeignKey(ProductVariation, null=True, blank=True,
                                   verbose_name=_('variation'))
     """ TODO: Move variation up to the variations extension of django-webshop. """
-    
+
     description = models.TextField(blank=False)
 
 
-class Category(MultilingualModel, NonUniqueSlugItemBase, ActiveItemInShopBase, OrderedItemBase, 
+class Category(MultilingualModel, NonUniqueSlugItemBase, AutoUniqueSlugMixin, ActiveItemInShopBase, OrderedItemBase,
                NestedCategoryBase, NamedItemTranslationMixin):
     """ Basic category model. """
 
     class Meta(NestedCategoryBase.Meta, NamedItemBase.Meta, OrderedItemBase.Meta):
         unique_together = ('parent', 'slug')
-    
+
+    def is_unique_slug(self, slug):
+        return not self.__class__.objects.filter(slug=slug, parent=self.parent).exists()
+
     def display_name(self):
         return self
     display_name.short_description = _('name')
-    
+
     @models.permalink
     def get_absolute_url(self):
         return 'category_detail', None, \
             {'slug': self.slug}
-    
+
 
 
 class CategoryTranslation(NamedItemBase, MultilingualTranslation):
@@ -305,17 +344,11 @@ class CategoryTranslation(NamedItemBase, MultilingualTranslation):
         unique_together = (('language_code', 'parent',), )
 
     parent = models.ForeignKey(Category, related_name='translations')
-    
+
     def save(self):
         super(CategoryTranslation, self).save()
-        
-        
-        parent = self.parent
-        
-        if not parent.slug:
-            parent.slug = 'kanariepiet'
-            parent.save()
 
+        self.parent.update_slug()
 
 from webshop.extensions.discounts.models import DiscountBase, \
                                                 ManyProductDiscountMixin, \
