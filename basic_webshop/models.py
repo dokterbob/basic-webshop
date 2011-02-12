@@ -187,6 +187,15 @@ class ProductImage(OrderedProductImageBase):
         super(ProductImage, self).save()
 
 
+class ProductMedia(NamedItemBase):
+    class Meta(NamedItemBase.Meta):
+        verbose_name = _('media')
+        verbose_name_plural = verbose_name
+    
+    product = models.ForeignKey(Product)
+    mediafile = models.FileField(upload_to='product_media', verbose_name='media')
+
+
 class Cart(CartBase):
     """ Basic shopping cart model. """
 

@@ -92,6 +92,11 @@ class ProductTranslationInline(TranslationInline):
     model = ProductTranslation
 
 
+class ProductMediaInline(admin.TabularInline):
+    model = ProductMedia
+    extra = 1
+
+
 class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, admin.ModelAdmin):
     """ Model admin for products. """
     
@@ -101,6 +106,7 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, admin.Model
     date_hierarchy = 'date_added'
     # prepopulated_fields = {"slug": ("name",)}
     inlines = (ProductTranslationInline,
+               ProductMediaInline,
                ProductImageInline,
                ImageProductVariationInline,
                ProductVariationTranslationInline,
