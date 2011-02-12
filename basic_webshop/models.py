@@ -167,9 +167,24 @@ class ProductVariationTranslation(MultilingualTranslation, NamedItemBase):
     product = models.ForeignKey(Product)
 
 
-class ProductImage(OrderedProductImageBase,
-                   NamedItemBase):
-    pass
+class ProductImage(OrderedProductImageBase):
+    name = models.CharField(max_length=255, blank=True,
+                            verbose_name=_('name'))
+    """ Name of this item. """
+
+    def __unicode__(self):
+        """ Returns the item's name. """
+
+        return self.name
+    
+    def save(self):
+        """ Set the name of this image based on the name of the product. """
+        
+        count = self.__class__.objects.filter(product=self.product).count()
+        if not self.name:
+            self.name = "%s - %d" % (self.product.name, count+1) 
+        
+        super(ProductImage, self).save()
 
 
 class Cart(CartBase):
