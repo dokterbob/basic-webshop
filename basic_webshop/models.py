@@ -264,7 +264,9 @@ class OrderItem(OrderItemBase, UniqueSlugItemBase, NamedItemBase, PricedItemBase
     description = models.TextField(blank=False)
 
 
-class Category(MultilingualModel, NonUniqueSlugItemBase, \
+from mptt.models import MPTTModel
+
+class Category(MPTTModel, MultilingualModel, NonUniqueSlugItemBase, \
                AutoUniqueSlugMixin, ActiveItemInShopBase, OrderedItemBase, \
                NestedCategoryBase, NamedItemTranslationMixin):
     """ Basic category model. """

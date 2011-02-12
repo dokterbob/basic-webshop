@@ -207,7 +207,8 @@ class CategoryTranslationInlineInline(TranslationInline):
     model = CategoryTranslation
 
 
-class CategoryAdmin(admin.ModelAdmin):
+from mptt.admin import MPTTModelAdmin
+class CategoryAdmin(MPTTModelAdmin):
     """ Model admin for categories. """
 
     fields = ('parent', 'slug', 'active', 'sort_order')
@@ -215,21 +216,34 @@ class CategoryAdmin(admin.ModelAdmin):
     inlines = (CategoryTranslationInlineInline, )
     list_filter = ('active', 'parent', )
     list_editable = ('sort_order', 'active')
-    list_display = ('display_name',  'admin_parent', 'admin_products', \
+    list_display = ('admin_name',  'admin_products', \
                     'sort_order', 'active')
     search_fields = ('slug', 'translations__name', )
+    mptt_indent_field = 'admin_name'
 
-
-    def admin_parent(self, obj):
-        """ TODO: Move this over to django-webshop's extension. """
-        if obj.parent:
-            return u'<a href="?parent__id__exact=%d">%s</a>' % \
-                (obj.parent.pk, obj.parent)
-        else:
-            return _('None')
-    admin_parent.allow_tags = True
-    admin_parent.short_description = _('parent')
+    def admin_name(self, obj):
+        return obj.name
+    admin_name.short_description = _('name')
     
+    # This is redundant
+    # def admin_parent(self, obj):
+    #     """ TODO: Move this over to django-webshop's extension. """
+    #     if obj.parent:
+    #         return u'<a href="?parent__id__exact=%d">%s</a>' % \
+    #             (obj.parent.pk, obj.parent)
+    #     else:
+    #         return _('None')
+    # admin_parent.allow_tags = True
+    # admin_parent.short_description = _('parent')
+
+    # This is buggy
+    # def queryset(self, request):
+    #     qs = super(CategoryAdmin, self).queryset(request)
+    #     qs = Category.tree.add_related_count(qs, Product,
+    #                                     'categories', 'product_counts',
+    #                                     cumulative=False)
+    #     return qs
+        
     max_products_display = 2
     def admin_products(self, obj):
         """ TODO: Move this over to django-webshop's extension. """
