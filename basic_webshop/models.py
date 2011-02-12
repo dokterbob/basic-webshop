@@ -194,6 +194,7 @@ class ProductMedia(NamedItemBase):
     
     product = models.ForeignKey(Product)
     mediafile = models.FileField(upload_to='product_media', verbose_name='media')
+    """ TODO: Make sure only PDF files and JPEG files - of reasonable size - make it into this one. """
 
 
 class Cart(CartBase):
