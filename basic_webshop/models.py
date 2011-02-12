@@ -13,8 +13,7 @@ from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase, \
                                     OrderedItemBase, DatedItemBase, \
                                     PublishDateItemBase
 
-from webshop.extensions.category.advanced.models import NestedCategoryBase, \
-                                                        CategorizedItemBase
+from webshop.extensions.category.advanced.models import CategorizedItemBase
 from webshop.extensions.price.simple.models import PricedItemBase
 from webshop.extensions.variations.models import OrderedProductVariationBase
 from webshop.extensions.images.models import OrderedProductImageBase, \
@@ -262,64 +261,6 @@ class OrderItem(OrderItemBase, UniqueSlugItemBase, NamedItemBase, PricedItemBase
     """ TODO: Move variation up to the variations extension of django-webshop. """
 
     description = models.TextField(blank=False)
-
-
-from mptt.models import MPTTModel
-
-class MPTTCategoryBase(MPTTModel, NestedCategoryBase):
-
-    class Meta:
-        abstract = True
-
-    @classmethod
-    def get_main_categories(cls):
-        """ Gets the main categories; the ones which have no parent. """
-
-        return cls.get_root_nodes()
-
-    def get_subcategories(self):
-        """ Gets the subcategories for the current category. """
-
-        return self.get_children()
-
-    def get_products(self):
-        """ Get all active products for the current category.
-
-        """
-
-        from webshop.core.settings import PRODUCT_MODEL
-        from webshop.core.util import get_model_from_string
-        product_class = get_model_from_string(PRODUCT_MODEL)
-
-        in_shop = product_class.in_shop
-
-        return in_shop.filter(categories=self.get_descentants(include_self=True))
-
-
-    def __unicode__(self):
-        """ The unicode representation of a nested category is that of
-            it's parents and the current, separated by two colons.
-
-            So something like: <main> :: <sub> :: <subsub>
-
-            ..todo::
-                Make some kind of cache on the model to handle repeated
-                queries of the __unicode__ value without extra queries.
-        """
-
-        parent_list = self.get_ancestors()
-        result_list = []
-        for parent in parent_list:
-            super_unicode = super(NestedCategoryBase, parent).__unicode__()
-            result_list.append(super_unicode)
-
-        super_unicode = super(NestedCategoryBase, self).__unicode__()
-
-        result_list.append(super_unicode)
-
-        result = ' :: '.join(result_list)
-
-        return result
 
 
 class Category(MPTTCategoryBase, MultilingualModel, NonUniqueSlugItemBase, \
