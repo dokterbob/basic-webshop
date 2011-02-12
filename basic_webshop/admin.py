@@ -3,6 +3,7 @@ logger = logging.getLogger(__name__)
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
+from django.core.urlresolvers import reverse
 
 from webshop.extensions.variations.admin import ProductVariationInline, \
                                                 VariationInlineMixin
@@ -91,13 +92,44 @@ class ProductVariationTranslationInline(LimitedAdminInlineMixin, admin.TabularIn
 class ProductTranslationInline(TranslationInline):
     model = ProductTranslation
 
+    @staticmethod
+    def get_tinymce_widget(field, obj=None):
+        """ Return the appropriate TinyMCE widget. """
+
+        if obj and field == 'media':
+            link_list_url = reverse('admin:basic_webshop_product_media_link_list',
+                                     args=(obj.pk, ))
+            return \
+               TinyMCE(mce_attrs={'external_link_list_url': link_list_url})
+        else:
+            return \
+               TinyMCE()
+
+    def get_formset(self, request, obj=None, **kwargs):
+        """ Override the form widget for the content field with a TinyMCE
+            field which uses a dynamically assigned image list. """
+
+        formset = super(ProductTranslationInline, self).get_formset(request, obj=None, **kwargs)
+
+        formset.form.base_fields['media'].widget = self.get_tinymce_widget('media', obj)
+
+        return formset
+
 
 class ProductMediaInline(admin.TabularInline):
     model = ProductMedia
     extra = 1
 
 
-class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, admin.ModelAdmin):
+from django.conf.urls.defaults import patterns, url
+
+from simplesite.utils import ExtendibleModelAdminMixin
+
+from tinymce.widgets import TinyMCE
+from tinymce.views import render_to_image_list, render_to_link_list
+
+class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
+                   ExtendibleModelAdminMixin, admin.ModelAdmin):
     """ Model admin for products. """
     
     fields = ('slug', 'active', 'featured', 'date_added', 'date_modified', 'date_publish', 'categories', \
@@ -145,6 +177,28 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, admin.Model
             return category_list
     admin_categories.allow_tags = True
     admin_categories.short_description = _('categories')
+
+    def get_media_link_list(self, request, object_id):
+        """ Get the media available for linking to. """
+        obj = self._getobj(request, object_id)
+        
+        product_media = obj.productmedia_set.all()
+        link_list = []
+        for media in product_media:
+            link_list.append((media.name, media.mediafile.url))
+                
+        return render_to_link_list(link_list)
+
+    def get_urls(self):
+        urls = super(ProductAdmin, self).get_urls()
+        
+        my_urls = patterns('',
+            url(r'^(.+)/media_link_list.js$', 
+                self._wrap(self.get_media_link_list), 
+                name=self._view_name('media_link_list')),
+        )
+
+        return my_urls + urls
 
 admin.site.register(Product, ProductAdmin)
 
