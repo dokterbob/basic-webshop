@@ -64,13 +64,18 @@ class BrandTranslation(MultilingualTranslation, NamedItemBase):
     # (We don't want users to use images and tables here, ideally.)
     description = tinymce_models.HTMLField(_('description'), blank=False)
 
+    def save(self):
+        super(BrandTranslation, self).save()
+
+        self.parent.update_slug()
+
 
 class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
               CategorizedItemBase, OrderedItemBase, PricedItemBase, \
               DatedItemBase, ImagesProductMixin, StockedItemMixin, \
               RelatedProductsMixin, BrandedProductMixin, UniqueSlugItemBase, \
               NamedItemTranslationMixin, FeaturedProductMixin, \
-              PublishDateItemBase):
+              AutoUniqueSlugMixin, PublishDateItemBase):
     """
     Basic product model.
 
@@ -133,6 +138,11 @@ class ProductTranslation(MultilingualTranslation, NamedItemBase):
     manual = tinymce_models.HTMLField(_('manual'), blank=True)
     ingredients = tinymce_models.HTMLField(_('ingredients'), blank=True)
     media = tinymce_models.HTMLField(_('media'), blank=True)
+
+    def save(self):
+        super(ProductTranslation, self).save()
+
+        self.parent.update_slug()
 
 
 class ProductVariation(MultilingualModel, OrderedProductVariationBase, \
@@ -229,7 +239,8 @@ class OrderItem(OrderItemBase, UniqueSlugItemBase, NamedItemBase, PricedItemBase
     description = models.TextField(blank=False)
 
 
-class Category(MultilingualModel, NonUniqueSlugItemBase, AutoUniqueSlugMixin, ActiveItemInShopBase, OrderedItemBase,
+class Category(MultilingualModel, NonUniqueSlugItemBase, \
+               AutoUniqueSlugMixin, ActiveItemInShopBase, OrderedItemBase, \
                NestedCategoryBase, NamedItemTranslationMixin):
     """ Basic category model. """
 
