@@ -128,7 +128,7 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, admin.Model
         categories_count = categories.count()
         
         def category_link(obj):
-            return u'<a href="../category/?category__id__exact=%d">%s</a>' % \
+            return u'<a href="../category/%d/">%s</a>' % \
                 (obj.pk, obj)
             
         if categories_count == 0:
