@@ -14,6 +14,7 @@ from multilingual_model.admin import TranslationInline
 from sorl.thumbnail.admin import AdminInlineImageMixin
 
 from basic_webshop.models import *
+from basic_webshop.baseadmin import *
 
 
 class BrandTranslationInline(TranslationInline):
@@ -91,7 +92,7 @@ class ProductTranslationInline(TranslationInline):
     model = ProductTranslation
 
 
-class ProductAdmin(ImagesProductAdminMixin, admin.ModelAdmin):
+class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, admin.ModelAdmin):
     """ Model admin for products. """
     
     fields = ('slug', 'active', 'featured', 'date_added', 'date_modified', 'date_publish', 'categories', \
