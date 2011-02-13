@@ -134,6 +134,7 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
     
     fields = ('slug', 'active', 'featured', 'date_added', 'date_modified', 'date_publish', 'categories', \
               'sort_order', 'price', 'stock', 'related', 'brand', 'unit')
+    save_as = True
     readonly_fields = ('date_added', 'date_modified', )
     date_hierarchy = 'date_added'
     # prepopulated_fields = {"slug": ("name",)}
@@ -210,6 +211,7 @@ class CategoryTranslationInlineInline(TranslationInline):
 class CategoryAdmin(admin.ModelAdmin):
     """ Model admin for categories. """
 
+    save_as = True
     fields = ('parent', 'slug', 'active', 'sort_order')
     # prepopulated_fields = {"slug": ("name",)}
     inlines = (CategoryTranslationInlineInline, )
@@ -256,7 +258,8 @@ admin.site.register(Category, CategoryAdmin)
 
 class DiscountAdmin(admin.ModelAdmin):
     """ Model admin for discounts. """
-    
+
+    save_as = True
     readonly_fields = ('used', )
     filter_horizontal = ('categories', 'products')
     list_filter = ('start_date', 'end_date', 'use_coupon')
