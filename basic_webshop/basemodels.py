@@ -123,8 +123,24 @@ class FeaturedProductMixin(models.Model):
     featured = models.BooleanField(_('featured'), default=False,
                                help_text=_('Whether this product will be \
                                shown on the shop\'s frontpage.'))
+    """ Whether or not this product is featured in the shop. """
 
 
+class OrderedFeaturedProductMixin(FeaturedProductMixin):
+    """
+    Mixin for ordered featured products.
+    
+    .. todo::
+        Make sure the `is_featured` manager for this base model uses the 
+        `featured_order` attribute.
+    """
+
+    class Meta:
+        abstract = True
+
+    featured_order = models.PositiveSmallIntegerField(_('featured order'),
+                                        blank=True, null=True)
+    """ The order in which featured items are ordered when displayed. """
 
 
 from webshop.extensions.category.advanced.models import NestedCategoryBase
