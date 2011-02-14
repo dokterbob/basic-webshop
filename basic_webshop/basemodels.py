@@ -125,64 +125,73 @@ class FeaturedProductMixin(models.Model):
                                shown on the shop\'s frontpage.'))
 
 
+
+
 from webshop.extensions.category.advanced.models import NestedCategoryBase
 
-from mptt.models import MPTTModel
+from django.conf import settings
 
-class MPTTCategoryBase(MPTTModel, NestedCategoryBase):
+if 'mptt' in settings.INSTALLED_APPS:
+    logger.debug('Using mptt for category tree optimalization')
 
-    class Meta:
-        abstract = True
+    from mptt.models import MPTTModel
 
-    @classmethod
-    def get_main_categories(cls):
-        """ Gets the main categories; the ones which have no parent. """
+    class MPTTCategoryBase(MPTTModel, NestedCategoryBase):
 
-        return cls.get_root_nodes()
+        class Meta:
+            abstract = True
 
-    def get_subcategories(self):
-        """ Gets the subcategories for the current category. """
+        @classmethod
+        def get_main_categories(cls):
+            """ Gets the main categories; the ones which have no parent. """
 
-        return self.get_children()
+            return cls.get_root_nodes()
 
-    def get_products(self):
-        """ Get all active products for the current category.
+        def get_subcategories(self):
+            """ Gets the subcategories for the current category. """
 
-        """
+            return self.get_children()
 
-        from webshop.core.settings import PRODUCT_MODEL
-        from webshop.core.util import get_model_from_string
-        product_class = get_model_from_string(PRODUCT_MODEL)
+        def get_products(self):
+            """ Get all active products for the current category.
 
-        in_shop = product_class.in_shop
+            """
 
-        return in_shop.filter(categories=self.get_descentants(include_self=True))
+            from webshop.core.settings import PRODUCT_MODEL
+            from webshop.core.util import get_model_from_string
+            product_class = get_model_from_string(PRODUCT_MODEL)
+
+            in_shop = product_class.in_shop
+
+            return in_shop.filter(categories=self.get_descentants(include_self=True))
 
 
-    def __unicode__(self):
-        """ The unicode representation of a nested category is that of
-            it's parents and the current, separated by two colons.
+        def __unicode__(self):
+            """ The unicode representation of a nested category is that of
+                it's parents and the current, separated by two colons.
 
-            So something like: <main> :: <sub> :: <subsub>
+                So something like: <main> :: <sub> :: <subsub>
 
-            ..todo::
-                Make some kind of cache on the model to handle repeated
-                queries of the __unicode__ value without extra queries.
-        """
+                ..todo::
+                    Make some kind of cache on the model to handle repeated
+                    queries of the __unicode__ value without extra queries.
+            """
 
-        parent_list = self.get_ancestors()
-        result_list = []
-        for parent in parent_list:
-            super_unicode = super(NestedCategoryBase, parent).__unicode__()
+            parent_list = self.get_ancestors()
+            result_list = []
+            for parent in parent_list:
+                super_unicode = super(NestedCategoryBase, parent).__unicode__()
+                result_list.append(super_unicode)
+
+            super_unicode = super(NestedCategoryBase, self).__unicode__()
+
             result_list.append(super_unicode)
 
-        super_unicode = super(NestedCategoryBase, self).__unicode__()
+            result = ' :: '.join(result_list)
 
-        result_list.append(super_unicode)
-
-        result = ' :: '.join(result_list)
-
-        return result
+            return result
+else:
+    logger.debug('Not using mptt for nested categories: not in INSTALLED_APPS')
 
 
 ### All the stuff above should end up in django-webshop, eventually
