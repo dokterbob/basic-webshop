@@ -211,6 +211,27 @@ class CategoryTranslationInlineInline(TranslationInline):
     model = CategoryTranslation
 
 
+class CategoryFeaturedInline(LimitedAdminInlineMixin, admin.TabularInline):
+    model = CategoryFeaturedProduct
+    extra =  1
+    fields = ('featured_order', 'product')
+
+    def get_formset(self, request, obj=None, **kwargs):
+        """
+        Make sure we can only select variations that relate to the current
+        item.
+        """
+        formset = \
+            super(CategoryFeaturedInline, self).get_formset(request, obj=None, **kwargs)
+
+        if obj:
+            self.limit_inline_choices(formset, 'product', categories=obj)
+        else:
+            self.limit_inline_choices(formset, 'product', empty=True)
+
+        return formset
+
+
 from mptt.admin import MPTTModelAdmin
 class CategoryAdmin(MPTTModelAdmin):
     """ Model admin for categories. """
@@ -218,7 +239,7 @@ class CategoryAdmin(MPTTModelAdmin):
     save_as = True
     fields = ('parent', 'slug', 'active', 'sort_order')
     # prepopulated_fields = {"slug": ("name",)}
-    inlines = (CategoryTranslationInlineInline, )
+    inlines = (CategoryTranslationInlineInline, CategoryFeaturedInline, )
     list_filter = ('active', 'parent', )
     list_editable = ('sort_order', 'active')
     list_display = ('admin_name',  'admin_products', \

@@ -296,6 +296,25 @@ class CategoryTranslation(NamedItemBase, MultilingualTranslation):
         self.parent.update_slug()
 
 
+class CategoryFeaturedProduct(models.Model):
+    """ A product which is featured in a particular category in a 
+        particular order. 
+    """
+
+    class Meta:
+        verbose_name = _('featured product')
+        verbose_name_plural = _('featured products')
+
+    category = models.ForeignKey(Category)
+    product = models.ForeignKey(Product)
+    featured_order = models.PositiveSmallIntegerField(_('featured order'),
+                                        blank=True, null=True)
+    """ The order in which featured items are ordered when displayed. """
+    
+    def __unicode__(self):
+        return _('Featured product \'%s\'') % unicode(self.product)
+
+
 class Discount(NamedItemBase, ManyCategoryDiscountMixin, CouponDiscountMixin, \
                LimitedUseDiscountMixin, ManyProductDiscountMixin, \
                DateRangeDiscountMixin, DiscountBase):
