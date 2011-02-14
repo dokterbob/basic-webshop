@@ -77,6 +77,13 @@ class ProductVariationTranslationInline(LimitedAdminInlineMixin, admin.TabularIn
 class ProductTranslationInline(TranslationInline):
     model = ProductTranslation
 
+    fieldsets = (
+        (None, {'fields': ('language_code', 'name', 'description')}),
+        ('Optional', {
+            'fields': ('manual', 'ingredients', 'media', ),
+            'classes': ('collapse',),}),
+    )
+
     @staticmethod
     def get_tinymce_widget(field, obj=None):
         """ Return the appropriate TinyMCE widget. """
@@ -116,13 +123,24 @@ from tinymce.views import render_to_image_list, render_to_link_list
 class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
                    ExtendibleModelAdminMixin, admin.ModelAdmin):
     """ Model admin for products. """
-    
-    fields = ('slug', 'active', 'featured', 'date_added', 'date_modified', 'date_publish', 'categories', \
-              'sort_order', 'price', 'stock', 'related', 'brand', 'unit')
+
+    fieldsets = (
+        ('Required fields', {'fields':
+                    ('categories', 'stock', 'price')}),
+        ('Publication attributes', {
+            'fields': ('active', 'date_publish', 'sort_order',
+                       'featured', 'featured_order', ),
+            'classes': ('collapse',),}),
+        ('Optional metadata', {'fields':
+                    ('related', 'brand', 'unit')}),
+        # ('Dates', {'fields':
+        #             ('date_added', 'date_modified', 'date_publish')}),
+
+    )
+
     save_as = True
     readonly_fields = ('date_added', 'date_modified', )
     date_hierarchy = 'date_added'
-    # prepopulated_fields = {"slug": ("name",)}
     inlines = (ProductTranslationInline,
                ProductMediaInline,
                ProductImageInline,
