@@ -149,13 +149,15 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
               )
     filter_horizontal = ('categories', 'related')
     
-    list_display = ('display_name', 'default_image', 'admin_categories', 'sort_order', 'active', )
+    list_display = ('display_name', 'default_image', 'admin_categories', \
+                    'sort_order', 'featured_order', 'active', )
     # list_display_links = ('name', )
-    list_filter = ('categories', 'active', 'date_added', 'date_modified', \
-                   'stock','brand')
-    list_editable = ('sort_order', 'active')
+    list_filter = ('active', 'featured', 'date_publish', \
+                   'brand', 'categories')
+    list_editable = ('sort_order', 'featured_order', 'active')
     search_fields = ('slug', 'translations__name', \
-                     'categories__translations__name', 'categories__slug')
+                     'categories__translations__name', 'categories__slug',
+                     'brand__translations__name', 'brand__slug')
 
     max_categories_display = 2
     def admin_categories(self, obj):
