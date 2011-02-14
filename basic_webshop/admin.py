@@ -34,21 +34,6 @@ TODO/bug:
     associated with the current product.
 """ 
 
-class LimitedAdminInlineMixin(object):
-    @staticmethod
-    def limit_inline_choices(formset, field, empty=False, **filters):
-        assert formset.form.base_fields.has_key(field)
-
-        qs = formset.form.base_fields[field].queryset
-        if empty:
-            logger.debug('Limiting the queryset to none')
-            formset.form.base_fields[field].queryset = qs.none()
-        else:
-            qs = qs.filter(**filters)
-            logger.debug('Limiting queryset for formset to: %s', qs)
-        
-            formset.form.base_fields[field].queryset = qs
-
 
 class ImageProductVariationInline(LimitedAdminInlineMixin, ProductVariationInline):
     def get_formset(self, request, obj=None, **kwargs):
@@ -227,43 +212,30 @@ class CategoryAdmin(MPTTModelAdmin):
         return obj.name
     admin_name.short_description = _('name')
     
-    # This is redundant
-    # def admin_parent(self, obj):
-    #     """ TODO: Move this over to django-webshop's extension. """
-    #     if obj.parent:
-    #         return u'<a href="?parent__id__exact=%d">%s</a>' % \
-    #             (obj.parent.pk, obj.parent)
-    #     else:
-    #         return _('None')
-    # admin_parent.allow_tags = True
-    # admin_parent.short_description = _('parent')
-
-    # This is buggy
-    # def queryset(self, request):
-    #     qs = super(CategoryAdmin, self).queryset(request)
-    #     qs = Category.tree.add_related_count(qs, Product,
-    #                                     'categories', 'product_counts',
-    #                                     cumulative=False)
-    #     return qs
-        
     max_products_display = 2
     def admin_products(self, obj):
-        """ TODO: Move this over to django-webshop's extension. """
         products = obj.product_set.all()
         products_count = products.count()
-        if products_count == 0:
-            return _('None')
+        products_inactive_count = products.filter(active=False).count()
+        
+        if not products_count:
+            value = _('No products')
+        elif products_count == 1:
+            value = u'<a href="../product/?categories__id__exact=%d">1 product</a>' \
+                % (obj.pk, )
         else:
-            product_list = unicode(products[0])
-            
-            for product in products[1:self.max_products_display]:
-                product_list += u', %s' % product
-            
-            if products_count > self.max_products_display:
-                product_list += u', ...'
-                        
-            return u'<a href="../product/?categories__id__exact=%d">%s</a>' % \
-                (obj.pk, product_list)
+            value = u'<a href="../product/?categories__id__exact=%d">%d products</a>' \
+                % (obj.pk, products_count)
+        
+        if products_inactive_count:
+            value += u' <a href="">(%d inactive)</a>' % \
+                (obj.pk, products_inactive_count)
+        
+        value += u'&nbsp;|&nbsp;<a href="../product/add/?categories=%d">Add</a>' \
+            % (obj.pk, )
+        
+        return value
+        
     admin_products.allow_tags = True
     admin_products.short_description = _('products')
    
