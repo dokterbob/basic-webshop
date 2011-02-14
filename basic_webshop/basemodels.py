@@ -145,7 +145,7 @@ if 'mptt' in settings.INSTALLED_APPS:
         def get_main_categories(cls):
             """ Gets the main categories; the ones which have no parent. """
 
-            return cls.get_root_nodes()
+            return cls.tree.root_nodes()
 
         def get_subcategories(self):
             """ Gets the subcategories for the current category. """
