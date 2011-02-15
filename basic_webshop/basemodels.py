@@ -108,46 +108,6 @@ class NonUniqueSlugItemBase(models.Model):
             contain letters, numbers and \'-\'.'), blank=True)
 
 
-class FeaturedProductMixin(models.Model):
-    """
-    Mixin for products which have a boolean featured property and an
-    `is_featured` manager, filtering the items from the `in_shop` manager
-    so that only featured items are returned.
-
-    .. todo::
-        Write the `is_featured` manager - and test it.
-
-    """
-
-    class Meta:
-        abstract = True
-
-    featured = models.BooleanField(_('featured'), default=False,
-                               help_text=_('Whether this product will be \
-                               shown on the shop\'s frontpage.'))
-    """ Whether or not this product is featured in the shop. """
-
-
-class OrderedFeaturedProductMixin(FeaturedProductMixin):
-    """
-    Mixin for ordered featured products.
-    
-    .. todo::
-        Make sure the `is_featured` manager for this base model uses the 
-        `featured_order` attribute.
-    """
-
-    class Meta:
-        abstract = True
-
-    featured_order = models.PositiveSmallIntegerField(_('featured order'),
-                                        blank=True, null=True)
-    """ The order in which featured items are ordered when displayed. """
-
-
-### All the stuff above should end up in django-webshop, eventually
-
-
 class NamedItemTranslationMixin(object):
     """
     Mixin for translated items with a name.
