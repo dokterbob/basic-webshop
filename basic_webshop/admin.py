@@ -128,8 +128,7 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
         ('Required fields', {'fields':
                     ('categories', 'stock', 'price')}),
         ('Publication attributes', {
-            'fields': ('active', 'date_publish', 'sort_order',
-                       'featured', 'featured_order', ),
+            'fields': ('active', 'date_publish', 'sort_order', ),
             'classes': ('collapse',),}),
         ('Optional metadata', {'fields':
                     ('related', 'brand', 'unit')}),
@@ -150,11 +149,11 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
     filter_horizontal = ('categories', 'related')
     
     list_display = ('display_name', 'default_image', 'admin_categories', \
-                    'sort_order', 'featured_order', 'active', )
+                    'sort_order', 'active', )
     # list_display_links = ('name', )
-    list_filter = ('active', 'featured', 'date_publish', \
+    list_filter = ('active', 'date_publish', \
                    'brand', 'categories')
-    list_editable = ('sort_order', 'featured_order', 'active')
+    list_editable = ('sort_order', 'active')
     search_fields = ('slug', 'translations__name', \
                      'categories__translations__name', 'categories__slug',
                      'brand__translations__name', 'brand__slug')

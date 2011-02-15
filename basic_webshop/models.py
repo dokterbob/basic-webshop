@@ -73,7 +73,7 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
               CategorizedItemBase, OrderedItemBase, PricedItemBase, \
               DatedItemBase, ImagesProductMixin, StockedItemMixin, \
               RelatedProductsMixin, BrandedProductMixin, UniqueSlugItemBase, \
-              NamedItemTranslationMixin, OrderedFeaturedProductMixin, \
+              NamedItemTranslationMixin,
               AutoUniqueSlugMixin, PublishDateItemBase):
     """
     Basic product model.
