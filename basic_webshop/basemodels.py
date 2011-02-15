@@ -70,7 +70,8 @@ class AutoSlugMixin(object):
         return self.slugify(name)
 
     def update_slug(self, commit=True):
-        if not getattr(self, self._slug_field) and getattr(self, self._slug_from):
+        if not getattr(self, self._slug_field) and \
+               getattr(self, self._slug_from):
             setattr(self, self._slug_field, self.generate_slug())
 
             if commit:
@@ -81,7 +82,8 @@ class AutoUniqueSlugMixin(AutoSlugMixin):
     """ Make sure that the generated slug is unique. """
 
     def is_unique_slug(self, slug):
-        return not self.__class__.objects.filter(**{self._slug_field: slug}).exists()
+        qs = self.__class__.objects.filter(**{self._slug_field: slug})
+        return not qs.exists()
 
     def generate_slug(self):
         original_slug = super(AutoUniqueSlugMixin, self).generate_slug()
