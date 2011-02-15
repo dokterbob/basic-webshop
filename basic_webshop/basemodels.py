@@ -169,7 +169,11 @@ if 'mptt' in settings.INSTALLED_APPS:
             return self.get_children()
 
         def get_products(self):
-            """ Get all active products for the current category.
+            """ 
+            Get all active products for the current category.
+            
+            As opposed to the original function in the base class, this also
+            includes products in subcategories of the current category object.
 
             """
 
