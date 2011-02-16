@@ -92,6 +92,15 @@ from tinymce.views import render_to_image_list, render_to_link_list
 
 
 class TinyMCEImageListMixin(object):
+    """ 
+    Example usage::
+        related_image_field = 'image'
+        related_image_size = '200x300'
+
+        def get_related_images(cls, request, obj):
+            return obj.brandimage_set.all()
+
+    """
     related_image_size = None
     related_image_field = None
     related_images = None
@@ -109,7 +118,7 @@ class TinyMCEImageListMixin(object):
     def get_image_list(self, request, object_id):
         """ Get a list of available images for this page for TinyMCE to
             refer to. If the setting exists, scale the image to the default
-            size specified in `PAGEIMAGE_SIZE`.
+            size specified in `related_image_size`.
         """
 
         assert self.related_image_field, \
@@ -147,6 +156,13 @@ class TinyMCEImageListMixin(object):
 
 
 class TinyMCELinkListMixin(object):
+    """
+    Example usage::
+
+        def get_related_objects(self, request, obj):
+            return obj.productmedia_set.all()
+
+    """
     related_objects = None
 
     def get_related_objects(self, request, obj):
