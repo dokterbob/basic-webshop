@@ -13,8 +13,8 @@ from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase, \
                                     OrderedItemBase, DatedItemBase, \
                                     PublishDateItemBase
 
-from webshop.extensions.category.advanced.models import CategorizedItemBase
-from webshop.extensions.price.advanced.models import PriceBase
+from webshop.extensions.category.advanced.models import CategorizedItemBase, \
+                                                        MPTTCategoryBase
 from webshop.extensions.price.simple.models import PricedItemBase
 from webshop.extensions.variations.models import OrderedProductVariationBase
 from webshop.extensions.images.models import OrderedProductImageBase, \
@@ -74,7 +74,7 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
               CategorizedItemBase, OrderedItemBase, PricedItemBase, \
               DatedItemBase, ImagesProductMixin, StockedItemMixin, \
               RelatedProductsMixin, BrandedProductMixin, UniqueSlugItemBase, \
-              NamedItemTranslationMixin, OrderedFeaturedProductMixin, \
+              NamedItemTranslationMixin,
               AutoUniqueSlugMixin, PublishDateItemBase):
     """
     Basic product model.
@@ -257,7 +257,7 @@ class Category(MPTTCategoryBase, MultilingualModel, NonUniqueSlugItemBase, \
                NamedItemTranslationMixin):
     """ Basic category model. """
 
-    class Meta(NestedCategoryBase.Meta, NamedItemBase.Meta, OrderedItemBase.Meta):
+    class Meta(MPTTCategoryBase.Meta, NamedItemBase.Meta, OrderedItemBase.Meta):
         unique_together = ('parent', 'slug')
 
     def is_unique_slug(self, slug):
