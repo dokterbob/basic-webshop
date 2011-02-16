@@ -27,73 +27,34 @@ from tinymce.widgets import TinyMCE
 from tinymce.views import render_to_image_list, render_to_link_list
 
 
-class BrandTranslationInline(TranslationInline):
+class BrandTranslationInline(TinyMCEAdminListMixin, TranslationInline):
     model = BrandTranslation
 
-    @staticmethod
-    def get_tinymce_widget(obj=None):
-        """ Return the appropriate TinyMCE widget. """
+    tinymce_fields = ('description', )
 
+    def get_image_list_url(self, request, field, obj=None):
         if obj:
-            image_list_url = reverse('admin:basic_webshop_brand_image_list',\
-                                     args=(obj.pk, ))
-            return \
-               TinyMCE(mce_attrs={'external_image_list_url': image_list_url})
+            return reverse('admin:basic_webshop_brand_image_list', \
+                                         args=(obj.pk, ))
         else:
-            return \
-               TinyMCE()
-
-    def get_formset(self, request, obj=None, **kwargs):
-        """ Override the form widget for the content field with a TinyMCE
-            field which uses a dynamically assigned image list. """
-
-        formset = super(BrandTranslationInline, self).get_formset(request, obj=None, **kwargs)
-
-        formset.form.base_fields['description'].widget = self.get_tinymce_widget(obj)
-
-        return formset
-
+            return None
 
 
 class BrandImageInline(AdminInlineImageMixin, admin.TabularInline):
     model = BrandImage
 
 
-class BrandAdmin(AdminInlineImageMixin, ExtendibleModelAdminMixin, \
-                 admin.ModelAdmin):
+class BrandAdmin(AdminInlineImageMixin, TinyMCEImageListMixin, \
+                 ExtendibleModelAdminMixin, admin.ModelAdmin):
     """ Model admin for brands """
 
     inlines = (BrandTranslationInline, BrandImageInline)
-
-    def get_image_list(self, request, object_id):
-        """ Get a list of available images for this page for TinyMCE to
-            refer to. If the setting exists, scale the image to the default
-            size specified in `PAGEIMAGE_SIZE`.
-        """
-        object = self._getobj(request, object_id)
-
-        brand_images = object.brandimage_set.all()
-
-        image_list = []
-        for obj in brand_images:
-            image = obj.image
-            if PAGEIMAGE_SIZE:
-                image = get_thumbnail(image, PAGEIMAGE_SIZE)
-
-            image_list.append((unicode(obj), image.url))
-
-        return render_to_image_list(image_list)
-
-    def get_urls(self):
-        urls = super(BrandAdmin, self).get_urls()
-
-        my_urls = patterns('',
-            url(r'^(.+)/image_list.js$',
-                self._wrap(self.get_image_list),
-                name=self._view_name('image_list')),
-        )
-
-        return my_urls + urls
+    
+    related_image_field = 'image'
+    related_image_size = PAGEIMAGE_SIZE
+    
+    def get_related_images(cls, request, obj):
+        return obj.brandimage_set.all()
 
 
 admin.site.register(Brand, BrandAdmin)
@@ -124,7 +85,7 @@ class ProductVariationTranslationInline(LimitedAdminInlineMixin, admin.TabularIn
         return (('parent', dict(product=obj)),)
 
 
-class ProductTranslationInline(TranslationInline):
+class ProductTranslationInline(TinyMCEAdminListMixin, TranslationInline):
     model = ProductTranslation
 
     fieldsets = (
@@ -133,29 +94,15 @@ class ProductTranslationInline(TranslationInline):
             'fields': ('manual', 'ingredients', 'media', ),
             'classes': ('collapse',),}),
     )
-
-    @staticmethod
-    def get_tinymce_widget(field, obj=None):
-        """ Return the appropriate TinyMCE widget. """
-
-        if obj and field == 'media':
-            link_list_url = reverse('admin:basic_webshop_product_media_link_list',
-                                     args=(obj.pk, ))
-            return \
-               TinyMCE(mce_attrs={'external_link_list_url': link_list_url})
+    
+    tinymce_fields = ('media', )
+    
+    def get_link_list_url(self, request, field, obj=None):
+        if obj:
+            return reverse('admin:basic_webshop_product_link_list', \
+                                         args=(obj.pk, ))
         else:
-            return \
-               TinyMCE()
-
-    def get_formset(self, request, obj=None, **kwargs):
-        """ Override the form widget for the content field with a TinyMCE
-            field which uses a dynamically assigned image list. """
-
-        formset = super(ProductTranslationInline, self).get_formset(request, obj=None, **kwargs)
-
-        formset.form.base_fields['media'].widget = self.get_tinymce_widget('media', obj)
-
-        return formset
+            return None
 
 
 class ProductMediaInline(admin.TabularInline):
@@ -164,7 +111,8 @@ class ProductMediaInline(admin.TabularInline):
 
 
 class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
-                   ExtendibleModelAdminMixin, admin.ModelAdmin):
+                   TinyMCELinkListMixin, ExtendibleModelAdminMixin, \
+                   admin.ModelAdmin):
     """ Model admin for products. """
 
     fieldsets = (
@@ -225,28 +173,9 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
             return category_list
     admin_categories.allow_tags = True
     admin_categories.short_description = _('categories')
-
-    def get_media_link_list(self, request, object_id):
-        """ Get the media available for linking to. """
-        obj = self._getobj(request, object_id)
-
-        product_media = obj.productmedia_set.all()
-        link_list = []
-        for media in product_media:
-            link_list.append((media.name, media.mediafile.url))
-
-        return render_to_link_list(link_list)
-
-    def get_urls(self):
-        urls = super(ProductAdmin, self).get_urls()
-
-        my_urls = patterns('',
-            url(r'^(.+)/media_link_list.js$',
-                self._wrap(self.get_media_link_list),
-                name=self._view_name('media_link_list')),
-        )
-
-        return my_urls + urls
+    
+    def get_related_objects(self, request, obj):
+        return obj.productmedia_set.all()
 
 admin.site.register(Product, ProductAdmin)
 
@@ -269,6 +198,7 @@ class CategoryFeaturedInline(LimitedAdminInlineMixin, admin.TabularInline):
 
 
 from mptt.admin import MPTTModelAdmin
+
 class CategoryAdmin(MPTTModelAdmin):
     """ Model admin for categories. """
 

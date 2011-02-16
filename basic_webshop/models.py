@@ -142,6 +142,7 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
         return self
     display_name.short_description = _('name')
 
+
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
     class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):
         unique_together = (('language_code', 'parent',), )
@@ -214,10 +215,13 @@ class ProductMedia(NamedItemBase):
     class Meta(NamedItemBase.Meta):
         verbose_name = _('media')
         verbose_name_plural = verbose_name
-    
+
     product = models.ForeignKey(Product)
     mediafile = models.FileField(upload_to='product_media', verbose_name='media')
     """ TODO: Make sure only PDF files and JPEG files - of reasonable size - make it into this one. """
+
+    def get_absolute_url(self):
+        return self.mediafile.url
 
 
 class Cart(CartBase):
