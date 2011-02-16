@@ -12,19 +12,89 @@ from webshop.extensions.images.admin import ProductImageInline, \
 
 from multilingual_model.admin import TranslationInline
 
-from sorl.thumbnail.admin import AdminInlineImageMixin
-
 from basic_webshop.models import *
 from basic_webshop.baseadmin import *
+
+from sorl.thumbnail.admin import AdminInlineImageMixin
+from sorl.thumbnail import get_thumbnail
+
+from django.conf.urls.defaults import patterns, url
+
+from simplesite.settings import PAGEIMAGE_SIZE
+from simplesite.utils import ExtendibleModelAdminMixin
+
+from tinymce.widgets import TinyMCE
+from tinymce.views import render_to_image_list, render_to_link_list
 
 
 class BrandTranslationInline(TranslationInline):
     model = BrandTranslation
 
+    @staticmethod
+    def get_tinymce_widget(obj=None):
+        """ Return the appropriate TinyMCE widget. """
 
-class BrandAdmin(AdminInlineImageMixin, admin.ModelAdmin):
+        if obj:
+            image_list_url = reverse('admin:basic_webshop_brand_image_list',\
+                                     args=(obj.pk, ))
+            return \
+               TinyMCE(mce_attrs={'external_image_list_url': image_list_url})
+        else:
+            return \
+               TinyMCE()
+
+    def get_formset(self, request, obj=None, **kwargs):
+        """ Override the form widget for the content field with a TinyMCE
+            field which uses a dynamically assigned image list. """
+
+        formset = super(BrandTranslationInline, self).get_formset(request, obj=None, **kwargs)
+
+        formset.form.base_fields['description'].widget = self.get_tinymce_widget(obj)
+
+        return formset
+
+
+
+class BrandImageInline(AdminInlineImageMixin, admin.TabularInline):
+    model = BrandImage
+
+
+class BrandAdmin(AdminInlineImageMixin, ExtendibleModelAdminMixin, \
+                 admin.ModelAdmin):
     """ Model admin for brands """
-    inlines = (BrandTranslationInline, )
+
+    inlines = (BrandTranslationInline, BrandImageInline)
+
+    def get_image_list(self, request, object_id):
+        """ Get a list of available images for this page for TinyMCE to
+            refer to. If the setting exists, scale the image to the default
+            size specified in `PAGEIMAGE_SIZE`.
+        """
+        object = self._getobj(request, object_id)
+
+        brand_images = object.brandimage_set.all()
+
+        image_list = []
+        for obj in brand_images:
+            image = obj.image
+            if PAGEIMAGE_SIZE:
+                image = get_thumbnail(image, PAGEIMAGE_SIZE)
+
+            image_list.append((unicode(obj), image.url))
+
+        return render_to_image_list(image_list)
+
+    def get_urls(self):
+        urls = super(BrandAdmin, self).get_urls()
+
+        my_urls = patterns('',
+            url(r'^(.+)/image_list.js$',
+                self._wrap(self.get_image_list),
+                name=self._view_name('image_list')),
+        )
+
+        return my_urls + urls
+
 
 admin.site.register(Brand, BrandAdmin)
 
@@ -92,13 +162,6 @@ class ProductMediaInline(admin.TabularInline):
     model = ProductMedia
     extra = 1
 
-
-from django.conf.urls.defaults import patterns, url
-
-from simplesite.utils import ExtendibleModelAdminMixin
-
-from tinymce.widgets import TinyMCE
-from tinymce.views import render_to_image_list, render_to_link_list
 
 class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
                    ExtendibleModelAdminMixin, admin.ModelAdmin):

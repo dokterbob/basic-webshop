@@ -70,6 +70,35 @@ class BrandTranslation(MultilingualTranslation, NamedItemBase):
         self.parent.update_slug()
 
 
+class BrandImage(models.Model):
+    """
+    Image for a brand. This is not a subclass of a NamedItemBase since it
+    it's name is not an obligatory field: it's value is automatically set
+    based on the name of the product.
+    """
+
+    name = models.CharField(max_length=255, blank=True,
+                            verbose_name=_('name'))
+    """ Name of this item. """
+    brand = models.ForeignKey(Brand)
+    image = ImageField(verbose_name=_('image'),
+                       upload_to='brand_images')
+
+    def __unicode__(self):
+        """ Returns the item's name. """
+
+        return self.name
+
+    def save(self):
+        """ Set the name of this image based on the name of the brand. """
+
+        count = self.__class__.objects.filter(brand=self.brand).count()
+        if not self.name:
+            self.name = "%s - %d" % (self.brand.name, count+1)
+
+        super(BrandImage, self).save()
+
+
 class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
               CategorizedItemBase, OrderedItemBase, PricedItemBase, \
               DatedItemBase, ImagesProductMixin, StockedItemMixin, \
@@ -156,6 +185,12 @@ class ProductVariationTranslation(MultilingualTranslation, NamedItemBase):
 
 
 class ProductImage(OrderedProductImageBase):
+    """
+    Image for a product. This is not a subclass of a NamedItemBase since it
+    it's name is not an obligatory field: it's value is automatically set
+    based on the name of the product.
+    """
+
     name = models.CharField(max_length=255, blank=True,
                             verbose_name=_('name'))
     """ Name of this item. """
@@ -164,14 +199,14 @@ class ProductImage(OrderedProductImageBase):
         """ Returns the item's name. """
 
         return self.name
-    
+
     def save(self):
         """ Set the name of this image based on the name of the product. """
-        
+
         count = self.__class__.objects.filter(product=self.product).count()
         if not self.name:
-            self.name = "%s - %d" % (self.product.name, count+1) 
-        
+            self.name = "%s - %d" % (self.product.name, count+1)
+
         super(ProductImage, self).save()
 
 
