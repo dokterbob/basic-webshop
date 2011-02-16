@@ -179,7 +179,7 @@ if 'mptt' in settings.INSTALLED_APPS:
 
             in_shop = product_class.in_shop
 
-            return in_shop.filter(categories=self.get_descentants(include_self=True))
+            return in_shop.filter(categories=self.get_descendants(include_self=True))
 
 
         def __unicode__(self):
