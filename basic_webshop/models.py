@@ -14,6 +14,7 @@ from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase, \
                                     PublishDateItemBase
 
 from webshop.extensions.category.advanced.models import CategorizedItemBase
+from webshop.extensions.price.advanced.models import PriceBase
 from webshop.extensions.price.simple.models import PricedItemBase
 from webshop.extensions.variations.models import OrderedProductVariationBase
 from webshop.extensions.images.models import OrderedProductImageBase, \
@@ -111,18 +112,6 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
     def display_name(self):
         return self
     display_name.short_description = _('name')
-
-    def get_price(self, *args, **kwargs):
-        if self.display_price:
-            price = self.display_price
-
-        else:
-            kwargscopy = kwargs.copy()
-            kwargscopy.update({'product': self})
-            price = Price.get_cheapest(**kwargscopy)
-
-        return price.get_price(**kwargs)
-
 
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
     class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):
