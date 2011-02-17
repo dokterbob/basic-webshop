@@ -26,6 +26,14 @@ from simplesite.utils import ExtendibleModelAdminMixin
 from tinymce.widgets import TinyMCE
 from tinymce.views import render_to_image_list, render_to_link_list
 
+from django.contrib.auth.admin import UserAdmin
+
+
+class CustomerAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Customer, CustomerAdmin)
+
 
 class BrandTranslationInline(TinyMCEAdminListMixin, TranslationInline):
     model = BrandTranslation

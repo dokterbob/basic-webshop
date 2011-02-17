@@ -39,10 +39,18 @@ from sorl.thumbnail import ImageField
 
 from basic_webshop.basemodels import *
 
+from django_countries import CountryField
+
 
 class Customer(UserCustomerBase):
     """ Basic webshop customer. """
-    pass
+
+    address_line1 = models.CharField(max_length=255)
+    address_line2 = models.CharField(blank=True, max_length=255)
+    address_line3 = models.CharField(blank=True, max_length=255)
+    phone_number = models.CharField(blank=True, max_length=80)
+    # Make phone numbers all-numeric
+    country = CountryField()
 
 
 class Brand(AutoUniqueSlugMixin, NamedItemTranslationMixin, MultilingualModel, \
