@@ -24,10 +24,13 @@ from django.views.generic.simple import direct_to_template
 from registration.views import activate
 from registration.views import register
 
+from recaptcha_works.decorators import fix_recaptcha_remote_ip
+
+captcha_register = fix_recaptcha_remote_ip(register)
 
 urlpatterns = patterns('',
                        url(r'^register/$',
-                           register,
+                           captcha_register,
                            {'backend': 'basic_webshop.registration_backends.simple.SimpleCustomerBackend'},
                            name='registration_register'),
                        url(r'^register/closed/$',
