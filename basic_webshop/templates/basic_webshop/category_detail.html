@@ -1,15 +1,49 @@
 {% extends "basic_webshop/base.html" %}
+{% load pagination_tags %}
 
 {% block content %}
     <h2><a href="{% url category_list %}">Category list</a></h2>
     <h1>Category: {{ category }}</h1>
+
+    {% if subcategories %}
+    <p>Subcategories</p>
+    <ul>
+      {% for c in subcategories %}
+        <li>{{ c }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p>Order on:</p>
+    <form action="" method="GET">
+      <select name="sort_order">
+
+          <option {% if sort_order == 'name' %} selected="selected" {% endif %} value="name">Name</option>
+
+          <option {% if sort_order == 'brand' %} selected="selected" {% endif %} value="brand">Brand</option>
+          <option {% if sort_order == 'price' %} selected="selected" {% endif %} value="price">Price</option>
+      </selected>
+      <input type="submit" />
+    </form>
+
+    <p>Filter by</p>
+    <form action="" method="GET">
+      <select name="filter_brand">
+      {% for brand in brands %}
+        {% if brand.slug == current_brand %}
+        <option selected="selected" value="{{ brand.slug }}">{{ brand }}</option>
+        {% else %}
+        <option value="{{ brand.slug }}">{{ brand }}</option>
+        {% endif %}
+      {% endfor %}
+      </select>
+      <input type="submit" />
+    </form>
     
     <h2>Products</h2>
-    {% with category.get_products as products %}
-        {% if products %}
-            {% include "basic_webshop/include/product_list.html" %}
-        {% else %}
-            <p>No products found in this category.</p>
-        {% endif %}
-    {% endwith %}
+    {% if products %}
+        {% include "basic_webshop/include/product_list.html" %}
+    {% else %}
+        <p>No products found in this category.</p>
+    {% endif %}
 {% endblock content %}
