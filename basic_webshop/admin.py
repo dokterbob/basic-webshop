@@ -130,7 +130,7 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
             'fields': ('active', 'date_publish', 'sort_order', ),
             'classes': ('collapse',),}),
         ('Optional metadata', {'fields':
-                    ('related', 'brand', 'unit')}),
+                    ('related', 'brand', 'unit', 'article_number',)}),
         # ('Dates', {'fields':
         #             ('date_added', 'date_modified', 'date_publish')}),
 

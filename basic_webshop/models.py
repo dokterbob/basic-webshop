@@ -53,6 +53,21 @@ class Customer(UserCustomerBase):
     country = CountryField()
 
 
+ARTICLE_NUMBER_LENGTH = 10
+class ArticleNumberMixin(models.Model):
+    """
+    Item with a required article number, `article_number`, which is
+    represented by a CharField and indexed.
+    """
+
+    class Meta:
+        abstract = True
+
+    article_number = models.CharField(_('article number'),
+                                      db_index=True, blank=True, null=True,
+                                      max_length=ARTICLE_NUMBER_LENGTH)
+
+
 class Brand(AutoUniqueSlugMixin, NamedItemTranslationMixin, MultilingualModel, \
             BrandBase, OrderedItemBase, UniqueSlugItemBase, ):
     """ Brand in the webshop """
@@ -111,7 +126,7 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
               CategorizedItemBase, OrderedItemBase, PricedItemBase, \
               DatedItemBase, ImagesProductMixin, StockedItemMixin, \
               RelatedProductsMixin, BrandedProductMixin, UniqueSlugItemBase, \
-              NamedItemTranslationMixin,
+              NamedItemTranslationMixin, ArticleNumberMixin, \
               AutoUniqueSlugMixin, PublishDateItemBase):
     """
     Basic product model.
