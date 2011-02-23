@@ -16,17 +16,9 @@ from basic_webshop.models import *
 from basic_webshop.baseadmin import *
 
 from sorl.thumbnail.admin import AdminInlineImageMixin
-from sorl.thumbnail import get_thumbnail
-
-from django.conf.urls.defaults import patterns, url
 
 from simplesite.settings import PAGEIMAGE_SIZE
 from simplesite.utils import ExtendibleModelAdminMixin
-
-from tinymce.widgets import TinyMCE
-from tinymce.views import render_to_image_list, render_to_link_list
-
-from django.contrib.auth.admin import UserAdmin
 
 
 class CustomerAdmin(admin.ModelAdmin):
