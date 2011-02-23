@@ -62,7 +62,7 @@ class CategoryDetail(InShopViewMixin, DetailView):
 
         paginator = Paginator(products, 2)
 
-        page_id = self.request.GET.get('p', None)
+        page_id = self.request.GET.get('p', 1)
 
         try:
             products = paginator.page(page_id)
