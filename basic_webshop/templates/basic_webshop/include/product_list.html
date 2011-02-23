@@ -1,19 +1,11 @@
+{% load pagination_tags %}
+
+{% autopaginate products %}
+
 <ul>
-    {% for product in products.object_list %}
+    {% for product in products %}
         <li><a href="{{ product.get_absolute_url }}?category={{ category.slug }}">{{ product }} </a>{{ product.get_price }} </li>
     {% endfor %}
 </ul>
 
-{% if products.has_previous %}
-    <a href="?p={{ products.previous_page_number }}">previous</a>
-{% endif %}
-
-<span class="current">
-    Page {{ products.number }} of {{ products.paginator.num_pages }}.
-</span>
-
-{% if products.has_next %}
-    <a href="?p={{ products.next_page_number }}">next</a>
-{% endif %}
-
-
+{% paginate %}

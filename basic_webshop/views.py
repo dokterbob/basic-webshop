@@ -59,16 +59,6 @@ class CategoryDetail(InShopViewMixin, DetailView):
         context['current_brand'] = filter_brand
         context['brands'] = Brand.objects.all()
         context['subcategories'] = object.get_subcategories()
-
-        paginator = Paginator(products, 2)
-
-        page_id = self.request.GET.get('p', 1)
-
-        try:
-            products = paginator.page(page_id)
-        except (EmptyPage, InvalidPage):
-            raise Http404("Page doesn't exist.")
-
         context['products'] = products
     
         return context
