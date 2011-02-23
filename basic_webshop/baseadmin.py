@@ -78,14 +78,10 @@ class LimitedAdminInlineMixin(object):
         """
         return getattr(self, 'filters', ())
 
-from django.core.urlresolvers import reverse
 
 from sorl.thumbnail import get_thumbnail
 
 from django.conf.urls.defaults import patterns, url
-
-from simplesite.settings import PAGEIMAGE_SIZE
-from simplesite.utils import ExtendibleModelAdminMixin
 
 from tinymce.widgets import TinyMCE
 from tinymce.views import render_to_image_list, render_to_link_list
