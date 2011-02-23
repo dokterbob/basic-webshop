@@ -138,7 +138,7 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
 
     save_as = True
     readonly_fields = ('date_added', 'date_modified', )
-    date_hierarchy = 'date_added'
+    list_per_page = 20
     inlines = (ProductTranslationInline,
                ProductMediaInline,
                ProductImageInline,
