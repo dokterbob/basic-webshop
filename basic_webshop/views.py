@@ -4,17 +4,21 @@ logger = logging.getLogger('basic_webshop')
 from django.utils.functional import SimpleLazyObject
 
 from django.shortcuts import get_object_or_404
+from django.shortcuts import get_list_or_404
+
+from django.http import Http404
+
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 from django.core.urlresolvers import reverse
 
 from django.views.generic import DetailView, ListView, \
                                  TemplateView
 
-from basic_webshop.models import Product, Category, Cart, CartItem
+from basic_webshop.models import Product, Category, Cart, CartItem, Brand
 
 
 from webshop.core.views import InShopViewMixin, CartAddFormMixin, CartAddBase
-
 
 class CategoryList(TemplateView):
     """ A dummy view taking the list of categories from the Mixin
@@ -24,9 +28,50 @@ class CategoryList(TemplateView):
 
 
 class CategoryDetail(InShopViewMixin, DetailView):
-    """ List products for a category. """
+    """ View with all products in category x, a list of subcategories, category
+    picks, new arrivals, sale. Filtering by brand. Ordering by name, brand and
+    price. """
     
     model = Category
+
+    def get_context_data(self, object, **kwargs):
+        context = super(CategoryDetail, self).get_context_data(**kwargs)
+
+        sort_order = self.request.GET.get('sort_order', None)
+        context['sort_order'] = sort_order
+
+        products = object.get_products()
+
+        if sort_order == 'name':
+            # TODO: This doesn't work correctly yet. This should be sorted by name
+            products = products.order_by('slug')
+        elif sort_order == 'brand':
+            products = products.order_by('brand')
+        elif sort_order == 'price':
+            products = products.order_by('price')
+        else:
+            if sort_order != None:
+                raise Http404("This sort order doesn't exist.")
+
+        filter_brand = self.request.GET.get('filter_brand', None)
+        if filter_brand:
+            products = get_list_or_404(products, brand__slug = filter_brand)
+        context['current_brand'] = filter_brand
+        context['brands'] = Brand.objects.all()
+        context['subcategories'] = object.get_subcategories()
+
+        paginator = Paginator(products, 2)
+
+        page_id = self.request.GET.get('p', None)
+
+        try:
+            products = paginator.page(page_id)
+        except (EmptyPage, InvalidPage):
+            raise Http404("Page doesn't exist.")
+
+        context['products'] = products
+    
+        return context
 
 
 class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
