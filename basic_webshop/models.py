@@ -42,15 +42,16 @@ from basic_webshop.basemodels import *
 from django_countries import CountryField
 
 
-class Customer(UserCustomerBase):
-    """ Basic webshop customer. """
-
-    address_line1 = models.CharField(max_length=255)
-    address_line2 = models.CharField(blank=True, max_length=255)
-    address_line3 = models.CharField(blank=True, max_length=255)
-    phone_number = models.CharField(blank=True, max_length=80)
-    # Make phone numbers all-numeric
+class Address(CustomerAddressBase):
+    address = models.CharField(max_length=50)
+    zip_code = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
     country = CountryField()
+
+
+class Customer(BilledCustomerMixin, ShippedCustomerMixin, UserCustomerBase):
+    """ Basic webshop customer. """
+    pass
 
 
 ARTICLE_NUMBER_LENGTH = 10
@@ -284,7 +285,7 @@ class OrderStateChange(OrderStateChangeBase):
     pass
 
 
-class Order(OrderBase):
+class Order(BilledOrderMixin, ShippedOrderMixin, OrderBase):
     """ Basic order model. """
 
     pass

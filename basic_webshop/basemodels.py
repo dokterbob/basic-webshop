@@ -123,3 +123,86 @@ class NamedItemTranslationMixin(object):
         return self.unicode_wrapper('name')
 
 
+# ADDRESS BASE CLASSES
+
+from webshop.core.settings import CUSTOMER_MODEL
+
+
+class AddressBase(models.Model):
+    """ Base class for addresses """
+
+    class Meta:
+        abstract = True
+        verbose_name = _('address')
+        verbose_name_plural = _('addresses')
+
+    addressee = models.CharField(_('addressee'), max_length=255)
+
+    def __unicode__(self):
+        return self.addressee
+
+
+class CustomerAddressBase(models.Model):
+    """ Base class for customer's addresses """
+
+    class Meta(AddressBase.Meta):
+        pass
+
+    addressee = models.CharField(_('addressee'), max_length=255, blank=True)
+    customer = models.ForeignKey(CUSTOMER_MODEL)
+
+    def save(self):
+        """
+        Default the addressee to the full name of the user if none has
+        been specified explicitly.
+        """
+        if not self.addressee:
+            self.addressee = self.customer.get_full_name()
+
+        super(CustomerAddressBase, self).save()
+
+
+# SHIPPING BASE CLASSES
+
+ADDRESS_MODEL = 'basic_webshop.Address'
+
+class BilledOrderMixin(models.Model):
+    class Meta:
+        abstract = True
+
+    billing_address = models.ForeignKey(ADDRESS_MODEL, 
+                                        related_name='billed%(class)s_set')
+
+
+class ShippedOrderMixin(models.Model):
+    class Meta:
+        abstract = True
+
+    shipping_address = models.ForeignKey(ADDRESS_MODEL, 
+                                        related_name='shippable%(class)s_set')
+
+
+class BilledCustomerMixin(object):
+    """
+    Customer Mixin class for shops in which orders make use
+    of a billing address.
+    """
+
+    def get_recent_billing(self):
+        """ Return the most recent billing address """
+        latest_order = self.get_latest_order()
+
+        return latest_order.billing_address
+
+
+class ShippedCustomerMixin(object):
+    """
+    Customer Mixin class for shops in which orders make use
+    of a shipping address.
+    """
+
+    def get_recent_shipping(self):
+        """ Return the most recent shipping address """
+        latest_order = self.get_latest_order()
+
+        return latest_order.billing_address
