@@ -23,6 +23,7 @@ WEBSHOP_ORDER_STATES = (
     (60, _('Complete')),
     (70, _('Cancelled')),
 )
+WEBSHOP_ORDER_COMPLETED_STATES = (60, )
 WEBSHOP_ORDERSTATE_CHANGE_MODEL = 'basic_webshop.OrderStateChange'
 WEBSHOP_ORDERITEM_MODEL = 'basic_webshop.OrderItem'
 WEBSHOP_CATEGORY_MODEL = 'basic_webshop.Category'
