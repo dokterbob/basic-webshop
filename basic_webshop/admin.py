@@ -5,6 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 
+from webshop.core.utils.admin import LimitedAdminInlineMixin
+
 from webshop.extensions.variations.admin import ProductVariationInline, \
                                                 VariationInlineMixin
 from webshop.extensions.images.admin import ProductImageInline, \
