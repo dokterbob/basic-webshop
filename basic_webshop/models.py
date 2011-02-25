@@ -28,7 +28,11 @@ from webshop.extensions.discounts.models import DiscountBase, \
                                                 DateRangeDiscountMixin, \
                                                 ManyCategoryDiscountMixin, \
                                                 LimitedUseDiscountMixin, \
-                                                CouponDiscountMixin
+                                                CouponDiscountMixin, \
+                                                OrderDiscountAmountMixin, \
+                                                ItemDiscountAmountMixin, \
+                                                OrderDiscountPercentageMixin, \
+                                                ItemDiscountPercentageMixin
 
 from multilingual_model.models import MultilingualModel, \
                                       MultilingualTranslation
@@ -369,5 +373,7 @@ class CategoryFeaturedProduct(models.Model):
 
 class Discount(NamedItemBase, ManyCategoryDiscountMixin, CouponDiscountMixin, \
                LimitedUseDiscountMixin, ManyProductDiscountMixin, \
-               DateRangeDiscountMixin, DiscountBase):
+               DateRangeDiscountMixin, OrderDiscountAmountMixin, \
+               ItemDiscountAmountMixin, OrderDiscountPercentageMixin, \
+               ItemDiscountPercentageMixin, DiscountBase):
     pass
