@@ -114,7 +114,7 @@ class CartAdd(CartAddBase, ProductDetail):
 
 from django.forms.models import modelformset_factory
 
-from webshop.core.util import get_cart_from_request
+from webshop.core.utils import get_cart_from_request
 from django.views.generic.edit import BaseFormView
 
 from django.contrib import messages

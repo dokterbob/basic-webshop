@@ -7,8 +7,7 @@ from django.core.urlresolvers import reverse
 
 from webshop.core.utils.admin import LimitedAdminInlineMixin
 
-from webshop.extensions.variations.admin import ProductVariationInline, \
-                                                VariationInlineMixin
+from webshop.extensions.variations.admin import ProductVariationInline
 from webshop.extensions.images.admin import ProductImageInline, \
                                             ImagesProductAdminMixin
 
@@ -72,11 +71,6 @@ class ImageProductVariationInline(LimitedAdminInlineMixin, ProductVariationInlin
 
 
 class ProductVariationTranslationInline(LimitedAdminInlineMixin, admin.TabularInline):
-    """
-    TODO/bug:
-        VariationInlineMixin should limit the variations we can select to those
-        associated with the current product, but this doesn't work.
-    """
     model = ProductVariationTranslation
 
     def get_filters(self, obj):
