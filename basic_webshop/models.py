@@ -33,6 +33,8 @@ from webshop.extensions.discounts.models import DiscountBase, \
                                                 ItemDiscountAmountMixin, \
                                                 OrderDiscountPercentageMixin, \
                                                 ItemDiscountPercentageMixin
+from webshop.extensions.shipping.models import ShippedOrderMixin, \
+                                               ShippedCustomerMixin
 
 from multilingual_model.models import MultilingualModel, \
                                       MultilingualTranslation

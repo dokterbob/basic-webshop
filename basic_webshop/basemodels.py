@@ -174,14 +174,6 @@ class BilledOrderMixin(models.Model):
                                         related_name='billed%(class)s_set')
 
 
-class ShippedOrderMixin(models.Model):
-    class Meta:
-        abstract = True
-
-    shipping_address = models.ForeignKey(ADDRESS_MODEL, 
-                                        related_name='shippable%(class)s_set')
-
-
 class BilledCustomerMixin(object):
     """
     Customer Mixin class for shops in which orders make use
@@ -195,14 +187,3 @@ class BilledCustomerMixin(object):
         return latest_order.billing_address
 
 
-class ShippedCustomerMixin(object):
-    """
-    Customer Mixin class for shops in which orders make use
-    of a shipping address.
-    """
-
-    def get_recent_shipping(self):
-        """ Return the most recent shipping address """
-        latest_order = self.get_latest_order()
-
-        return latest_order.billing_address
