@@ -345,6 +345,34 @@ class Category(MPTTCategoryBase, MultilingualModel, NonUniqueSlugItemBase, \
                NamedItemTranslationMixin):
     """ Basic category model. """
 
+    highlight_image = ImageField(verbose_name=_('highlight image'),
+                                 upload_to='category_highlight',
+                                 blank=True, null=True)
+    highlight_title = models.CharField(verbose_name=_('highlight title'),
+                                      blank=True, max_length=100)
+    highlight_link = models.URLField(verbose_name=_('hightlight link'),
+                                     blank=True, verify_exists=True)
+    highlight_text = models.TextField(verbose_name=('highlight text'),
+                                      blank=True)
+
+    def highlight_html(self):
+        """
+        HTML to show for the category highlight part. This is displayed in the
+        admin as well as on the website and....
+        TODO: !SHOULD USE PROPER SCALING!
+        """
+        if self.pk:
+            if self.highlight_image:
+                return u'<a href="%s"><img src="%s" alt="%s" /></a>' % \
+                    (self.highlight_link, self.highlight_image.url, self.highlight_text)
+            else:
+                return 'No hightlight has been defined for this category.'
+
+        return ''
+    highlight_html.allow_tags = True
+    highlight_html.short_description = ''
+
+
     class Meta(MPTTCategoryBase.Meta, NamedItemBase.Meta, OrderedItemBase.Meta):
         unique_together = ('parent', 'slug')
 

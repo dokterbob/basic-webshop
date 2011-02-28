@@ -208,7 +208,13 @@ class CategoryAdmin(MPTTModelAdmin):
     """ Model admin for categories. """
 
     save_as = True
-    fields = ('parent', 'slug', 'active', 'sort_order')
+    fieldsets = ((None, 
+                  {'fields': ('parent', 'slug', 'active', 'sort_order')}),
+                 ('Category highlight',
+                  {'fields': ('highlight_image', 'highlight_title', 'highlight_link',
+              'highlight_text', 'highlight_html')})
+    )
+    readonly_fields = ('highlight_html', )
     # prepopulated_fields = {"slug": ("name",)}
     inlines = (CategoryTranslationInlineInline, CategoryFeaturedInline, )
     list_filter = ('active', 'parent', )
@@ -248,6 +254,15 @@ class CategoryAdmin(MPTTModelAdmin):
 
     admin_products.allow_tags = True
     admin_products.short_description = _('products')
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        # Override MPTT's default field in order to retain
+        # backwards-compatible behaviour.
+        superclass = super(admin.ModelAdmin, self)
+        return superclass.formfield_for_foreignkey(db_field,
+                                                   request,
+                                                   **kwargs)
+
 
 admin.site.register(Category, CategoryAdmin)
 
