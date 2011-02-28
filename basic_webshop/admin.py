@@ -22,6 +22,14 @@ from simplesite.settings import PAGEIMAGE_SIZE
 from simplesite.utils import ExtendibleModelAdminMixin
 
 
+class ShippingMethodAdmin(admin.ModelAdmin):
+    filter_horizontal = ('countries', )
+    list_display = ('name', 'order_cost')
+    list_filter = ('countries', )
+
+admin.site.register(ShippingMethod, ShippingMethodAdmin)
+
+
 class CustomerAdmin(admin.ModelAdmin):
     pass
 

@@ -33,8 +33,14 @@ from webshop.extensions.discounts.models import DiscountBase, \
                                                 ItemDiscountAmountMixin, \
                                                 OrderDiscountPercentageMixin, \
                                                 ItemDiscountPercentageMixin
-from webshop.extensions.shipping.models import ShippedOrderMixin, \
-                                               ShippedCustomerMixin
+from webshop.extensions.shipping.advanced.models import ShippableOrderBase, \
+                                                        ShippableOrderItemBase, \
+                                                        ShippableCustomerMixin, \
+                                                        ShippingMethodBase, \
+                                                        OrderShippingMethodMixin, \
+                                                        MinimumOrderAmountShippingMixin
+
+
 
 from multilingual_model.models import MultilingualModel, \
                                       MultilingualTranslation
@@ -45,7 +51,16 @@ from sorl.thumbnail import ImageField
 
 from basic_webshop.basemodels import *
 
-from django_countries import CountryField
+from countries.fields import CountryField
+
+
+class ShippingMethod(NamedItemBase,
+                     OrderShippingMethodMixin,
+                     MinimumOrderAmountShippingMixin,
+                     CountriesShippingMixin,
+                     ShippingMethodBase):
+    """ Shipping method """
+    pass
 
 
 class Address(CustomerAddressBase):
@@ -55,7 +70,7 @@ class Address(CustomerAddressBase):
     country = CountryField()
 
 
-class Customer(BilledCustomerMixin, ShippedCustomerMixin, UserCustomerBase):
+class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
     """ Basic webshop customer. """
     pass
 
@@ -291,13 +306,17 @@ class OrderStateChange(OrderStateChangeBase):
     pass
 
 
-class Order(BilledOrderMixin, ShippedOrderMixin, OrderBase):
+class Order(BilledOrderMixin, ShippableOrderBase, OrderBase):
     """ Basic order model. """
 
     pass
 
 
-class OrderItem(OrderItemBase, UniqueSlugItemBase, NamedItemBase, PricedItemBase):
+class OrderItem(ShippableOrderItemBase,
+                OrderItemBase,
+                UniqueSlugItemBase,
+                NamedItemBase,
+                PricedItemBase):
     """
     Order items should have:
 

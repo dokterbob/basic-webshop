@@ -170,7 +170,7 @@ class BilledOrderMixin(models.Model):
     class Meta:
         abstract = True
 
-    billing_address = models.ForeignKey(ADDRESS_MODEL, 
+    billing_address = models.ForeignKey(ADDRESS_MODEL,
                                         related_name='billed%(class)s_set')
 
 
@@ -185,5 +185,66 @@ class BilledCustomerMixin(object):
         latest_order = self.get_latest_order()
 
         return latest_order.billing_address
+
+# COUNTRY-DEPENDANT SHIPPING CLASSES
+from countries.fields import CountryField, CountriesField
+
+
+class CountryShippingMixin(models.Model):
+    """ Shipping method valid only for a single country. """
+    class Meta:
+        abstract = True
+
+    country = CountryField(null=True, blank=True)
+
+    @classmethod
+    def get_valid_methods(cls, country=None, **kwargs):
+        """
+        Return valid shipping methods for the specified country or the ones
+        for which the country requirement has not been specified otherwise.
+        """
+
+        superclass = super(CountryShippingMixin, cls)
+
+        valid = superclass.get_valid_methods(**kwargs)
+
+        valid_no_country = valid.filter(country__isnull=True)
+
+        if country:
+            valid = valid.filter(country=country) | valid_no_country
+        else:
+            valid = valid_no_country
+
+        return valid
+
+
+class CountriesShippingMixin(models.Model):
+    """ Shipping method valid only for a selection of countries. """
+
+    class Meta:
+        abstract = True
+
+    countries = CountriesField(null=True, blank=True)
+
+    @classmethod
+    def get_valid_methods(cls, country=None, **kwargs):
+        """
+        Return valid shipping methods for the specified country or the ones
+        for which the country requirement has not been specified otherwise.
+        """
+
+        superclass = super(CountryShippingMixin, cls)
+
+        valid = superclass.get_valid_methods(**kwargs)
+
+        valid_no_country = valid.filter(country__isnull=True)
+
+        if country:
+            valid = valid.filter(countries=country) | valid_no_country
+        else:
+            valid = valid_no_country
+
+        return valid
+
 
 

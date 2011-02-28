@@ -32,6 +32,9 @@ WEBSHOP_PRODUCTVARIATION_MODEL = 'basic_webshop.ProductVariation'
 WEBSHOP_PRODUCTIMAGE_MODEL = 'basic_webshop.ProductImage'
 WEBSHOP_BRAND_MODEL = 'basic_webshop.Brand'
 WEBSHOP_DISCOUNT_MODEL = 'basic_webshop.Discount'
+WEBSHOP_SHIPPING_ADDRESS_MODEL = 'basic_webshop.Address'
+WEBSHOP_SHIPPING_METHOD_MODEL = 'basic_webshop.ShippingMethod'
 
 WEBSHOP_CURRENCY_PRICE_FIELD = 'webshop.extensions.currency.simple.fields.PriceField'
+
 
