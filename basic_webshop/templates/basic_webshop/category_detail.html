@@ -26,19 +26,21 @@
       <input type="submit" />
     </form>
 
+    {% if not brands|length_is:"0" %}
     <p>Filter by</p>
     <form action="" method="GET">
-      <select name="filter_brand">
-      {% for brand in brands %}
-        {% if brand.slug == current_brand %}
-        <option selected="selected" value="{{ brand.slug }}">{{ brand }}</option>
-        {% else %}
-        <option value="{{ brand.slug }}">{{ brand }}</option>
-        {% endif %}
-      {% endfor %}
+        <select name="filter_brand">
+        {% for brand in brands %}
+          {% if brand.slug == current_brand %}
+          <option selected="selected" value="{{ brand.slug }}">{{ brand }}</option>
+          {% else %}
+          <option value="{{ brand.slug }}">{{ brand }}</option>
+          {% endif %}
+        {% endfor %}
       </select>
       <input type="submit" />
     </form>
+    {% endif %}
     
     <h2>Products</h2>
     {% if products %}
