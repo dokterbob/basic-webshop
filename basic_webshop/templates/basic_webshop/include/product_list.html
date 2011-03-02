@@ -1,10 +1,18 @@
 {% load pagination_tags %}
+{% load thumbnail %}
 
 {% autopaginate products %}
 
 <ul>
     {% for product in products %}
-        <li><a href="{{ product.get_absolute_url }}?category={{ category.slug }}">{{ product }} </a>{{ product.get_price }} </li>
+
+    <li>
+      {% thumbnail product.get_default_image.image "200x100" as im %}
+      <img src="{{ im.url }}">
+      {% endthumbnail %}
+        <a href="{{ product.get_absolute_url }}?category={{ category.slug }}">{{ product }} </a></a>{{ product.get_price }}
+      </img>
+    </li>
     {% endfor %}
 </ul>
 
