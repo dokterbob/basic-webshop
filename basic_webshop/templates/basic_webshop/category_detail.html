@@ -1,5 +1,6 @@
 {% extends "basic_webshop/base.html" %}
 {% load pagination_tags %}
+{% load generate_url %}
 
 {% block content %}
     <h2><a href="{% url category_list %}">Category list</a></h2>
@@ -15,31 +16,22 @@
     {% endif %}
 
     <p>Order on:</p>
-    <form action="" method="GET">
-      <select name="sort_order">
 
-          <option {% if sort_order == 'name' %} selected="selected" {% endif %} value="name">Name</option>
+    <ul>
+      {% if sort_order != 'name' %}<li><a href="{% generate_url 'sort_order' 'name'  %}">Name</a></li>{% endif %}
+      {% if sort_order != 'brand' %}<li><a href="{% generate_url 'sort_order' 'brand' %}">Brand</a></li>{% endif %}
+      {% if sort_order != 'price' %}<li><a href="{% generate_url 'sort_order' 'price' %}">Price</a></li>{% endif %}
+    </ul>
 
-          <option {% if sort_order == 'brand' %} selected="selected" {% endif %} value="brand">Brand</option>
-          <option {% if sort_order == 'price' %} selected="selected" {% endif %} value="price">Price</option>
-      </selected>
-      <input type="submit" />
-    </form>
-
-    {% if not brands|length_is:"0" %}
-    <p>Filter by</p>
-    <form action="" method="GET">
-        <select name="filter_brand">
-        {% for brand in brands %}
-          {% if brand.slug == current_brand %}
-          <option selected="selected" value="{{ brand.slug }}">{{ brand }}</option>
-          {% else %}
-          <option value="{{ brand.slug }}">{{ brand }}</option>
-          {% endif %}
-        {% endfor %}
-      </select>
-      <input type="submit" />
-    </form>
+    {% if brands %}
+      <p>Filter by</p>
+      {% for brand in brands %}
+        {% if brand.slug == current_brand %}
+        <a href="{% generate_url 'filter_brand' brand.slug %}">{{ brand }}</a>(Geselecteerd)
+        {% else %}
+        <a href="{% generate_url 'filter_brand' brand.slug %}">{{ brand }}</a>
+        {% endif %}
+      {% endfor %}
     {% endif %}
     
     <h2>Products</h2>
@@ -48,4 +40,5 @@
     {% else %}
         <p>No products found in this category.</p>
     {% endif %}
+
 {% endblock content %}
