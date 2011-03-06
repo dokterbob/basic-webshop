@@ -75,7 +75,7 @@ class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
     pass
 
 
-ARTICLE_NUMBER_LENGTH = 10
+ARTICLE_NUMBER_LENGTH = 11
 class ArticleNumberMixin(models.Model):
     """
     Item with a required article number, `article_number`, which is
