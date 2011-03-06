@@ -1,0 +1,14 @@
+{% extends "basic_webshop/base.html" %}
+
+{% block content %}
+    <h1>Shop index</h1>
+    
+    <h2>Categories</h2>
+    {% with main_categories as categories %}
+        {% if categories %}
+            {% include "basic_webshop/include/category_list.html" %}
+        {% else %}
+            <p>No categories found.</p>
+        {% endif %}
+    {% endwith %}
+{% endblock content %}

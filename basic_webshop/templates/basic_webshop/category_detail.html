@@ -1,0 +1,44 @@
+{% extends "basic_webshop/base.html" %}
+{% load pagination_tags %}
+{% load generate_url %}
+
+{% block content %}
+    <h2><a href="{% url category_list %}">Category list</a></h2>
+    <h1>Category: {{ category }}</h1>
+
+    {% if subcategories %}
+    <p>Subcategories</p>
+    <ul>
+      {% for c in subcategories %}
+        <li>{{ c }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p>Order on:</p>
+
+    <ul>
+      {% if sort_order != 'name' %}<li><a href="{% generate_url 'sort_order' 'name'  %}">Name</a></li>{% endif %}
+      {% if sort_order != 'brand' %}<li><a href="{% generate_url 'sort_order' 'brand' %}">Brand</a></li>{% endif %}
+      {% if sort_order != 'price' %}<li><a href="{% generate_url 'sort_order' 'price' %}">Price</a></li>{% endif %}
+    </ul>
+
+    {% if brands %}
+      <p>Filter by</p>
+      {% for brand in brands %}
+        {% if brand.slug == current_brand %}
+        <a href="{% generate_url 'filter_brand' brand.slug %}">{{ brand }}</a>(Geselecteerd)
+        {% else %}
+        <a href="{% generate_url 'filter_brand' brand.slug %}">{{ brand }}</a>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    
+    <h2>Products</h2>
+    {% if products %}
+        {% include "basic_webshop/include/product_list.html" %}
+    {% else %}
+        <p>No products found in this category.</p>
+    {% endif %}
+
+{% endblock content %}
