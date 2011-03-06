@@ -57,6 +57,7 @@ class CategoryDetail(InShopViewMixin, DetailView):
         if filter_brand:
             products = get_list_or_404(products, brand__slug = filter_brand)
         context['current_brand'] = filter_brand
+        context['sort_order'] = sort_order
         context['brands'] = Brand.objects.all()
         context['subcategories'] = object.get_subcategories()
         context['products'] = products
