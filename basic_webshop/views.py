@@ -64,6 +64,22 @@ class CategoryDetail(InShopViewMixin, DetailView):
     
         return context
 
+class SubCategoryDetail(CategoryDetail):
+    def get_context_data(self, object, **kwargs):
+        context = super(SubCategoryDetail, self).get_context_data(object, **kwargs)
+
+        return context
+
+    def get_object(self):
+        model = self.model()
+
+        category = self.kwargs.get('category', None)
+        subcategory = self.kwargs.get('subcategory', None)
+
+        q = get_object_or_404(model.get_main_categories(), slug = category)
+        q = get_object_or_404(q.get_subcategories(), slug = subcategory)
+
+        return q
 
 class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
     """ List details for a product. """
