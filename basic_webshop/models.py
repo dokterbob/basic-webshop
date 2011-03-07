@@ -23,22 +23,18 @@ from webshop.extensions.stock.advanced.models import StockedCartItemMixin, \
                                                    StockedItemMixin
 from webshop.extensions.related.models import RelatedProductsMixin
 from webshop.extensions.brands.models import BrandBase, BrandedProductMixin
-from webshop.extensions.discounts.models import DiscountBase, \
-                                                ManyProductDiscountMixin, \
-                                                DateRangeDiscountMixin, \
-                                                ManyCategoryDiscountMixin, \
-                                                LimitedUseDiscountMixin, \
-                                                CouponDiscountMixin, \
-                                                OrderDiscountAmountMixin, \
-                                                ItemDiscountAmountMixin, \
-                                                OrderDiscountPercentageMixin, \
-                                                ItemDiscountPercentageMixin
-from webshop.extensions.shipping.advanced.models import ShippableOrderBase, \
-                                                        ShippableOrderItemBase, \
-                                                        ShippableCustomerMixin, \
-                                                        ShippingMethodBase, \
-                                                        OrderShippingMethodMixin, \
-                                                        MinimumOrderAmountShippingMixin
+
+from webshop.extensions.discounts.advanced. models import \
+    DiscountBase, ManyProductDiscountMixin, DateRangeDiscountMixin, \
+    ManyCategoryDiscountMixin, LimitedUseDiscountMixin, CouponDiscountMixin, \
+    OrderDiscountAmountMixin, ItemDiscountAmountMixin, \
+    OrderDiscountPercentageMixin, ItemDiscountPercentageMixin, \
+    CalculatedOrderDiscountMixin, CalculatedItemDiscountMixin, \
+    DiscountedOrderMixin, DiscountedOrderItemMixin, DiscountCouponMixin
+
+from webshop.extensions.shipping.advanced.models import \
+    ShippableOrderBase, ShippableOrderItemBase, ShippableCustomerMixin, \
+    ShippingMethodBase, OrderShippingMethodMixin, MinimumOrderAmountShippingMixin
 
 
 
@@ -271,13 +267,24 @@ class ProductMedia(NamedItemBase):
         return self.mediafile.url
 
 
-class Cart(CartBase):
+class Cart(CartBase,
+           CalculatedOrderDiscountMixin,
+           DiscountCouponMixin):
     """ Basic shopping cart model. """
 
-    pass
+    def add_item(self, product, quantity=1, variation=None):
+        """ Make sure we store the variation, if applicable. """
+
+        cartitem = super(Cart, self).add_item(product, quantity)
+        cartitem.variation = variation
+
+        assert self.product.variation_set.exists() and variation, \
+            'Product has variations but no variation specified here.'
 
 
-class CartItem(CartItemBase, StockedCartItemMixin):
+class CartItem(CartItemBase, 
+               StockedCartItemMixin,
+               CalculatedItemDiscountMixin):
     """
     Item in a shopping cart.
     """
@@ -293,28 +300,23 @@ class CartItem(CartItemBase, StockedCartItemMixin):
         return self.product.is_available()
 
 
-    def addProduct(self, product, quantity=1, variation=None):
-        """ Make sure we store the variation, if applicable. """
-
-        cartitem = super(CartItem, self).addProduct(product, quantity)
-        cartitem.variation = variation
-
-        assert self.product.variation_set.exists() and variation, \
-            'Product has variations but no variation specified here.'
-
 class OrderStateChange(OrderStateChangeBase):
     """ Basic order state change. """
 
     pass
 
 
-class Order(BilledOrderMixin, ShippableOrderBase, OrderBase):
+class Order(BilledOrderMixin,
+            ShippableOrderBase,
+            DiscountedOrderMixin, DiscountCouponMixin,
+            OrderBase):
     """ Basic order model. """
 
     pass
 
 
 class OrderItem(ShippableOrderItemBase,
+                DiscountedOrderItemMixin,
                 OrderItemBase,
                 UniqueSlugItemBase,
                 NamedItemBase,
