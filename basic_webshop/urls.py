@@ -12,10 +12,12 @@ urlpatterns = patterns('',
          CategoryList.as_view(), name='category_list'),
     surl(r'^categories/<slug:s>/$',
          CategoryDetail.as_view(), name='category_detail'),
+    surl(r'^categories/<category:s>/<subcategory:s>/$',
+         SubCategoryDetail.as_view(), name='category_detail'),
 
     surl(r'^products/<slug:s>/$',
          ProductDetail.as_view(), name='product_detail'),
-    
+
     surl(r'^cart/$',
          CartDetail.as_view(), name='cart_detail'),
     surl(r'^cart/add/$', CartAdd.as_view(), name='cart_add'),

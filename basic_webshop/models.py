@@ -24,7 +24,7 @@ from webshop.extensions.stock.advanced.models import StockedCartItemMixin, \
 from webshop.extensions.related.models import RelatedProductsMixin
 from webshop.extensions.brands.models import BrandBase, BrandedProductMixin
 
-from webshop.extensions.discounts.advanced. models import \
+from webshop.extensions.discounts.advanced.models import \
     DiscountBase, ManyProductDiscountMixin, DateRangeDiscountMixin, \
     ManyCategoryDiscountMixin, LimitedUseDiscountMixin, CouponDiscountMixin, \
     OrderDiscountAmountMixin, ItemDiscountAmountMixin, \
@@ -35,7 +35,6 @@ from webshop.extensions.discounts.advanced. models import \
 from webshop.extensions.shipping.advanced.models import \
     ShippableOrderBase, ShippableOrderItemBase, ShippableCustomerMixin, \
     ShippingMethodBase, OrderShippingMethodMixin, MinimumOrderAmountShippingMixin
-
 
 
 from multilingual_model.models import MultilingualModel, \
