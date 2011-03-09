@@ -413,7 +413,7 @@ class CategoryFeaturedProduct(models.Model):
         verbose_name = _('featured product')
         verbose_name_plural = _('featured products')
 
-    category = models.ForeignKey(Category)
+    category = models.ForeignKey(Category, related_name='featured_products')
     product = models.ForeignKey(Product)
     featured_order = models.PositiveSmallIntegerField(_('featured order'),
                                         blank=True, null=True)
