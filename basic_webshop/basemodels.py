@@ -66,8 +66,12 @@ class AutoSlugMixin(object):
         return slugify(name)
 
     def generate_slug(self):
-        name = getattr(self, self._slug_from)
-        return self.slugify(name)
+        slug_base = getattr(self, self._slug_from)
+
+        assert slug_base, \
+            u'Attribute %s, the slug source, is empty' % self._slug_from
+
+        return self.slugify(slug_base)
 
     def update_slug(self, commit=True):
         if not getattr(self, self._slug_field) and \
