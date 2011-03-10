@@ -81,7 +81,7 @@ class ArticleNumberMixin(models.Model):
         abstract = True
 
     article_number = models.CharField(_('article number'),
-                                      db_index=True, blank=True, null=True,
+                                      db_index=True,
                                       max_length=ARTICLE_NUMBER_LENGTH)
 
 
