@@ -19,4 +19,9 @@ d91adbe6c9d1e7a837c31918fc8c104e59036b64
 ----------------------------------------
 Length of `article_number` from 10 to 11 for Product model.
 
+03df5da3ccc33b9d227ff5e0c1e722ac3f26c981
+----------------------------------------
+Product.article_number: null=False
+Product.brand: null=False
+
 
