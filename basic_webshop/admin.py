@@ -149,10 +149,9 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
     list_filter = ('active', 'date_publish', \
                    'brand', 'categories')
     list_editable = ('sort_order', 'active')
-    search_fields = ('slug', 'translations__name',
+    search_fields = ('slug', 'translations__name', 'article_number',
                      'categories__translations__name', 'categories__slug',
-                     'brand__translations__name', 'brand__slug',
-                     'price__article_number', )
+                     'brand__translations__name', 'brand__slug', )
 
     max_categories_display = 2
     def admin_categories(self, obj):
