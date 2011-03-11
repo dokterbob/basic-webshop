@@ -3,7 +3,7 @@ from django.contrib.auth import login
 
 from registration.backends.simple import SimpleBackend
 from basic_webshop.registration_backends.simple.forms import CaptchaRegistrationForm
-from basic_webshop.models import Customer
+from basic_webshop.models import Customer, Address
 
 from registration import signals
 
@@ -19,11 +19,21 @@ class SimpleCustomerBackend(SimpleBackend):
         username, email, password, first_name, last_name = kwargs['username'], \
             kwargs['email'], kwargs['password1'], kwargs['first_name'], \
             kwargs['last_name']
-        
+
         customer = Customer.objects.create_user(username, email, password)
 
         customer.first_name = first_name
         customer.last_name = last_name
+
+        address = Address()
+
+        address.postal_address = kwargs['address']
+        address.zip_code = kwargs['zip_code']
+        address.city = kwargs['city']
+        address.country = kwargs['country']
+        address.customer = customer
+
+        address.save()
 
         customer.save()
 

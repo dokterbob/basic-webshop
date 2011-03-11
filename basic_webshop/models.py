@@ -71,7 +71,6 @@ class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
     """ Basic webshop customer. """
     objects = UserManager()
 
-
 ARTICLE_NUMBER_LENGTH = 11
 class ArticleNumberMixin(models.Model):
     """
