@@ -62,14 +62,25 @@ class ShippingMethod(NamedItemBase,
 
 class Address(CustomerAddressBase):
     postal_address = models.CharField(max_length=50)
+    house_number = models.DecimalField(max_digits=5, decimal_places=0)
+    house_number_addition = models.CharField(max_length=10)
     zip_code = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
     country = CountryField()
-
+    telephone_number = models.CharField(max_length=50)
 
 class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
     """ Basic webshop customer. """
     objects = UserManager()
+
+    GENDER_CHOICES = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+    )
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+
+    tussenvoegsel = models.CharField(max_length=200)
+    birthday = models.DateField()
 
 ARTICLE_NUMBER_LENGTH = 11
 class ArticleNumberMixin(models.Model):
