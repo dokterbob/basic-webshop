@@ -5,6 +5,8 @@ logger = logging.getLogger(__name__)
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from django.contrib.auth.models import UserManager
+
 from webshop.core.models import ProductBase, CartBase, CartItemBase, \
                                 OrderBase, OrderItemBase, UserCustomerBase, \
                                 OrderStateChangeBase
@@ -59,16 +61,30 @@ class ShippingMethod(NamedItemBase,
 
 
 class Address(CustomerAddressBase):
-    address = models.CharField(max_length=50)
+    postal_address = models.CharField(max_length=50)
+    house_number = models.DecimalField(max_digits=5, decimal_places=0)
+    house_number_addition = models.CharField(max_length=10)
     zip_code = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
     country = CountryField()
-
+    telephone_number = models.CharField(max_length=50)
 
 class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
     """ Basic webshop customer. """
-    pass
+    objects = UserManager()
 
+    GENDER_CHOICES = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+    )
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+
+    tussenvoegsel = models.CharField(max_length=200)
+    # TODO: The reason birthday can be null is because the UserManager creates
+    # and saves a new user (without a birthday) which violates the not NULL
+    # constraint. The solution is to create a CustomerManager with UserManager
+    # as superclass.
+    birthday = models.DateField(null=True)
 
 ARTICLE_NUMBER_LENGTH = 11
 class ArticleNumberMixin(models.Model):
