@@ -5,6 +5,8 @@ logger = logging.getLogger(__name__)
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from django.contrib.auth.models import UserManager
+
 from webshop.core.models import ProductBase, CartBase, CartItemBase, \
                                 OrderBase, OrderItemBase, UserCustomerBase, \
                                 OrderStateChangeBase
@@ -67,7 +69,7 @@ class Address(CustomerAddressBase):
 
 class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
     """ Basic webshop customer. """
-    pass
+    objects = UserManager()
 
 
 ARTICLE_NUMBER_LENGTH = 11
