@@ -80,7 +80,11 @@ class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
     tussenvoegsel = models.CharField(max_length=200)
-    birthday = models.DateField()
+    # TODO: The reason birthday can be null is because the UserManager creates
+    # and saves a new user (without a birthday) which violates the not NULL
+    # constraint. The solution is to create a CustomerManager with UserManager
+    # as superclass.
+    birthday = models.DateField(null=True)
 
 ARTICLE_NUMBER_LENGTH = 11
 class ArticleNumberMixin(models.Model):

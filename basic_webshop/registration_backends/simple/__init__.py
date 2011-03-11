@@ -23,19 +23,22 @@ class SimpleCustomerBackend(SimpleBackend):
         customer = Customer.objects.create_user(username, email, password)
 
         customer.first_name = first_name
+        customer.tussenvoegsel = kwargs['tussenvoegsel']
         customer.last_name = last_name
+        customer.gender = kwargs['gender']
+        customer.birthday = kwargs['birthday']
+        customer.save()
 
         address = Address()
-
         address.postal_address = kwargs['address']
+        address.house_number = kwargs['house_number']
+        address.house_number_addition = kwargs['house_number_addition']
         address.zip_code = kwargs['zip_code']
         address.city = kwargs['city']
         address.country = kwargs['country']
         address.customer = customer
-
+        address.telephone_number = kwargs['phone_number']
         address.save()
-
-        customer.save()
 
         # authenticate() always has to be called before login(), and
         # will return the user we just created.
