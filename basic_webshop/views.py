@@ -39,7 +39,7 @@ class CategoryDetail(DetailView):
         subcategories = object.get_subcategories()
 
         # Only get brands that are available in the current category
-        brands = Brand.objects.filter(product=products)
+        brands = Brand.objects.filter(product__in=products)
 
         context.update({'products': products,
                        'subcategories': subcategories,
