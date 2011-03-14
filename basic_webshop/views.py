@@ -8,8 +8,6 @@ from django.shortcuts import get_list_or_404
 
 from django.http import Http404
 
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
-
 from django.core.urlresolvers import reverse
 
 from django.views.generic import DetailView, ListView, \
@@ -27,18 +25,17 @@ class CategoryList(TemplateView):
     template_name = 'basic_webshop/category_list.html'
 
 
-class CategoryDetail(InShopViewMixin, DetailView):
+class CategoryDetail(DetailView):
     """ View with all products in category x, a list of subcategories, category
     picks, new arrivals, sale. Filtering by brand. Ordering by name, brand and
     price. """
-    
+
     model = Category
 
     def get_context_data(self, object, **kwargs):
         context = super(CategoryDetail, self).get_context_data(**kwargs)
 
         sort_order = self.request.GET.get('sort_order', None)
-        context['sort_order'] = sort_order
 
         products = object.get_products()
 
@@ -51,35 +48,50 @@ class CategoryDetail(InShopViewMixin, DetailView):
             products = products.order_by('price')
         else:
             if sort_order != None:
+                logger.warning('Unknown sort order requested.')
                 raise Http404("This sort order doesn't exist.")
+
 
         filter_brand = self.request.GET.get('filter_brand', None)
         if filter_brand:
             products = get_list_or_404(products, brand__slug = filter_brand)
+
+        # Only get brands that are available in the current category
+        brands = Brand.objects.filter(product=products)
+
+        subcategories = object.get_subcategories()
+
+        # Note: this might be more easthetically
+        # (Also keeping context construction and logica separate)
+        # context.update({'sort_order': sort_order, ...})
+        context['sort_order'] = sort_order
         context['current_brand'] = filter_brand
         context['sort_order'] = sort_order
-        context['brands'] = Brand.objects.all()
-        context['subcategories'] = object.get_subcategories()
+        context['brands'] = brands
+        context['subcategories'] = subcategories
         context['products'] = products
-    
-        return context
-
-class SubCategoryDetail(CategoryDetail):
-    def get_context_data(self, object, **kwargs):
-        context = super(SubCategoryDetail, self).get_context_data(object, **kwargs)
 
         return context
+
 
     def get_object(self):
         model = self.model()
+        main_categories = model.get_main_categories()
 
-        category = self.kwargs.get('category', None)
-        subcategory = self.kwargs.get('subcategory', None)
+        # Filter by category slug
+        category_slug = self.kwargs.get('category_slug')
+        category = get_object_or_404(main_categories, slug=category_slug)
 
-        q = get_object_or_404(model.get_main_categories(), slug = category)
-        q = get_object_or_404(q.get_subcategories(), slug = subcategory)
+        # Filter by subcategory slug - if available
+        subcategory_slug = self.kwargs.get('subcategory_slug', None)
+        if subcategory_slug:
+            subcategory = get_object_or_404(category.get_subcategories(),
+                                            slug=subcategory_slug)
 
-        return q
+            return subcategory
+
+        return category
+
 
 class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
     """ List details for a product. """
