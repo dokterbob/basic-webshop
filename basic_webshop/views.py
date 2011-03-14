@@ -168,7 +168,8 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
 
         context = super(ProductDetail, self).get_context_data(**kwargs)
 
-        category_slug = self.request.GET.get('category', None)
+        category_slug = self.request.GET.get('category_slug', None)
+        subcategory_slug = self.request.GET.get('subcategory_slug', None)
 
         if category_slug:
             def get_category():
