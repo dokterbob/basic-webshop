@@ -18,11 +18,11 @@ from basic_webshop.models import Product, Category, Cart, CartItem, Brand
 
 from webshop.core.views import InShopViewMixin, CartAddFormMixin, CartAddBase
 
-class CategoryList(TemplateView):
-    """ A dummy view taking the list of categories from the Mixin
-        and displaying it using a simple template. """
-    
-    template_name = 'basic_webshop/category_list.html'
+# class CategoryList(TemplateView):
+#     """ A dummy view taking the list of categories from the Mixin
+#         and displaying it using a simple template. """
+#     
+#     template_name = 'basic_webshop/category_list.html'
 
 
 class CategoryDetail(DetailView):
@@ -35,9 +35,83 @@ class CategoryDetail(DetailView):
     def get_context_data(self, object, **kwargs):
         context = super(CategoryDetail, self).get_context_data(**kwargs)
 
+        products = object.get_products()
+        subcategories = object.get_subcategories()
+
+        # Only get brands that are available in the current category
+        brands = Brand.objects.filter(product=products)
+
+        context.update({'products': products,
+                       'subcategories': subcategories,
+                       'brands': brands})
+
+        return context
+
+    def get_object(self):
+        model = self.model()
+        main_categories = model.get_main_categories()
+
+        # Filter by category slug
+        category_slug = self.kwargs.get('category_slug')
+        category = get_object_or_404(main_categories, slug=category_slug)
+
+        return category
+
+
+class CategoryAspectDetail(CategoryDetail):
+    """
+    Four aspects should be considered here: new, picks, sale and all.
+
+    new: items sorted by publication date
+    picks: only show articles which are featured for the current category
+    sale: filter by articles which are featured in discounts
+    all: just a list view of articles in their native ordering
+    """
+    template_name = 'basic_webshop/category_aspect.html'
+
+    def get_context_data(self, object, **kwargs):
+        """ Do all sorts of funkey filtering and view related stuff. """
+
+        context = super(CategoryAspectDetail, self).get_context_data(object,
+                                                                     **kwargs)
+        category = object
+        products = context['products']
+
+        aspect = self.kwargs.get('aspect')
+
+        # Make sure our parameter is a valid value
+        assert aspect in ('new', 'picks', 'sale', 'all')
+
+        if aspect == 'new':
+            products = products.order_by('-date_publish')
+        elif aspect == 'picks':
+            products = products.filter(categoryfeaturedproduct__isnull=False)
+            products = products.order_by('categoryfeaturedproduct__featured_order')
+        elif aspect == 'sale':
+            raise NotImplementedError('Sale has not been implemented yet')
+
+        # In other cases, aspect is all and nothing happends
+
+        context.update({'products': products,
+                        'current_aspect': aspect})
+
+        return context
+
+class SubCategoryDetail(CategoryDetail):
+    """
+    This is pretty much the same as an ordinary category view except that
+    now we'll use a different template.
+    """
+    template_name = 'basic_webshop/subcategory_detail.html'
+
+    def get_context_data(self, object, **kwargs):
+        """ Do all sorts of funkey filtering and view related stuff. """
         sort_order = self.request.GET.get('sort_order', None)
 
-        products = object.get_products()
+        context = super(SubCategoryDetail, self).get_context_data(object,
+                                                                  **kwargs)
+        category = object
+        products = context['products']
 
         if sort_order == 'name':
             # TODO: This doesn't work correctly yet. This should be sorted by name
@@ -56,74 +130,62 @@ class CategoryDetail(DetailView):
         if filter_brand:
             products = get_list_or_404(products, brand__slug = filter_brand)
 
-        # Only get brands that are available in the current category
-        brands = Brand.objects.filter(product=products)
-
-        subcategories = object.get_subcategories()
 
         # Note: this might be more easthetically
         # (Also keeping context construction and logica separate)
-        # context.update({'sort_order': sort_order, ...})
-        context['sort_order'] = sort_order
-        context['current_brand'] = filter_brand
-        context['sort_order'] = sort_order
-        context['brands'] = brands
-        context['subcategories'] = subcategories
-        context['products'] = products
+        # context = {'sort_order': sort_order, ...})
+        context.update({
+            'sort_order': sort_order,
+            'current_brand': filter_brand,
+        })
 
         return context
 
 
     def get_object(self):
-        model = self.model()
-        main_categories = model.get_main_categories()
+        """
+        Get the category from the parent view and return the subcategory
+        matching the subcategory slug.
+        """
+        object = super(SubCategoryDetail, self).get_object()
 
-        # Filter by category slug
-        category_slug = self.kwargs.get('category_slug')
-        category = get_object_or_404(main_categories, slug=category_slug)
-
-        # Filter by subcategory slug - if available
         subcategory_slug = self.kwargs.get('subcategory_slug', None)
-        if subcategory_slug:
-            subcategory = get_object_or_404(category.get_subcategories(),
-                                            slug=subcategory_slug)
 
-            return subcategory
-
-        return category
+        return get_object_or_404(object.get_subcategories(),
+                                 slug=subcategory_slug)
 
 
 class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
     """ List details for a product. """
-    
+
     model = Product
-    
+
     def get_context_data(self, **kwargs):
-        """ 
-        Add an eventual category to the request when the 
-        `category` GET-parameter has been specified. 
         """
-        
+        Add an eventual category to the request when the
+        `category` GET-parameter has been specified.
+        """
+
         context = super(ProductDetail, self).get_context_data(**kwargs)
-        
+
         category_slug = self.request.GET.get('category', None)
-        
+
         if category_slug:
             def get_category():
-                # See whether we can find this category, but do it lazyly 
+                # See whether we can find this category, but do it lazyly
                 try:
                     category_set = Category.in_shop.filter(slug=category_slug)
 
                     return category_set[0]
-                
+
                 except IndexError:
                     # Category not found or something else went wrong
                     assert category_set.count() == 0, \
                         'More than one category returned'
-            
+
             context['category'] = SimpleLazyObject(get_category)
-            
-        
+
+
         return context
 
 

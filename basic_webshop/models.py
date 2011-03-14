@@ -404,8 +404,15 @@ class Category(MPTTCategoryBase, MultilingualModel, NonUniqueSlugItemBase, \
 
     @models.permalink
     def get_absolute_url(self):
-        return 'category_detail', None, \
-            {'slug': self.slug}
+        level = self.get_level()
+
+        if level == 0:
+            return 'category_detail', None, \
+                {'category_slug': self.slug}
+        else:
+            return 'subcategory_detail', None, \
+                {'category_slug': self.parent.slug,
+                 'subcategory_slug': self.slug}
 
 
 class CategoryTranslation(NamedItemBase, MultilingualTranslation):
