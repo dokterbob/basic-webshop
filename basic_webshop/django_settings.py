@@ -36,5 +36,7 @@ WEBSHOP_SHIPPING_ADDRESS_MODEL = 'basic_webshop.Address'
 WEBSHOP_SHIPPING_METHOD_MODEL = 'basic_webshop.ShippingMethod'
 
 WEBSHOP_CURRENCY_PRICE_FIELD = 'webshop.extensions.currency.simple.fields.PriceField'
+WEBSHOP_CURRENCY_LOCALE = 'nl_NL.ISO8859-1'
+
 
 
