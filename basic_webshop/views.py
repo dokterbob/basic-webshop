@@ -57,6 +57,16 @@ class CategoryDetail(DetailView):
 
         return category
 
+    def get(self, request, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        resp = self.render_to_response(context)
+        resp.set_cookie('category_slug', value=self.kwargs.get('category_slug'), \
+            max_age=None, expires=None, path='/', domain=None, secure=None, \
+            httponly=False)
+
+        return resp
+
 
 class CategoryAspectDetail(CategoryDetail):
     """
@@ -154,6 +164,20 @@ class SubCategoryDetail(CategoryDetail):
         return get_object_or_404(object.get_subcategories(),
                                  slug=subcategory_slug)
 
+    def get(self, request, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+
+        resp = self.render_to_response(context)
+        resp.set_cookie('category_slug', value=self.kwargs.get('category_slug'), \
+            max_age=None, expires=None, path='/', domain=None, secure=None, \
+            httponly=False)
+        resp.set_cookie('subcategory_slug', value=self.kwargs.get('subcategory_slug'), \
+            max_age=None, expires=None, path='/', domain=None, secure=None, \
+            httponly=False)
+
+        return resp
+
 
 class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
     """ List details for a product. """
@@ -168,8 +192,8 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
 
         context = super(ProductDetail, self).get_context_data(**kwargs)
 
-        category_slug = self.request.GET.get('category_slug', None)
-        subcategory_slug = self.request.GET.get('subcategory_slug', None)
+        category_slug = self.request.COOKIES.get('category_slug', None)
+        subcategory_slug = self.request.COOKIES.get('subcategory_slug', None)
 
         if category_slug:
             def get_category():
