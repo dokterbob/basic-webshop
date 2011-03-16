@@ -186,8 +186,8 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         """
-        Add an eventual category to the request when the
-        `category` GET-parameter has been specified.
+        Add an eventual category and subcategory to the request when the
+        `category` and `subcategory` COOKIES-parameters has been specified.
         """
 
         context = super(ProductDetail, self).get_context_data(**kwargs)
@@ -195,21 +195,28 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
         category_slug = self.request.COOKIES.get('category_slug', None)
         subcategory_slug = self.request.COOKIES.get('subcategory_slug', None)
 
-        if category_slug:
-            def get_category():
-                # See whether we can find this category, but do it lazyly
-                try:
-                    category_set = Category.in_shop.filter(slug=category_slug)
+        category = None
+        subcategory = None
 
-                    return category_set[0]
+        # There are four cases:
+        # - cookie has been supplied and it can be used to discover the current category/subcategory
+        # - TODO: category has been supplied and subcategory has to be backtracked
+        # - TODO: subcategory has been supplied and category has to be backtracked
+        # - TODO: no cookie has been supplied and some kind of backtracking has to be used.
+        if category_slug and subcategory_slug:
+            category = get_object_or_404(Category.in_shop, slug=category_slug)
+            subcategory = get_object_or_404(category.get_subcategories(), slug=subcategory_slug)
+        elif category_slug:
+            raise Exception
+        elif subcategory_slug:
+            raise Exception
+        else:
+            raise Exception
 
-                except IndexError:
-                    # Category not found or something else went wrong
-                    assert category_set.count() == 0, \
-                        'More than one category returned'
-
-            context['category'] = SimpleLazyObject(get_category)
-
+        context.update({
+            'category': category,
+            'subcategory': subcategory,
+        })
 
         return context
 
