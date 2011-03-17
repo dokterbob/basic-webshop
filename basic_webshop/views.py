@@ -57,13 +57,22 @@ class CategoryDetail(DetailView):
 
         return category
 
-    def get(self, request, **kwargs):
-        self.object = self.get_object()
-        context = self.get_context_data(object=self.object)
-        resp = self.render_to_response(context)
-        resp.set_cookie('category_slug', value=self.kwargs.get('category_slug'), \
-            max_age=None, expires=None, path='/', domain=None, secure=None, \
-            httponly=False)
+    def render_to_response(self, context):
+        resp = super(CategoryDetail, self).render_to_response(context)
+
+        category_slug = self.kwargs.get('category_slug')
+
+        resp.set_cookie('category_slug', value=category_slug)
+        logger.debug('Setting category cookie to %s', category_slug)
+
+        subcategory_slug = self.kwargs.get('subcategory_slug', None)
+        if subcategory_slug:
+            logger.debug('Setting subcategory cookie to %s', subcategory_slug)
+            resp.set_cookie('subcategory_slug', value=subcategory_slug)
+        else:
+            # Make sure we delete the cookie when we're not in a subcat
+            logger.debug('Erasing subcategory cookie')
+            resp.delete_cookie('subcategory_slug')
 
         return resp
 
@@ -164,27 +173,13 @@ class SubCategoryDetail(CategoryDetail):
         return get_object_or_404(object.get_subcategories(),
                                  slug=subcategory_slug)
 
-    def get(self, request, **kwargs):
-        self.object = self.get_object()
-        context = self.get_context_data(object=self.object)
-
-        resp = self.render_to_response(context)
-        resp.set_cookie('category_slug', value=self.kwargs.get('category_slug'), \
-            max_age=None, expires=None, path='/', domain=None, secure=None, \
-            httponly=False)
-        resp.set_cookie('subcategory_slug', value=self.kwargs.get('subcategory_slug'), \
-            max_age=None, expires=None, path='/', domain=None, secure=None, \
-            httponly=False)
-
-        return resp
-
 
 class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
     """ List details for a product. """
 
     model = Product
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, object, **kwargs):
         """
         Add an eventual category and subcategory to the request when the
         `category` and `subcategory` COOKIES-parameters has been specified.
@@ -195,23 +190,34 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
         category_slug = self.request.COOKIES.get('category_slug', None)
         subcategory_slug = self.request.COOKIES.get('subcategory_slug', None)
 
-        category = None
-        subcategory = None
-
-        # There are four cases:
-        # - cookie has been supplied and it can be used to discover the current category/subcategory
-        # - TODO: category has been supplied and subcategory has to be backtracked
-        # - TODO: subcategory has been supplied and category has to be backtracked
-        # - TODO: no cookie has been supplied and some kind of backtracking has to be used.
-        if category_slug and subcategory_slug:
+        if category_slug:
+            logger.debug('Looking up category with slug %s for detail view',
+                         category_slug)
             category = get_object_or_404(Category.in_shop, slug=category_slug)
-            subcategory = get_object_or_404(category.get_subcategories(), slug=subcategory_slug)
-        elif category_slug:
-            raise Exception
-        elif subcategory_slug:
-            raise Exception
+
+            if subcategory_slug:
+                logger.debug('Looking up subcategory with slug %s for detail view',
+                             subcategory_slug)
+
+                subcategory = get_object_or_404(category.get_subcategories(),
+                                                slug=subcategory_slug)
+            else:
+                subcategory = None
         else:
-            raise Exception
+            # No category specified in cookie
+            # Grab the first category for lack of better logic
+            category = object.categories.all()[0]
+
+            if category.parent:
+                # Make sure we assign a level0 to category and level1 to
+                # subcategory
+                ancestors = category.get_ancestors(include_self=True)
+
+                # We should have at least two levels of categories
+                assert len(ancestors) == 2
+
+                category = ancestors[0]
+                subcategory = ancestors[1]
 
         context.update({
             'category': category,
