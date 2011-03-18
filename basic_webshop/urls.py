@@ -23,6 +23,12 @@ urlpatterns = patterns('',
     surl(r'^products/<slug:s>/$',
          ProductDetail.as_view(), name='product_detail'),
 
+    surl(r'^brands/$',
+         BrandList.as_view(), name='brand_list'),
+
+    surl(r'^brands/<slug:s>/$',
+         BrandDetail.as_view(), name='brand_detail'),
+
     surl(r'^cart/$',
          CartDetail.as_view(), name='cart_detail'),
     surl(r'^cart/add/$', CartAdd.as_view(), name='cart_add'),

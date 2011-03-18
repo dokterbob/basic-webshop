@@ -18,11 +18,22 @@ from basic_webshop.models import Product, Category, Cart, CartItem, Brand
 
 from webshop.core.views import InShopViewMixin, CartAddFormMixin, CartAddBase
 
+# This view is not used anymore
 # class CategoryList(TemplateView):
 #     """ A dummy view taking the list of categories from the Mixin
 #         and displaying it using a simple template. """
 #     
 #     template_name = 'basic_webshop/category_list.html'
+
+
+class BrandList(ListView):
+    """ List of brands. """
+    model = Brand
+
+
+class BrandDetail(DetailView):
+    """ Detail view for brand. """
+    model = Brand
 
 
 class CategoryDetail(DetailView):
