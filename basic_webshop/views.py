@@ -47,9 +47,8 @@ class BrandDetail(DetailView):
 
         return context
 
-class BrandProducts(ListView):
+class BrandProducts(BrandDetail):
     """ List of products by brand. """
-    model = Product
     template_name='basic_webshop/brand_products.html'
 
 class CategoryDetail(DetailView):
