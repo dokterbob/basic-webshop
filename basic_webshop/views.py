@@ -34,6 +34,19 @@ class BrandDetail(DetailView):
     """ Detail view for brand. """
     model = Brand
 
+    def get_context_data(self, object, **kwargs):
+        context = super(BrandDetail, self).get_context_data(**kwargs)
+
+        brand = object
+        products = brand.product_set.all()
+
+        context.update({
+            'brands': Brand.objects.all(),
+            'products': products,
+        })
+
+        return context
+
 class BrandProducts(ListView):
     """ List of products by brand. """
     model = Product
