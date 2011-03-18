@@ -30,11 +30,14 @@ class BrandList(ListView):
     """ List of brands. """
     model = Brand
 
-
 class BrandDetail(DetailView):
     """ Detail view for brand. """
     model = Brand
 
+class BrandProducts(ListView):
+    """ List of products by brand. """
+    model = Product
+    template_name='basic_webshop/brand_products.html'
 
 class CategoryDetail(DetailView):
     """ View with all products in category x, a list of subcategories, category
