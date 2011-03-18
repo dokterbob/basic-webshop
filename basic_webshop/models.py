@@ -162,7 +162,6 @@ class BrandImage(models.Model):
 
         super(BrandImage, self).save()
 
-
 class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
               CategorizedItemBase, OrderedItemBase, PricedItemBase, \
               DatedItemBase, ImagesProductMixin, StockedItemMixin, \
@@ -206,6 +205,23 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
         return self
     display_name.short_description = _('name')
 
+class RatingField(models.IntegerField):
+    def formfield(self, **kwargs):
+        defaults = {'min_value': 1, 'max_value': 5}
+        defaults.update(kwargs)
+        return super(RatingField, self).formfield(**defaults)
+
+class ProductRating(models.Model):
+    """ Customer product rating where the customer can give a small description
+    and rating 1-5 """
+
+    rating = RatingField(blank=True) #, min_value=1, max_value=5)
+    product = models.ForeignKey(Product)
+    customer = models.ForeignKey(Customer)
+    description = models.TextField(blank=False)
+
+    # TODO: The language should be defined in a correct fashion.
+    language = models.CharField(_('language'), blank=True, max_length=10)
 
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
     class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):

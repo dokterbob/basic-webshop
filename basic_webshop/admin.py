@@ -29,6 +29,10 @@ class ShippingMethodAdmin(admin.ModelAdmin):
 
 admin.site.register(ShippingMethod, ShippingMethodAdmin)
 
+class ProductRatingAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(ProductRating, ProductRatingAdmin)
 
 class CustomerAdmin(admin.ModelAdmin):
     pass
