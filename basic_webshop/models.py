@@ -61,30 +61,33 @@ class ShippingMethod(NamedItemBase,
 
 
 class Address(CustomerAddressBase):
-    postal_address = models.CharField(max_length=50)
-    house_number = models.DecimalField(max_digits=5, decimal_places=0)
-    house_number_addition = models.CharField(max_length=10)
-    zip_code = models.CharField(max_length=50)
-    city = models.CharField(max_length=50)
+    postal_address = models.CharField(_('address'), max_length=50)
+    postal_address2 = models.CharField('', blank=True, max_length=50)
+    zip_code = models.CharField(_('zip code'), max_length=50)
+    city = models.CharField(_('city'), max_length=50)
     country = CountryField()
-    telephone_number = models.CharField(max_length=50)
+    telephone_number = models.CharField(_('phone number'), max_length=50)
 
 class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
     """ Basic webshop customer. """
     objects = UserManager()
 
-    GENDER_CHOICES = (
-        ('M', 'Male'),
-        ('F', 'Female'),
-    )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    company = models.CharField(_('company'), blank=True, max_length=50)
 
-    tussenvoegsel = models.CharField(max_length=200)
+    GENDER_CHOICES = (
+        ('M', _('Male')),
+        ('F', _('Female')),
+    )
+    gender = models.CharField(_('gender'), max_length=1, choices=GENDER_CHOICES)
+
     # TODO: The reason birthday can be null is because the UserManager creates
     # and saves a new user (without a birthday) which violates the not NULL
     # constraint. The solution is to create a CustomerManager with UserManager
     # as superclass.
-    birthday = models.DateField(null=True)
+    #
+    # Mathijs speaks: let's just make birthdays optional. :P
+    birthday = models.DateField(_('birthday'), null=True)
+
 
 ARTICLE_NUMBER_LENGTH = 11
 class ArticleNumberMixin(models.Model):
