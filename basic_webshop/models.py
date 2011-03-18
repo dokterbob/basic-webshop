@@ -108,6 +108,11 @@ class Brand(AutoUniqueSlugMixin, NamedItemTranslationMixin, MultilingualModel, \
     logo = ImageField(verbose_name=_('logo'),
                        upload_to='brand_logos')
 
+    @models.permalink
+    def get_absolute_url(self):
+        return 'brand_detail', None, \
+            {'slug': self.slug}
+
 
 class BrandTranslation(MultilingualTranslation, NamedItemBase):
     class Meta(MultilingualTranslation.Meta, NamedItemBase.Meta):
