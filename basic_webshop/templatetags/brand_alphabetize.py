@@ -3,13 +3,20 @@ import string
 
 register = template.Library()
 
-# TODO: Deal with brands which don't start with A-Z.
+def firstletter(brand):
+    for c in brand.upper():
+        if c in string.ascii_uppercase:
+            return c
+
+    # TODO: Should this be silently ignored?
+    raise Exception("No letters in the alphabet found")
+
 def brand_alphabetize(object_list):
     r_list = []
     for char in string.ascii_uppercase:
         r_objects = []
         for object in object_list:
-            if str(object)[0].upper() == char:
+            if firstletter(str(object)) == char:
                 r_objects.append(object)
 
         if r_objects:
@@ -19,6 +26,5 @@ def brand_alphabetize(object_list):
         'list': r_list
     }
 
-# Register the custom tag as an inclusion tag with takes_context=True.
 register.inclusion_tag('basic_webshop/brand_alphabetize.html')(brand_alphabetize)
 
