@@ -4,7 +4,7 @@ import string
 register = template.Library()
 
 # TODO: Deal with brands which don't start with A-Z.
-def alphabetize(object_list):
+def brand_alphabetize(object_list):
     r_list = []
     for char in string.ascii_uppercase:
         r_objects = []
@@ -18,6 +18,7 @@ def alphabetize(object_list):
     return {
         'list': r_list
     }
+
 # Register the custom tag as an inclusion tag with takes_context=True.
-register.inclusion_tag('basic_webshop/alphabetize.html')(alphabetize)
+register.inclusion_tag('basic_webshop/brand_alphabetize.html')(brand_alphabetize)
 
