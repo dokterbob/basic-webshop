@@ -341,24 +341,22 @@ class CartItem(CartItemBase,
 
 class OrderStateChange(OrderStateChangeBase):
     """ Basic order state change. """
-
     pass
 
 
 class Order(BilledOrderMixin,
-            ShippableOrderBase,
+            ShippedOrderMixin,
             DiscountedOrderMixin, DiscountCouponMixin,
             OrderBase):
     """ Basic order model. """
 
-    pass
+    notes = models.TextField(blank=True,
+                             help_text=_('Optional notes regarding this order.'))
 
 
 class OrderItem(ShippableOrderItemBase,
                 DiscountedOrderItemMixin,
                 OrderItemBase,
-                UniqueSlugItemBase,
-                NamedItemBase,
                 PricedItemBase):
     """
     Order items should have:
@@ -378,9 +376,6 @@ class OrderItem(ShippableOrderItemBase,
 
     variation = models.ForeignKey(ProductVariation, null=True, blank=True,
                                   verbose_name=_('variation'))
-    """ TODO: Move variation up to the variations extension of django-webshop. """
-
-    description = models.TextField(blank=False)
 
 
 class Category(MPTTCategoryBase, MultilingualModel, NonUniqueSlugItemBase, \

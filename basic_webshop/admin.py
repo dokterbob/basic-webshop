@@ -22,6 +22,40 @@ from simplesite.settings import PAGEIMAGE_SIZE
 from simplesite.utils import ExtendibleModelAdminMixin
 
 
+class OrderStateChangeInline(admin.TabularInline):
+    model = OrderStateChange
+
+    fields = ('date', 'state', )
+    readonly_fields = ('date', 'state')
+
+    extra = 0
+    #
+    # def has_change_permission(self, request, obj=None):
+    #     return False
+
+
+class OrderItemInlineBase(admin.TabularInline):
+    extra = 0
+
+    readonly_fields = ('price', )
+
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+
+    fields = ('order_line', 'quantity', 'piece_price',
+              'discount', 'price',)
+    readonly_fields = ('price', )
+
+    extra = 0
+
+
+class OrderAdmin(admin.ModelAdmin):
+    inlines = (OrderItemInline, OrderStateChangeInline)
+    readonly_fields = ('billing_address', 'customer', 'coupon_code')
+
+admin.site.register(Order, OrderAdmin)
+
+
 class ShippingMethodAdmin(admin.ModelAdmin):
     filter_horizontal = ('countries', )
     list_display = ('name', 'order_cost')
@@ -29,20 +63,24 @@ class ShippingMethodAdmin(admin.ModelAdmin):
 
 admin.site.register(ShippingMethod, ShippingMethodAdmin)
 
+
 class ProductRatingAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(ProductRating, ProductRatingAdmin)
+
 
 class CustomerAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(Customer, CustomerAdmin)
 
+
 class AddressAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(Address, AddressAdmin)
+
 
 class BrandTranslationInline(TinyMCEAdminListMixin, TranslationInline):
     model = BrandTranslation
@@ -66,10 +104,10 @@ class BrandAdmin(AdminInlineImageMixin, TinyMCEImageListMixin, \
     """ Model admin for brands """
 
     inlines = (BrandTranslationInline, BrandImageInline)
-    
+
     related_image_field = 'image'
     related_image_size = PAGEIMAGE_SIZE
-    
+
     def get_related_images(cls, request, obj):
         return obj.brandimage_set.all()
 
@@ -106,9 +144,9 @@ class ProductTranslationInline(TinyMCEAdminListMixin, TranslationInline):
             'fields': ('manual', 'ingredients', 'media', ),
             'classes': ('collapse',),}),
     )
-    
+
     tinymce_fields = ('media', )
-    
+
     def get_link_list_url(self, request, field, obj=None):
         if obj:
             return reverse('admin:basic_webshop_product_link_list', \
@@ -185,7 +223,7 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
             return category_list
     admin_categories.allow_tags = True
     admin_categories.short_description = _('categories')
-    
+
     def get_related_objects(self, request, obj):
         return obj.productmedia_set.all()
 
@@ -215,7 +253,7 @@ class CategoryAdmin(MPTTModelAdmin):
     """ Model admin for categories. """
 
     save_as = True
-    fieldsets = ((None, 
+    fieldsets = ((None,
                   {'fields': ('parent', 'slug', 'active', 'sort_order')}),
                  ('Category highlight',
                   {'fields': ('highlight_image', 'highlight_title', 'highlight_link',
