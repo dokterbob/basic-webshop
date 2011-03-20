@@ -171,14 +171,6 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
     """
     Basic product model.
 
-    >>> c = Category(name='Fruit', slug='fruit')
-    >>> c.save()
-    >>> p = Product(category=c, name='Banana', slug='banana', price="15.00")
-    >>> p.description = 'A nice piece of fruit for the whole family to enjoy.'
-    >>> p.save()
-    >>> c.product_set.all()
-    [<Product: Banana>]
-
     TODO: the stock can be kept for both variations as well as
     for variations. When the stock is specified for variations, this
     overrides the stock for the product. We should make note of this in the
@@ -311,17 +303,19 @@ class Cart(CartBase,
            DiscountCouponMixin):
     """ Basic shopping cart model. """
 
-    def add_item(self, product, quantity=1, variation=None):
+    def add_item(self, product, quantity=1, **kwargs):
         """ Make sure we store the variation, if applicable. """
 
-        cartitem = super(Cart, self).add_item(product, quantity)
-        cartitem.variation = variation
+        cartitem = super(Cart, self).add_item(product, quantity, **kwargs)
 
-        assert self.product.variation_set.exists() and variation, \
-            'Product has variations but no variation specified here.'
+        assert not cartitem.product.productvariation_set.exists() \
+             or 'variation' in kwargs, \
+             'Product has variations but none specified here.'
+
+        return cartitem
 
 
-class CartItem(CartItemBase, 
+class CartItem(CartItemBase,
                StockedCartItemMixin,
                CalculatedItemDiscountMixin):
     """
@@ -344,9 +338,9 @@ class OrderStateChange(OrderStateChangeBase):
     pass
 
 
-class Order(BilledOrderMixin,
-            ShippedOrderMixin,
+class Order(#ShippedOrderMixin,
             DiscountedOrderMixin, DiscountCouponMixin,
+            CalculatedOrderDiscountMixin,
             OrderBase):
     """ Basic order model. """
 
@@ -356,6 +350,7 @@ class Order(BilledOrderMixin,
 
 class OrderItem(ShippableOrderItemBase,
                 DiscountedOrderItemMixin,
+                CalculatedOrderDiscountMixin,
                 OrderItemBase,
                 PricedItemBase):
     """
@@ -447,8 +442,8 @@ class CategoryTranslation(NamedItemBase, MultilingualTranslation):
 
 
 class CategoryFeaturedProduct(models.Model):
-    """ A product which is featured in a particular category in a 
-        particular order. 
+    """ A product which is featured in a particular category in a
+        particular order.
     """
 
     class Meta:
@@ -460,7 +455,7 @@ class CategoryFeaturedProduct(models.Model):
     featured_order = models.PositiveSmallIntegerField(_('featured order'),
                                         blank=True, null=True)
     """ The order in which featured items are ordered when displayed. """
-    
+
     def __unicode__(self):
         return _('Featured product \'%s\'') % unicode(self.product)
 
