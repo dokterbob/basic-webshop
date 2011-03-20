@@ -31,8 +31,8 @@ from webshop.extensions.discounts.advanced.models import \
     ManyCategoryDiscountMixin, LimitedUseDiscountMixin, CouponDiscountMixin, \
     OrderDiscountAmountMixin, ItemDiscountAmountMixin, \
     OrderDiscountPercentageMixin, ItemDiscountPercentageMixin, \
-    CalculatedOrderDiscountMixin, CalculatedItemDiscountMixin, \
-    DiscountedOrderMixin, DiscountedOrderItemMixin, DiscountCouponMixin
+    DiscountedOrderMixin, DiscountedOrderItemMixin, DiscountCouponMixin, \
+    DiscountedCartMixin, DiscountedCartItemMixin
 
 from webshop.extensions.shipping.advanced.models import \
     ShippableOrderBase, ShippableOrderItemBase, ShippableCustomerMixin, \
@@ -299,7 +299,7 @@ class ProductMedia(NamedItemBase):
 
 
 class Cart(CartBase,
-           CalculatedOrderDiscountMixin,
+           DiscountedCartMixin,
            DiscountCouponMixin):
     """ Basic shopping cart model. """
 
@@ -317,7 +317,7 @@ class Cart(CartBase,
 
 class CartItem(CartItemBase,
                StockedCartItemMixin,
-               CalculatedItemDiscountMixin):
+               DiscountedCartItemMixin):
     """
     Item in a shopping cart.
     """
@@ -328,9 +328,9 @@ class CartItem(CartItemBase,
     def get_stocked_item(self):
         """ Return the relevant item for which the stock is kept. """
         if self.variation:
-            return self.variation.is_available()
+            return self.variation
 
-        return self.product.is_available()
+        return self.product
 
 
 class OrderStateChange(OrderStateChangeBase):
@@ -340,7 +340,6 @@ class OrderStateChange(OrderStateChangeBase):
 
 class Order(#ShippedOrderMixin,
             DiscountedOrderMixin, DiscountCouponMixin,
-            CalculatedOrderDiscountMixin,
             OrderBase):
     """ Basic order model. """
 
@@ -350,9 +349,8 @@ class Order(#ShippedOrderMixin,
 
 class OrderItem(ShippableOrderItemBase,
                 DiscountedOrderItemMixin,
-                CalculatedOrderDiscountMixin,
-                OrderItemBase,
-                PricedItemBase):
+                OrderItemBase, ):
+                #PricedItemBase):
     """
     Order items should have:
 

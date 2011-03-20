@@ -49,6 +49,9 @@ class WebshopTestBase(TestCase):
         v.slug = slug
         return v
 
+    def make_test_customer(self):
+        c = Customer()
+        return c
 
 class SimpleTest(WebshopTestBase, CategoryTestMixin, CoreTestMixin):
     """ Test some basic functionality. """
@@ -197,6 +200,26 @@ class OrderTest(WebshopTestBase):
         self.assertEqual(c.get_items()[0].product, p2)
         self.assertEqual(c.get_items()[0].variation, None)
 
+    def test_orderfromcart(self):
+        """ Test creating an order from a cart. """
+        # Create product
+        p = self.make_test_product()
+        p.save()
+
+        # Create cart
+        cart = self.make_test_cart()
+        cart.save()
+
+        # Create customer
+        c = self.make_test_customer()
+        c.save()
+
+        # Add product to cart
+        cart.add_item(product=p)
+
+        # To order
+        o = Order.from_cart(cart, c)
+        o.save()
 # class DiscountTest(WebshopTestBase):
 #     """ Test discounts. """
 #
