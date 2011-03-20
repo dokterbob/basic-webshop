@@ -190,7 +190,7 @@ class BilledCustomerMixin(object):
 
         return latest_order.billing_address
 
-# COUNTRY-DEPENDANT SHIPPING CLASSES
+# COUNTRY-DEPENDENT SHIPPING CLASSES
 from countries.fields import CountryField, CountriesField
 
 
