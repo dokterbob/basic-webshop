@@ -43,6 +43,12 @@ class WebshopTestBase(TestCase):
         t.description = 'A nice piece of fruit for the whole family to enjoy.'
         return t
 
+    def make_test_productvariation(self, product, stock=1, slug='test'):
+        v = ProductVariation(product=product)
+        v.stock = stock
+        v.slug = slug
+        return v
+
 
 class SimpleTest(WebshopTestBase, CategoryTestMixin, CoreTestMixin):
     """ Test some basic functionality. """
@@ -158,6 +164,38 @@ class OrderTest(WebshopTestBase):
         ret = c.remove_item(product=p2)
         self.assertFalse(ret)
         self.assertEqual(len(c.get_items()), 0)
+
+    def test_cartvariation(self):
+        """ Test adding and removing a cart item with a variation. """
+        # Create product
+        p = self.make_test_product()
+        p.save()
+
+        v = self.make_test_productvariation(p)
+        v.save()
+
+        p2 = self.make_test_product(slug='cheese', brand=p.brand)
+        p2.save()
+
+        # Create cart
+        c = self.make_test_cart()
+        c.save()
+
+        # Add product to cart
+        c.add_item(product=p, variation=v)
+
+        # Added a bogus product
+        c.add_item(product=p2)
+
+        self.assertEqual(len(c.get_items()), 2)
+        self.assert_(c.get_items().get(product=p))
+        self.assert_(c.get_items().get(variation=v))
+
+        ret = c.remove_item(product=p, variation=v)
+        self.assert_(ret)
+        self.assertEqual(len(c.get_items()), 1)
+        self.assertEqual(c.get_items()[0].product, p2)
+        self.assertEqual(c.get_items()[0].variation, None)
 
 # class DiscountTest(WebshopTestBase):
 #     """ Test discounts. """
