@@ -49,11 +49,11 @@ class OrderItemInline(admin.TabularInline):
     extra = 0
 
 
-class OrderAdmin(admin.ModelAdmin):
-    inlines = (OrderItemInline, OrderStateChangeInline)
-    readonly_fields = ('billing_address', 'customer', 'coupon_code')
-
-admin.site.register(Order, OrderAdmin)
+#class OrderAdmin(admin.ModelAdmin):
+#    inlines = (OrderItemInline, OrderStateChangeInline)
+#    readonly_fields = ('billing_address', 'customer', 'coupon_code')
+#
+#admin.site.register(Order, OrderAdmin)
 
 
 class ShippingMethodAdmin(admin.ModelAdmin):
