@@ -266,6 +266,21 @@ class OrderTest(WebshopTestBase):
 
     def test_orderstate_change(self):
         """ Test changing order states. """
+
+        from webshop.core.signals import order_state_change
+
+        def assert_state_change(sender, old_state, new_state, state_change, **kwargs):
+            self.assert_(old_state != new_state or state_change.message)
+
+        order_state_change.connect(assert_state_change)
+
+        # state_changed = False
+        # def signal():
+        # def assert_signal_called(sender, **kwargs):
+        #     state_changed = True
+        # self.assert_(state_changed)
+        # state_changed = False
+
         # Create customer
         c = self.make_test_customer()
         c.save()
@@ -282,9 +297,10 @@ class OrderTest(WebshopTestBase):
         self.assertIn(OrderStateChange.get_latest(o2),
                          OrderStateChange.objects.all())
 
-        o.state = 1
+        new_state = 2
+        o.state = new_state
         o.save()
 
         self.assertEqual(OrderStateChange.objects.count(), 3)
-        self.assertEqual(OrderStateChange.get_latest(o).state, 1)
+        self.assertEqual(OrderStateChange.get_latest(o).state, new_state)
 
