@@ -53,6 +53,10 @@ class WebshopTestBase(TestCase):
         c = Customer()
         return c
 
+    def make_test_order(self, customer):
+        o = Order(customer=customer)
+        return o
+
 class SimpleTest(WebshopTestBase, CategoryTestMixin, CoreTestMixin):
     """ Test some basic functionality. """
 
@@ -215,10 +219,58 @@ class OrderTest(WebshopTestBase):
         c.save()
 
         # Add product to cart
-        cart.add_item(product=p)
+        cart.add_item(product=p, quantity=5)
 
         # To order
         o = Order.from_cart(cart, c)
+        o.save()
+
+        self.assertEqual(len(o.get_items()), 1)
+        self.assertEqual(o.get_items()[0].product, p)
+        self.assertEqual(o.get_items()[0].quantity, 5)
+        self.assertEqual(o.get_total_items(), 5)
+
+    def test_ordervariation(self):
+        """ Test converting a cart item with variation to an order. """
+        # Create product
+        p = self.make_test_product()
+        p.save()
+
+        v = self.make_test_productvariation(p)
+        v.save()
+
+        p2 = self.make_test_product(slug='cheese', brand=p.brand)
+        p2.save()
+
+        # Create cart
+        cart = self.make_test_cart()
+        cart.save()
+
+        # Add product to cart
+        cart.add_item(product=p, variation=v)
+
+        # Added a bogus product
+        cart.add_item(product=p2)
+
+        # Create customer
+        c = self.make_test_customer()
+        c.save()
+
+        # To order
+        o = Order.from_cart(cart, c)
+        o.save()
+
+        self.assertEqual(len(o.get_items()), 2)
+        self.assert_(o.get_items().get(product=p))
+        self.assert_(o.get_items().get(variation=v))
+
+    def test_orderstate_change(self):
+        """ Test changing order states. """
+        # Create customer
+        c = self.make_test_customer()
+        c.save()
+
+        o = self.make_test_order(customer=c)
         o.save()
 # class DiscountTest(WebshopTestBase):
 #     """ Test discounts. """
