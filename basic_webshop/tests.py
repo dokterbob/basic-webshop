@@ -272,8 +272,19 @@ class OrderTest(WebshopTestBase):
 
         o = self.make_test_order(customer=c)
         o.save()
-# class DiscountTest(WebshopTestBase):
-#     """ Test discounts. """
-#
-#     def test_discount(self):
-#
+
+        o2 = self.make_test_order(customer=c)
+        o2.save()
+
+        self.assertEqual(OrderStateChange.objects.count(), 2)
+        self.assertIn(OrderStateChange.get_latest(o),
+                         OrderStateChange.objects.all())
+        self.assertIn(OrderStateChange.get_latest(o2),
+                         OrderStateChange.objects.all())
+
+        o.state = 1
+        o.save()
+
+        self.assertEqual(OrderStateChange.objects.count(), 3)
+        self.assertEqual(OrderStateChange.get_latest(o).state, 1)
+
