@@ -211,10 +211,10 @@ class ProductRating(models.Model):
     and rating 1-5 """
     from django.contrib.auth.models import User
 
-    rating = RatingField(blank=True)
+    rating = RatingField()
     product = models.ForeignKey(Product)
     user = models.ForeignKey(User)
-    description = models.TextField(blank=False)
+    description = models.TextField()
 
     # TODO: The language should be defined in a correct fashion.
     language = models.CharField(_('language'), blank=True, max_length=10)
