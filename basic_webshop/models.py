@@ -18,7 +18,10 @@ from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase, \
 from webshop.extensions.category.advanced.models import CategorizedItemBase, \
                                                         MPTTCategoryBase
 from webshop.extensions.price.simple.models import PricedItemBase
-from webshop.extensions.variations.models import OrderedProductVariationBase
+from webshop.extensions.variations.models import \
+    OrderedProductVariationBase, VariationCartItemMixin, \
+    VariationOrderItemMixin
+
 from webshop.extensions.images.models import OrderedProductImageBase, \
                                              ImagesProductMixin
 from webshop.extensions.stock.advanced.models import StockedCartItemMixin, \
@@ -317,13 +320,11 @@ class Cart(CartBase,
 
 class CartItem(CartItemBase,
                StockedCartItemMixin,
-               DiscountedCartItemMixin):
+               DiscountedCartItemMixin,
+               VariationCartItemMixin):
     """
     Item in a shopping cart.
     """
-
-    variation = models.ForeignKey(ProductVariation, null=True, blank=True,
-                                  verbose_name=_('variation'))
 
     def get_stocked_item(self):
         """ Return the relevant item for which the stock is kept. """
@@ -349,6 +350,7 @@ class Order(#ShippedOrderMixin,
 
 class OrderItem(ShippableOrderItemBase,
                 DiscountedOrderItemMixin,
+                VariationOrderItemMixin,
                 OrderItemBase, ):
                 #PricedItemBase):
     """
@@ -366,9 +368,6 @@ class OrderItem(ShippableOrderItemBase,
       2. price
 
     """
-
-    variation = models.ForeignKey(ProductVariation, null=True, blank=True,
-                                  verbose_name=_('variation'))
 
 
 class Category(MPTTCategoryBase, MultilingualModel, NonUniqueSlugItemBase, \
