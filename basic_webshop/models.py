@@ -207,7 +207,7 @@ class ProductRating(models.Model):
     """ Customer product rating where the customer can give a small description
     and rating 1-5 """
 
-    rating = RatingField(blank=True) #, min_value=1, max_value=5)
+    rating = RatingField(blank=True)
     product = models.ForeignKey(Product)
     customer = models.ForeignKey(Customer)
     description = models.TextField(blank=False)
