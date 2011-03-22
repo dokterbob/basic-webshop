@@ -23,13 +23,17 @@ class WebshopTestBase(TestCase):
 
         return b
 
-    def make_test_product(self, slug='banana', price="15.00", stock=1,
+    def make_test_product(self, slug='banana', 
+                          price=Decimal('15.00'), stock=1,
                           brand=None):
         """ Return a test product """
 
         if not brand:
-            brand = self.make_test_brand()
-            brand.save()
+            try:
+                brand = Brand.objects.all()[0]
+            except IndexError:
+                brand = self.make_test_brand()
+                brand.save()
 
         p = Product(slug=slug,
                     price=price,
@@ -134,7 +138,7 @@ class OrderTest(WebshopTestBase):
         self.assertEqual(c.get_total_items(), 2)
 
         # Create product
-        p2 = self.make_test_product(slug='cheese', brand=p.brand)
+        p2 = self.make_test_product(slug='cheese')
         p2.save()
 
         # Add product to cart
@@ -165,7 +169,7 @@ class OrderTest(WebshopTestBase):
         # See whether remove on a non-available product returns None
         # as it should
         # Create product
-        p2 = self.make_test_product(slug='cheese', brand=p.brand)
+        p2 = self.make_test_product(slug='cheese')
         p2.save()
 
         ret = c.remove_item(product=p2)
@@ -181,7 +185,7 @@ class OrderTest(WebshopTestBase):
         v = self.make_test_productvariation(p)
         v.save()
 
-        p2 = self.make_test_product(slug='cheese', brand=p.brand)
+        p2 = self.make_test_product(slug='cheese')
         p2.save()
 
         # Create cart
@@ -203,6 +207,35 @@ class OrderTest(WebshopTestBase):
         self.assertEqual(len(c.get_items()), 1)
         self.assertEqual(c.get_items()[0].product, p2)
         self.assertEqual(c.get_items()[0].variation, None)
+
+    def test_cartprice(self):
+        """ Test price calculation mechanics. """
+
+        # Create product
+        p = self.make_test_product(price=Decimal('10.00'), slug='p1')
+        p.save()
+
+        # Create cart
+        c = self.make_test_cart()
+        c.save()
+
+        self.assertEqual(c.get_price(), Decimal('0.00'))
+
+        # Add product to cart
+        item = c.add_item(quantity=2, product=p)
+
+        self.assertEqual(c.get_price(), Decimal('20.00'))
+        self.assertEqual(item.get_price(), Decimal('20.00'))
+        self.assertEqual(item.get_piece_price(), Decimal('10.00'))
+
+        # Create product
+        p2 = self.make_test_product(price=Decimal('15.00'), slug='p2')
+        p2.save()
+
+        # Add product to cart
+        c.add_item(quantity=1, product=p2)
+
+        self.assertEqual(c.get_price(), Decimal('35.00'))
 
     def test_orderfromcart(self):
         """ Test creating an order from a cart. """
@@ -239,7 +272,7 @@ class OrderTest(WebshopTestBase):
         v = self.make_test_productvariation(p)
         v.save()
 
-        p2 = self.make_test_product(slug='cheese', brand=p.brand)
+        p2 = self.make_test_product(slug='cheese')
         p2.save()
 
         # Create cart
