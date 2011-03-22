@@ -202,18 +202,19 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
 
 class RatingField(models.IntegerField):
     def formfield(self, **kwargs):
-        defaults = {'min_value': 1, 'max_value': 5}
+        defaults = {'min_value': 0, 'max_value': 5}
         defaults.update(kwargs)
         return super(RatingField, self).formfield(**defaults)
 
 class ProductRating(models.Model):
     """ Customer product rating where the customer can give a small description
     and rating 1-5 """
+    from django.contrib.auth.models import User
 
-    rating = RatingField(blank=True)
+    rating = RatingField()
     product = models.ForeignKey(Product)
-    customer = models.ForeignKey(Customer)
-    description = models.TextField(blank=False)
+    user = models.ForeignKey(User)
+    description = models.TextField()
 
     # TODO: The language should be defined in a correct fashion.
     language = models.CharField(_('language'), blank=True, max_length=10)

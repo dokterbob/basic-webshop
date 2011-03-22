@@ -18,6 +18,8 @@ from basic_webshop.models import Product, Category, Cart, CartItem, Brand
 
 from webshop.core.views import InShopViewMixin, CartAddFormMixin, CartAddBase
 
+from basic_webshop.forms import RatingForm
+
 # This view is not used anymore
 # class CategoryList(TemplateView):
 #     """ A dummy view taking the list of categories from the Mixin
@@ -205,6 +207,11 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
 
     model = Product
 
+    def post(self, request, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
     def get_context_data(self, object, **kwargs):
         """
         Add an eventual category and subcategory to the request when the
@@ -212,6 +219,15 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
         """
 
         context = super(ProductDetail, self).get_context_data(**kwargs)
+        ratingform = None
+        if self.request.method == 'POST':
+            ratingform = RatingForm(self.request.POST)
+            if ratingform.is_valid():
+                ratingform.save()
+                # Empty the form
+                ratingform = RatingForm(initial={'product': object, 'user': self.request.user})
+        else:
+            ratingform = RatingForm(initial={'product': object, 'user': self.request.user})
 
         category_slug = self.request.COOKIES.get('category_slug', None)
         subcategory_slug = self.request.COOKIES.get('subcategory_slug', None)
@@ -246,6 +262,8 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
                 subcategory = ancestors[1]
 
         context.update({
+            'voterange': range(1, 6),
+            'ratingform': ratingform,
             'category': category,
             'subcategory': subcategory,
         })
