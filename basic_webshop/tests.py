@@ -57,7 +57,14 @@ class WebshopTestBase(TestCase):
         c = Customer()
         return c
 
-    def make_test_order(self, customer):
+    def make_test_order(self, customer=None):
+        if not customer:
+            try:
+                customer = Customer.objects.all()[0]
+            except IndexError:
+                customer = self.make_test_customer()
+                customer.save()
+
         o = Order(customer=customer)
         return o
 
@@ -296,6 +303,38 @@ class OrderTest(WebshopTestBase):
         self.assertEqual(len(o.get_items()), 2)
         self.assert_(o.get_items().get(product=p))
         self.assert_(o.get_items().get(variation=v))
+
+    def test_orderprice(self):
+        """ Test price calculation mechanics. """
+
+        # Create product
+        p = self.make_test_product(price=Decimal('10.00'), slug='p1')
+        p.save()
+
+        # Create order
+        o = self.make_test_order()
+        o.save()
+
+        self.assertEqual(o.get_price(), Decimal('0.00'))
+
+        i = OrderItem(quantity=2, product=p, piece_price=p.get_price())
+        self.assertEqual(i.get_piece_price(), Decimal('10.00'))
+        self.assertEqual(i.get_price(), Decimal('20.00'))
+
+        o.orderitem_set.add(i)
+
+        self.assertEqual(o.get_price(), Decimal('20.00'))
+
+        # Create product
+        p2 = self.make_test_product(price=Decimal('15.00'), slug='p2')
+        p2.save()
+
+        i2 = OrderItem(quantity=1, product=p2, piece_price=p2.get_price())
+
+        # Add product to cart
+        o.orderitem_set.add(i2)
+
+        self.assertEqual(o.get_price(), Decimal('35.00'))
 
     def test_orderstate_change(self):
         """ Test changing order states. """
