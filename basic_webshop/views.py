@@ -248,7 +248,11 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
         else:
             # No category specified in cookie
             # Grab the first category for lack of better logic
-            category = object.categories.all()[0]
+            try:
+                category = object.categories.all()[0]
+            except IndexError:
+                logger.warning(u'No categories defined for %s', object)
+                category = None
 
             if category.parent:
                 # Make sure we assign a level0 to category and level1 to
@@ -260,6 +264,8 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
 
                 category = ancestors[0]
                 subcategory = ancestors[1]
+            else:
+                subcategory = None
 
         context.update({
             'voterange': range(1, 6),
