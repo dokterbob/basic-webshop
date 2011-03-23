@@ -35,7 +35,7 @@ from webshop.extensions.discounts.advanced.models import \
     OrderDiscountAmountMixin, ItemDiscountAmountMixin, \
     OrderDiscountPercentageMixin, ItemDiscountPercentageMixin, \
     DiscountedOrderMixin, DiscountedOrderItemMixin, DiscountCouponMixin, \
-    DiscountedCartMixin, DiscountedCartItemMixin
+    DiscountedCartMixin, DiscountedCartItemMixin, AccountedDiscountOrderMixin
 
 from webshop.extensions.shipping.advanced.models import \
     ShippableOrderBase, ShippableOrderItemBase, ShippableCustomerMixin, \
@@ -341,9 +341,16 @@ class OrderStateChange(OrderStateChangeBase):
 
 
 class Order(#ShippedOrderMixin,
-            DiscountedOrderMixin, DiscountCouponMixin,
+            DiscountedOrderMixin,
+            DiscountCouponMixin, AccountedDiscountOrderMixin,
             OrderBase):
     """ Basic order model. """
+
+    @classmethod
+    def from_cart(self, cart):
+        order = super(Order, self).from_cart(cart)
+        order.coupon_code = cart.coupon_code
+        return order
 
     notes = models.TextField(blank=True,
                              help_text=_('Optional notes regarding this order.'))
@@ -463,4 +470,8 @@ class Discount(NamedItemBase, ManyCategoryDiscountMixin, CouponDiscountMixin, \
                DateRangeDiscountMixin, OrderDiscountAmountMixin, \
                ItemDiscountAmountMixin, OrderDiscountPercentageMixin, \
                ItemDiscountPercentageMixin, DiscountBase):
-    pass
+    def __unicode__(self):
+        if self.name:
+            return self.name
+
+        return unicode(self.pk)

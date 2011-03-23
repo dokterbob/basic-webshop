@@ -23,7 +23,7 @@ class WebshopTestCase(TestCase):
 
         return b
 
-    def make_test_product(self, slug='banana', 
+    def make_test_product(self, slug='banana',
                           price=Decimal('15.00'), stock=1,
                           brand=None):
         """ Return a test product """
@@ -282,25 +282,29 @@ class OrderTest(WebshopTestCase):
         p = self.make_test_product()
         p.save()
 
-        # Create cart
-        cart = self.make_test_cart()
-        cart.save()
-
         # Create customer
         c = self.make_test_customer()
         c.save()
+
+        # Create cart
+        cart = self.make_test_cart()
+        cart.coupon_code = 'testme'
+        cart.customer = c
+        cart.save()
 
         # Add product to cart
         cart.add_item(product=p, quantity=5)
 
         # To order
-        o = Order.from_cart(cart, c)
+        o = Order.from_cart(cart)
         o.save()
 
         self.assertEqual(len(o.get_items()), 1)
         self.assertEqual(o.get_items()[0].product, p)
         self.assertEqual(o.get_items()[0].quantity, 5)
         self.assertEqual(o.get_total_items(), 5)
+        self.assertEqual(o.coupon_code, cart.coupon_code)
+        self.assertEqual(o.customer, cart.customer)
 
     def test_ordervariation(self):
         """ Test converting a cart item with variation to an order. """
@@ -327,9 +331,10 @@ class OrderTest(WebshopTestCase):
         # Create customer
         c = self.make_test_customer()
         c.save()
+        cart.customer = c
 
         # To order
-        o = Order.from_cart(cart, c)
+        o = Order.from_cart(cart)
         o.save()
 
         self.assertEqual(len(o.get_items()), 2)
@@ -433,7 +438,7 @@ class DiscountTest(WebshopTestCase):
         self.assertEqual(o.discounts.all()[0], discount)
         self.assertEqual(o.get_price(), Decimal('10.00'))
 
-    def test_simplediscount(self):
+    def test_amountdiscount(self):
         """
         Test whether creating a discount which represents some amount of order
         discount applies well.
@@ -453,7 +458,175 @@ class DiscountTest(WebshopTestCase):
         o.update_discount()
         o.save()
 
+        self.assertEqual(o.discounts.all()[0], discount)
         self.assertEqual(o.get_order_discount(), Decimal('2.00'))
         self.assertEqual(o.get_price(), Decimal('8.00'))
 
+    def test_percentagediscount(self):
+        """
+        Test whether creating a discount which represents some percentage of
+        the order amount applies well.
+        """
+
+        # Create discount
+        discount = self.make_test_discount()
+        discount.order_percentage = 10
+        discount.save()
+
+        # Create orderitem
+        i = self.make_test_orderitem(quantity=1, piece_price=Decimal('10.00'))
+        i.save()
+
+        # No discounts
+        o = i.order
+        o.update_discount()
+        o.save()
+
+        self.assertEqual(o.discounts.all()[0], discount)
+        self.assertEqual(o.get_order_discount(), Decimal('1.00'))
+        self.assertEqual(o.get_price(), Decimal('9.00'))
+
+
+    def test_coupondiscountamount(self):
+        """ Test whether coupon discounts work. """
+
+        # Create discount
+        discount = self.make_test_discount()
+        discount.order_amount = Decimal('2.00')
+        discount.use_coupon = True
+        discount.save()
+
+        code = discount.coupon_code
+        self.assert_(code)
+
+        # Create orderitem
+        i = self.make_test_orderitem(quantity=1, piece_price=Decimal('10.00'))
+        i.save()
+
+        # No discounts
+        o = i.order
+        o.update_discount()
+        o.save()
+
+        self.assertEqual(o.discounts.all().count(), 0)
+        self.assertEqual(o.get_order_discount(), Decimal('0.00'))
+        self.assertEqual(o.get_price(), Decimal('10.00'))
+
+        o.coupon_code = code
+        o.update_discount()
+        o.save()
+
+        self.assertEqual(o.discounts.all()[0], discount)
+        self.assertEqual(o.get_order_discount(), Decimal('2.00'))
+        self.assertEqual(o.get_price(), Decimal('8.00'))
+
+    def test_coupondiscountpercentage(self):
+        """ Test whether coupon discounts work. """
+
+        # Create discount
+        discount = self.make_test_discount()
+        discount.order_percentage = 10
+        discount.use_coupon = True
+        discount.save()
+
+        code = discount.coupon_code
+        self.assert_(code)
+
+        # Create orderitem
+        i = self.make_test_orderitem(quantity=1, piece_price=Decimal('10.00'))
+        i.save()
+
+        # No discounts
+        o = i.order
+        o.update_discount()
+        o.save()
+
+        self.assertEqual(o.discounts.all().count(), 0)
+        self.assertEqual(o.get_order_discount(), Decimal('0.00'))
+        self.assertEqual(o.get_price(), Decimal('10.00'))
+
+        o.coupon_code = code
+        o.update_discount()
+        o.save()
+
+        self.assertEqual(o.discounts.all()[0], discount)
+        self.assertEqual(o.get_order_discount(), Decimal('1.00'))
+        self.assertEqual(o.get_price(), Decimal('9.00'))
+
+    def test_limitedusagediscount(self):
+        """ Test whether coupon discounts work. """
+
+        # Create discount
+        discount = self.make_test_discount()
+        discount.order_amount = Decimal('2.00')
+        discount.use_limit = 3
+        discount.save()
+
+        self.assertEqual(discount.used, 0)
+
+        # Create orderitem
+        i = self.make_test_orderitem(quantity=1, piece_price=Decimal('10.00'))
+        i.save()
+
+        # No discounts
+        o = i.order
+        o.update_discount()
+        o.save()
+
+        self.assertEqual(o.discounts.all()[0], discount)
+        self.assertEqual(o.get_order_discount(), Decimal('2.00'))
+        self.assertEqual(o.get_price(), Decimal('8.00'))
+
+        o.register_confirmation()
+        o.register_confirmation()
+
+        # Discount.register_use(o.discounts.all(), count=2)
+
+        # Update the discount object
+        discount = Discount.objects.get(pk=discount.pk)
+        self.assertEqual(discount.used, 2)
+
+        # There should still be one more use possible
+
+        # Start with a new order
+        o.delete()
+
+        # Create orderitem
+        i = self.make_test_orderitem(quantity=1, piece_price=Decimal('10.00'))
+        i.save()
+
+        # No discounts
+        o = i.order
+        o.update_discount()
+        o.save()
+
+        self.assertEqual(o.discounts.all()[0], discount)
+        self.assertEqual(o.get_order_discount(), Decimal('2.00'))
+        self.assertEqual(o.get_price(), Decimal('8.00'))
+
+
+        # Make sure no more uses are left
+        o.register_confirmation()
+        # Discount.register_use(o.discounts.all())
+
+        # Update the discount object
+        discount = Discount.objects.get(pk=discount.pk)
+        self.assertEqual(discount.used, 3)
+        self.assertEqual(discount.get_uses_left(), 0)
+
+        # Start with a new order
+        o.delete()
+
+        # Create orderitem
+        i = self.make_test_orderitem(quantity=1, piece_price=Decimal('10.00'))
+        i.save()
+
+        # No discounts
+        o = i.order
+        o.update_discount()
+        o.save()
+
+        self.assertEqual(o.discounts.all().count(), 0)
+        self.assertEqual(o.get_order_discount(), Decimal('0.00'))
+        self.assertEqual(o.get_price(), Decimal('10.00'))
 
