@@ -378,6 +378,13 @@ class OrderItem(ShippableOrderItemBase,
 
     """
 
+    def get_stocked_item(self):
+        """ Return the relevant item for which the stock is kept. """
+        if self.variation:
+            return self.variation
+
+        return self.product
+
 
 class Category(MPTTCategoryBase, MultilingualModel, NonUniqueSlugItemBase, \
                AutoUniqueSlugMixin, ActiveItemInShopBase, OrderedItemBase, \
