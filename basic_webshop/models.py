@@ -35,7 +35,7 @@ from webshop.extensions.discounts.advanced.models import \
     OrderDiscountAmountMixin, ItemDiscountAmountMixin, \
     OrderDiscountPercentageMixin, ItemDiscountPercentageMixin, \
     DiscountedOrderMixin, DiscountedOrderItemMixin, DiscountCouponMixin, \
-    DiscountedCartMixin, DiscountedCartItemMixin, AccountedDiscountOrderMixin
+    DiscountedCartMixin, DiscountedCartItemMixin, AccountedDiscountedItemMixin
 
 from webshop.extensions.shipping.advanced.models import \
     ShippableOrderBase, ShippableOrderItemBase, ShippableCustomerMixin, \
@@ -342,7 +342,7 @@ class OrderStateChange(OrderStateChangeBase):
 
 class Order(#ShippedOrderMixin,
             DiscountedOrderMixin,
-            DiscountCouponMixin, AccountedDiscountOrderMixin,
+            DiscountCouponMixin, AccountedDiscountedItemMixin,
             OrderBase):
     """ Basic order model. """
 
@@ -358,6 +358,7 @@ class Order(#ShippedOrderMixin,
 
 class OrderItem(ShippableOrderItemBase,
                 DiscountedOrderItemMixin,
+                AccountedDiscountedItemMixin,
                 VariationOrderItemMixin,
                 OrderItemBase, ):
                 #PricedItemBase):
