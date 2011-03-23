@@ -4,6 +4,8 @@ from django.test import TestCase
 from webshop.core.tests import CoreTestMixin
 from webshop.extensions.category.simple.tests import CategoryTestMixin
 
+from webshop.extensions.stock.exceptions import NoStockAvailableException
+
 from basic_webshop.models import *
 
 
@@ -23,8 +25,14 @@ class WebshopTestCase(TestCase):
 
         return b
 
+    def make_test_cart(self):
+        # Create cart
+        c = Cart()
+
+        return c
+
     def make_test_product(self, slug='banana',
-                          price=Decimal('15.00'), stock=1,
+                          price=Decimal('15.00'), stock=100,
                           brand=None):
         """ Return a test product """
 
@@ -124,12 +132,6 @@ class SimpleTest(WebshopTestCase, CategoryTestMixin, CoreTestMixin):
 
 class OrderTest(WebshopTestCase):
     """ Test basic order process functionality """
-
-    def make_test_cart(self):
-        # Create cart
-        c = Cart()
-
-        return c
 
     def test_cartadd(self):
         """ Create a cart and add a product to it """
@@ -412,7 +414,6 @@ class OrderTest(WebshopTestCase):
 
 class DiscountTest(WebshopTestCase):
     """ Test discounts. """
-
     def test_nulldiscount(self):
         """
         Test whether creating a discount object which yields no discount and
@@ -630,3 +631,28 @@ class DiscountTest(WebshopTestCase):
         self.assertEqual(o.get_order_discount(), Decimal('0.00'))
         self.assertEqual(o.get_price(), Decimal('10.00'))
 
+    def test_cartdiscount(self):
+        """ Test discounts for carts. """
+        # TO BE DONE
+
+
+class StockTest(WebshopTestCase):
+    """ Test products with limited stock. """
+
+    def test_cartadd(self):
+        """ Test creating a product with stock and adding it to a cart."""
+
+        product = self.make_test_product()
+        product.stock = 2
+        product.save()
+
+        cart = self.make_test_cart()
+        cart.save()
+
+        # Add one of product to the cart
+        cart.add_item(product, quantity=1)
+
+        # Add two more - this should fail
+        self.assertRaises(NoStockAvailableException, cart.add_item,
+                          product, quantity=2)
+        # cart.add_item(product, quantity=2)
