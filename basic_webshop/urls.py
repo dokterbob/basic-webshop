@@ -17,6 +17,9 @@ urlpatterns = patterns('',
     surl(r'^categories/<category_slug:s>/<subcategory_slug:s>/$',
          SubCategoryDetail.as_view(), name='subcategory_detail'),
 
+    surl(r'^categories/<category_slug:s>/<subcategory_slug:s>/<subsubcategory_slug:s>/$',
+         SubSubCategoryDetail.as_view(), name='subsubcategory_detail'),
+
     surl(r'^categories/<category_slug:s>/$',
          CategoryDetail.as_view(), name='category_detail'),
 
