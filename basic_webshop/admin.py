@@ -70,8 +70,17 @@ class ProductRatingAdmin(admin.ModelAdmin):
 admin.site.register(ProductRating, ProductRatingAdmin)
 
 
+class CustomerAddressInline(admin.StackedInline):
+    model = Address
+    extra = 1
+
+
 class CustomerAdmin(admin.ModelAdmin):
-    pass
+    inlines = (CustomerAddressInline, )
+    list_display = ('username', 'first_name', 'last_name', 'is_active', 'company', 'gender', 'birthday', 'last_login', 'date_joined')
+    list_filter = ('is_active', 'gender', 'birthday')
+    fields = ('username', 'last_login', 'date_joined', 'first_name', 'last_name', 'email', 'is_active', 'company', 'gender', 'birthday', )
+    readonly_fields = ('last_login', 'date_joined')
 
 admin.site.register(Customer, CustomerAdmin)
 
