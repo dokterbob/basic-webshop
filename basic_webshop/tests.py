@@ -439,6 +439,7 @@ class DiscountTest(WebshopTestCase):
         self.assertEqual(o.discounts.all()[0], discount)
         self.assertEqual(o.get_price(), Decimal('10.00'))
 
+
     def test_amountdiscount(self):
         """
         Test whether creating a discount which represents some amount of order
@@ -462,6 +463,48 @@ class DiscountTest(WebshopTestCase):
         self.assertEqual(o.discounts.all()[0], discount)
         self.assertEqual(o.get_order_discount(), Decimal('2.00'))
         self.assertEqual(o.get_price(), Decimal('8.00'))
+
+
+    def test_amountcartdiscount(self):
+        """
+        Test an amount discount on a cart and test whether it is properly
+        converted to a discount on an order.
+        """
+        # Create discount
+        discount = self.make_test_discount()
+        discount.order_amount = Decimal('2.00')
+        discount.save()
+
+        # Create product
+        p = self.make_test_product(price=Decimal('10.00'))
+        p.save()
+
+        # Create customer
+        c = self.make_test_customer()
+        c.save()
+
+        # Create cart
+        cart = self.make_test_cart()
+        # cart.coupon_code = 'testme'
+        cart.customer = c
+        cart.save()
+
+        # Add product to cart
+        cart.add_item(product=p, quantity=5)
+
+        # Check cart discounts
+        self.assertEqual(cart.get_order_discount(), Decimal('2.00'))
+        self.assertEqual(cart.get_price(), Decimal('48.00'))
+
+        # To order
+        order = Order.from_cart(cart)
+        order.save()
+
+        # Check order discounts
+        self.assertEqual(order.get_order_discount(), Decimal('2.00'))
+        self.assertEqual(order.get_price(), Decimal('48.00'))
+        self.assertEqual(order.discounts.all()[0], discount)
+
 
     def test_percentagediscount(self):
         """
@@ -630,10 +673,6 @@ class DiscountTest(WebshopTestCase):
         self.assertEqual(o.discounts.all().count(), 0)
         self.assertEqual(o.get_order_discount(), Decimal('0.00'))
         self.assertEqual(o.get_price(), Decimal('10.00'))
-
-    def test_cartdiscount(self):
-        """ Test discounts for carts. """
-        # TO BE DONE
 
 
 class StockTest(WebshopTestCase):
