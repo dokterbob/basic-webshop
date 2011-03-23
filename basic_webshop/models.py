@@ -24,8 +24,11 @@ from webshop.extensions.variations.models import \
 
 from webshop.extensions.images.models import OrderedProductImageBase, \
                                              ImagesProductMixin
-from webshop.extensions.stock.advanced.models import StockedCartItemMixin, \
-                                                   StockedItemMixin
+from webshop.extensions.stock.advanced.models import \
+    StockedCartItemMixin, StockedCartMixin, \
+    StockedOrderItemMixin, StockedOrderMixin, \
+    StockedItemMixin
+
 from webshop.extensions.related.models import RelatedProductsMixin
 from webshop.extensions.brands.models import BrandBase, BrandedProductMixin
 
@@ -302,9 +305,10 @@ class ProductMedia(NamedItemBase):
         return self.mediafile.url
 
 
-class Cart(CartBase,
+class Cart(StockedCartMixin,
            DiscountedCartMixin,
-           DiscountCouponMixin):
+           DiscountCouponMixin,
+           CartBase):
     """ Basic shopping cart model. """
 
     def add_item(self, product, quantity=1, **kwargs):
@@ -319,10 +323,10 @@ class Cart(CartBase,
         return cartitem
 
 
-class CartItem(CartItemBase,
-               StockedCartItemMixin,
+class CartItem(StockedCartItemMixin,
                DiscountedCartItemMixin,
-               VariationCartItemMixin):
+               VariationCartItemMixin,
+               CartItemBase):
     """
     Item in a shopping cart.
     """
@@ -341,6 +345,7 @@ class OrderStateChange(OrderStateChangeBase):
 
 
 class Order(#ShippedOrderMixin,
+            StockedOrderMixin,
             DiscountedOrderMixin,
             DiscountCouponMixin, AccountedDiscountedItemMixin,
             OrderBase):
@@ -357,6 +362,7 @@ class Order(#ShippedOrderMixin,
 
 
 class OrderItem(ShippableOrderItemBase,
+                StockedOrderItemMixin,
                 DiscountedOrderItemMixin,
                 AccountedDiscountedItemMixin,
                 VariationOrderItemMixin,

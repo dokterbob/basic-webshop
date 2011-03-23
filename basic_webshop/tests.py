@@ -691,7 +691,51 @@ class StockTest(WebshopTestCase):
         # Add one of product to the cart
         cart.add_item(product, quantity=1)
 
+        cartitem = cart.get_items()[0]
+        self.assertEqual(cartitem.quantity, 1)
+
         # Add two more - this should fail
         self.assertRaises(NoStockAvailableException, cart.add_item,
                           product, quantity=2)
-        # cart.add_item(product, quantity=2)
+
+        cartitem = cart.get_items()[0]
+        self.assertEqual(cartitem.quantity, 1)
+
+        # Add one more to the cart
+        cart.add_item(product, quantity=1)
+
+        # See whether quantity has increased
+        cartitem = cart.get_items()[0]
+        self.assertEqual(cartitem.quantity, 2)
+
+        # Add one more - this should fail
+        self.assertRaises(NoStockAvailableException, cart.add_item,
+                          product, quantity=1)
+
+    def test_cartvariationadd(self):
+        """
+        Test stock management for cart items with products having variations.
+        """
+        pass
+
+    def test_orderconfirm(self):
+        """
+        Test whether sold-out items cannot have their orders confirmed and
+        whether non-sold-out items can but have their stock decreased.
+        """
+        pass
+
+    def test_ordervariationconfirm(self):
+        """
+        Test the same as tested in `test_orderconfirm` but now for a product
+        with variations.
+        """
+        pass
+
+
+    def test_orderconfirmuseaccountdiscount(self):
+        """
+        Test whether sold-out items generation an exception on order
+        confirmation do not increase the use counter for discounts.
+        """
+        pass
