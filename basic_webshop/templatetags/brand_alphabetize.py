@@ -21,9 +21,13 @@ def brand_alphabetize(object_list):
 
         if r_objects:
             r_list.append((char, r_objects))
-            
+
+    # The result will be an integer since both len(r_list) and 2 are integers
+    half = len(r_list) / 2
+
     return {
-        'list': r_list
+        'list1': r_list[:half],
+        'list2': r_list[half:],
     }
 
 register.inclusion_tag('basic_webshop/brand_alphabetize.html')(brand_alphabetize)
