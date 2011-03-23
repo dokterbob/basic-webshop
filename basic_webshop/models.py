@@ -442,10 +442,15 @@ class Category(MPTTCategoryBase, MultilingualModel, NonUniqueSlugItemBase, \
         if level == 0:
             return 'category_detail', None, \
                 {'category_slug': self.slug}
-        else:
+        if level == 1:
             return 'subcategory_detail', None, \
                 {'category_slug': self.parent.slug,
                  'subcategory_slug': self.slug}
+        else:
+            return 'subsubcategory_detail', None, \
+                {'category_slug': self.parent.parent.slug,
+                 'subcategory_slug': self.parent.slug,
+                 'subsubcategory_slug': self.slug}
 
 
 class CategoryTranslation(NamedItemBase, MultilingualTranslation):

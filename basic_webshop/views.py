@@ -64,13 +64,26 @@ class CategoryDetail(DetailView):
         context = super(CategoryDetail, self).get_context_data(**kwargs)
 
         products = object.get_products()
-        subcategories = object.get_subcategories()
 
         # Only get brands that are available in the current category
         brands = Brand.objects.filter(product__in=products)
 
+        ancestors = object.get_ancestors(include_self=True)
+        category = subcategory = subcategories = subsubcategories = None
+
+        if object.parent:
+            category = ancestors[0]
+            subcategory = ancestors[1]
+
+            subcategories = category.get_subcategories()
+            subsubcategories = subcategory.get_subcategories()
+        else:
+            category = object
+            subcategories = category.get_subcategories()
+
         context.update({'products': products,
                        'subcategories': subcategories,
+                       'subsubcategories': subsubcategories,
                        'brands': brands})
 
         return context
@@ -181,6 +194,7 @@ class SubCategoryDetail(CategoryDetail):
         # Note: this might be more easthetically
         # (Also keeping context construction and logica separate)
         # context = {'sort_order': sort_order, ...})
+
         context.update({
             'sort_order': sort_order,
             'current_brand': filter_brand,
@@ -201,6 +215,22 @@ class SubCategoryDetail(CategoryDetail):
         return get_object_or_404(object.get_subcategories(),
                                  slug=subcategory_slug)
 
+class SubSubCategoryDetail(SubCategoryDetail):
+    """
+    Same as SubCategoryDetail but a level lower
+    """
+
+    def get_object(self):
+        """
+        Get the category from the parent view and return the subcategory
+        matching the subcategory slug.
+        """
+        object = super(SubSubCategoryDetail, self).get_object()
+
+        subsubcategory_slug = self.kwargs.get('subsubcategory_slug', None)
+
+        return get_object_or_404(object.get_subcategories(),
+                                 slug=subsubcategory_slug)
 
 class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
     """ List details for a product. """
