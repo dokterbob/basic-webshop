@@ -7,7 +7,7 @@ from webshop.extensions.category.simple.tests import CategoryTestMixin
 from basic_webshop.models import *
 
 
-class WebshopTestBase(TestCase):
+class WebshopTestCase(TestCase):
     """ Base class with helper function for actual tests. """
     def make_test_category(self):
         """ Return a test category """
@@ -23,13 +23,17 @@ class WebshopTestBase(TestCase):
 
         return b
 
-    def make_test_product(self, slug='banana', price="15.00", stock=1,
+    def make_test_product(self, slug='banana', 
+                          price=Decimal('15.00'), stock=1,
                           brand=None):
         """ Return a test product """
 
         if not brand:
-            brand = self.make_test_brand()
-            brand.save()
+            try:
+                brand = Brand.objects.all()[0]
+            except IndexError:
+                brand = self.make_test_brand()
+                brand.save()
 
         p = Product(slug=slug,
                     price=price,
@@ -53,11 +57,50 @@ class WebshopTestBase(TestCase):
         c = Customer()
         return c
 
-    def make_test_order(self, customer):
+    def make_test_order(self, customer=None):
+        if not customer:
+            try:
+                customer = Customer.objects.all()[0]
+            except IndexError:
+                customer = self.make_test_customer()
+                customer.save()
+
         o = Order(customer=customer)
         return o
 
-class SimpleTest(WebshopTestBase, CategoryTestMixin, CoreTestMixin):
+    def make_test_discount(self):
+        """ Create a discount object with all required fields set """
+        return Discount()
+
+    def make_test_orderitem(self,
+                            quantity=1,
+                            product=None,
+                            piece_price=Decimal('10.00'),
+                            order=None):
+        """ Create a test orderitem. """
+
+        if not product:
+            try:
+                product = Product.objects.all()[0]
+            except IndexError:
+                product = self.make_test_product()
+                product.save()
+
+        if not order:
+            try:
+                order = Order.objects.all()[0]
+            except IndexError:
+                order = self.make_test_order()
+                order.save()
+
+        i = OrderItem(quantity=quantity,
+                      product=product,
+                      piece_price=piece_price,
+                      order=order)
+
+        return i
+
+class SimpleTest(WebshopTestCase, CategoryTestMixin, CoreTestMixin):
     """ Test some basic functionality. """
 
     def test_product_properties(self):
@@ -79,7 +122,7 @@ class SimpleTest(WebshopTestBase, CategoryTestMixin, CoreTestMixin):
         self.assertEqual(p.description, \
             'A nice piece of fruit for the whole family to enjoy.')
 
-class OrderTest(WebshopTestBase):
+class OrderTest(WebshopTestCase):
     """ Test basic order process functionality """
 
     def make_test_cart(self):
@@ -134,7 +177,7 @@ class OrderTest(WebshopTestBase):
         self.assertEqual(c.get_total_items(), 2)
 
         # Create product
-        p2 = self.make_test_product(slug='cheese', brand=p.brand)
+        p2 = self.make_test_product(slug='cheese')
         p2.save()
 
         # Add product to cart
@@ -165,7 +208,7 @@ class OrderTest(WebshopTestBase):
         # See whether remove on a non-available product returns None
         # as it should
         # Create product
-        p2 = self.make_test_product(slug='cheese', brand=p.brand)
+        p2 = self.make_test_product(slug='cheese')
         p2.save()
 
         ret = c.remove_item(product=p2)
@@ -181,7 +224,7 @@ class OrderTest(WebshopTestBase):
         v = self.make_test_productvariation(p)
         v.save()
 
-        p2 = self.make_test_product(slug='cheese', brand=p.brand)
+        p2 = self.make_test_product(slug='cheese')
         p2.save()
 
         # Create cart
@@ -203,6 +246,35 @@ class OrderTest(WebshopTestBase):
         self.assertEqual(len(c.get_items()), 1)
         self.assertEqual(c.get_items()[0].product, p2)
         self.assertEqual(c.get_items()[0].variation, None)
+
+    def test_cartprice(self):
+        """ Test price calculation mechanics. """
+
+        # Create product
+        p = self.make_test_product(price=Decimal('10.00'), slug='p1')
+        p.save()
+
+        # Create cart
+        c = self.make_test_cart()
+        c.save()
+
+        self.assertEqual(c.get_price(), Decimal('0.00'))
+
+        # Add product to cart
+        item = c.add_item(quantity=2, product=p)
+
+        self.assertEqual(c.get_price(), Decimal('20.00'))
+        self.assertEqual(item.get_price(), Decimal('20.00'))
+        self.assertEqual(item.get_piece_price(), Decimal('10.00'))
+
+        # Create product
+        p2 = self.make_test_product(price=Decimal('15.00'), slug='p2')
+        p2.save()
+
+        # Add product to cart
+        c.add_item(quantity=1, product=p2)
+
+        self.assertEqual(c.get_price(), Decimal('35.00'))
 
     def test_orderfromcart(self):
         """ Test creating an order from a cart. """
@@ -239,7 +311,7 @@ class OrderTest(WebshopTestBase):
         v = self.make_test_productvariation(p)
         v.save()
 
-        p2 = self.make_test_product(slug='cheese', brand=p.brand)
+        p2 = self.make_test_product(slug='cheese')
         p2.save()
 
         # Create cart
@@ -264,16 +336,124 @@ class OrderTest(WebshopTestBase):
         self.assert_(o.get_items().get(product=p))
         self.assert_(o.get_items().get(variation=v))
 
+    def test_orderprice(self):
+        """ Test price calculation mechanics. """
+
+        # Create product
+        p = self.make_test_product(price=Decimal('10.00'), slug='p1')
+        p.save()
+
+        # Create order
+        o = self.make_test_order()
+        o.save()
+
+        self.assertEqual(o.get_price(), Decimal('0.00'))
+
+        i = OrderItem(quantity=2, product=p, piece_price=p.get_price())
+        self.assertEqual(i.get_piece_price(), Decimal('10.00'))
+        self.assertEqual(i.get_price(), Decimal('20.00'))
+
+        o.orderitem_set.add(i)
+
+        self.assertEqual(o.get_price(), Decimal('20.00'))
+
+        # Create product
+        p2 = self.make_test_product(price=Decimal('15.00'), slug='p2')
+        p2.save()
+
+        i2 = OrderItem(quantity=1, product=p2, piece_price=p2.get_price())
+
+        # Add product to cart
+        o.orderitem_set.add(i2)
+
+        self.assertEqual(o.get_price(), Decimal('35.00'))
+
     def test_orderstate_change(self):
         """ Test changing order states. """
-        # Create customer
-        c = self.make_test_customer()
-        c.save()
 
-        o = self.make_test_order(customer=c)
+        from webshop.core.signals import order_state_change
+
+        def assert_state_change(sender, old_state, new_state, state_change, **kwargs):
+            self.assert_(old_state != new_state or state_change.message)
+
+        order_state_change.connect(assert_state_change)
+
+        # state_changed = False
+        # def signal():
+        # def assert_signal_called(sender, **kwargs):
+        #     state_changed = True
+        # self.assert_(state_changed)
+        # state_changed = False
+
+        o = self.make_test_order()
         o.save()
-# class DiscountTest(WebshopTestBase):
-#     """ Test discounts. """
-#
-#     def test_discount(self):
-#
+
+        o2 = self.make_test_order()
+        o2.save()
+
+        self.assertEqual(OrderStateChange.objects.count(), 2)
+        self.assertIn(OrderStateChange.get_latest(o),
+                         OrderStateChange.objects.all())
+        self.assertIn(OrderStateChange.get_latest(o2),
+                         OrderStateChange.objects.all())
+
+        new_state = 2
+        o.state = new_state
+        o.save()
+
+        self.assertEqual(OrderStateChange.objects.count(), 3)
+        self.assertEqual(OrderStateChange.get_latest(o).state, new_state)
+
+
+class DiscountTest(WebshopTestCase):
+    """ Test discounts. """
+
+    def test_nulldiscount(self):
+        """
+        Test whether creating a discount object which yields no discount and
+        is always valid does... nothing. ;)
+        """
+
+        # Create discount
+        discount = self.make_test_discount()
+        discount.order_amount = Decimal('0.00')
+        discount.save()
+
+        # Create orderitem
+        i = self.make_test_orderitem(quantity=1, piece_price=Decimal('10.00'))
+        i.save()
+
+        # No discounts
+        o = i.order
+        o.update_discount()
+        o.save()
+
+        # import ipdb; ipdb.set_trace()
+
+        self.assertEqual(o.discounts.all()[0], discount)
+        self.assertEqual(o.get_price(), Decimal('10.00'))
+
+    def test_simplediscount(self):
+        """
+        Test whether creating a discount which represents some amount of order
+        discount applies well.
+        """
+
+        # Create discount
+        discount = self.make_test_discount()
+        discount.order_amount = Decimal('2.00')
+        discount.save()
+
+        # Create orderitem
+        i = self.make_test_orderitem(quantity=1, piece_price=Decimal('10.00'))
+        i.save()
+
+        # No discounts
+        o = i.order
+        o.update_discount()
+        o.save()
+
+        self.assertEqual(o.get_order_discount(), Decimal('2.00'))
+        self.assertEqual(o.get_price(), Decimal('8.00'))
+
+

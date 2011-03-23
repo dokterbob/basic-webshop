@@ -76,10 +76,10 @@ class CustomerAdmin(admin.ModelAdmin):
 admin.site.register(Customer, CustomerAdmin)
 
 
-class AddressAdmin(admin.ModelAdmin):
-    pass
-
-admin.site.register(Address, AddressAdmin)
+# class AddressAdmin(admin.ModelAdmin):
+#     pass
+# 
+# admin.site.register(Address, AddressAdmin)
 
 
 class BrandTranslationInline(TinyMCEAdminListMixin, TranslationInline):
