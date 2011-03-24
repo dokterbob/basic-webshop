@@ -414,31 +414,6 @@ class OrderTest(WebshopTestCase):
 
 class DiscountTest(WebshopTestCase):
     """ Test discounts. """
-    def test_nulldiscount(self):
-        """
-        Test whether creating a discount object which yields no discount and
-        is always valid does... nothing. ;)
-        """
-
-        # Create discount
-        discount = self.make_test_discount()
-        discount.order_amount = Decimal('0.00')
-        discount.save()
-
-        # Create orderitem
-        i = self.make_test_orderitem(quantity=1, piece_price=Decimal('10.00'))
-        i.save()
-
-        # No discounts
-        o = i.order
-        o.update_discount()
-        o.save()
-
-        # import ipdb; ipdb.set_trace()
-
-        self.assertEqual(o.discounts.all()[0], discount)
-        self.assertEqual(o.get_price(), Decimal('10.00'))
-
 
     def test_amountdiscount(self):
         """
@@ -715,22 +690,114 @@ class StockTest(WebshopTestCase):
     def test_cartvariationadd(self):
         """
         Test stock management for cart items with products having variations.
+
+        If a variation has been defined, product stock should be ignored.
         """
-        pass
+        # Create product
+        p = self.make_test_product()
+        p.stock = 2
+        p.save()
+
+        # Create cart
+        c = self.make_test_cart()
+        c.save()
+
+        v = self.make_test_productvariation(p)
+        v.stock = 1
+        v.save()
+
+        # Add product to cart
+        c.add_item(product=p, variation=v, quantity=1)
+
+        # Add one more - this should fail
+        self.assertRaises(NoStockAvailableException, c.add_item,
+                          p, quantity=1, variation=v)
+
 
     def test_orderconfirm(self):
         """
         Test whether sold-out items cannot have their orders confirmed and
         whether non-sold-out items can but have their stock decreased.
         """
-        pass
+        # Create product
+        p = self.make_test_product(price=Decimal('10.00'), slug='p1')
+        p.stock=2
+        p.save()
+
+        # Create order
+        o = self.make_test_order()
+        o.save()
+
+        i = OrderItem(quantity=2, product=p, piece_price=p.get_price())
+        o.orderitem_set.add(i)
+
+        # Check the stock, this should raise no error
+        o.check_stock()
+
+        # Register order confirmation, update stock
+        o.register_confirmation()
+
+        p = Product.objects.get(pk=p.pk)
+        self.assertEquals(p.stock, 0)
+
+        # Create order
+        o = self.make_test_order()
+        o.save()
+
+        i = OrderItem(quantity=1, product=p, piece_price=p.get_price())
+        o.orderitem_set.add(i)
+
+        # Add one more - this should fail
+        self.assertRaises(NoStockAvailableException, o.check_stock)
+
 
     def test_ordervariationconfirm(self):
         """
         Test the same as tested in `test_orderconfirm` but now for a product
         with variations.
         """
-        pass
+        # Create product
+        p = self.make_test_product(price=Decimal('10.00'), slug='p1')
+        p.stock=2
+        p.save()
+
+        # Create order
+        o = self.make_test_order()
+        o.save()
+
+        # Create variation
+        v = self.make_test_productvariation(p)
+        v.stock = 2
+        v.save()
+
+        # Order item with variation
+        i = OrderItem(quantity=2, product=p, piece_price=p.get_price(),
+                      variation=v)
+        o.orderitem_set.add(i)
+
+        # Check the stock, this should raise no error
+        o.check_stock()
+
+        # Register order confirmation
+        o.register_confirmation()
+
+        v = ProductVariation.objects.get(pk=v.pk)
+        self.assertEquals(v.stock, 0)
+
+        # This should not have changed as it should have been ignored
+        p = Product.objects.get(pk=p.pk)
+        self.assertEquals(p.stock, 2)
+
+        # Create order
+        o = self.make_test_order()
+        o.save()
+
+        i = OrderItem(quantity=1, product=p, piece_price=p.get_price(),
+                      variation=v)
+        o.orderitem_set.add(i)
+
+        # Add one more - this should fail
+        self.assertRaises(NoStockAvailableException, o.check_stock)
 
 
     def test_orderconfirmuseaccountdiscount(self):
@@ -738,4 +805,48 @@ class StockTest(WebshopTestCase):
         Test whether sold-out items generation an exception on order
         confirmation do not increase the use counter for discounts.
         """
-        pass
+
+        # Create product
+        p = self.make_test_product(price=Decimal('10.00'), slug='p1')
+        p.stock=2
+        p.save()
+
+        # Create discount
+        discount = self.make_test_discount()
+        discount.order_amount = Decimal('2.00')
+        discount.save()
+
+        self.assertEqual(discount.used, 0)
+
+        # Create order
+        o = self.make_test_order()
+        o.save()
+
+        i = OrderItem(quantity=1, product=p, piece_price=p.get_price())
+        o.orderitem_set.add(i)
+
+        # Make sure we update discounts for this order
+        o.update_discount()
+
+        # Check the stock, this should raise no error
+        o.check_stock()
+
+        # Register order confirmation
+        o.register_confirmation()
+
+        discount = Discount.objects.get(pk=discount.pk)
+        self.assertEqual(discount.used, 1)
+
+        # Create another order that should be sold out
+        o = self.make_test_order()
+        o.save()
+
+        i = OrderItem(quantity=2, product=p, piece_price=p.get_price())
+        o.orderitem_set.add(i)
+
+        # Make sure register_confirmation fails
+        self.assertRaises(NoStockAvailableException, o.check_stock)
+
+        # Now check whether the discount has not been applied
+        discount = Discount.objects.get(pk=discount.pk)
+        self.assertEqual(discount.used, 1)
