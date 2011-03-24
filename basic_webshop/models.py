@@ -75,7 +75,7 @@ class Address(CustomerAddressBase):
     country = CountryField()
     telephone_number = models.CharField(_('phone number'), max_length=50)
 
-class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
+class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase, MultilingualTranslation):
     """ Basic webshop customer. """
     objects = UserManager()
 
