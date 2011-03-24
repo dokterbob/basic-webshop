@@ -161,7 +161,10 @@ class CustomerAddressBase(models.Model):
         Default the addressee to the full name of the user if none has
         been specified explicitly.
         """
+
         if not self.addressee:
+            assert self.customer
+
             self.addressee = self.customer.get_full_name()
 
         super(CustomerAddressBase, self).save()

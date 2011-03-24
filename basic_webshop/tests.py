@@ -1,6 +1,9 @@
 from decimal import Decimal
 
 from django.test import TestCase
+
+from countries.models import Country
+
 from webshop.core.tests import CoreTestMixin
 from webshop.extensions.category.simple.tests import CategoryTestMixin
 
@@ -65,7 +68,7 @@ class WebshopTestCase(TestCase):
         c = Customer()
         return c
 
-    def make_test_order(self, customer=None):
+    def make_test_address(self, country=None, customer=None):
         if not customer:
             try:
                 customer = Customer.objects.all()[0]
@@ -73,7 +76,29 @@ class WebshopTestCase(TestCase):
                 customer = self.make_test_customer()
                 customer.save()
 
-        o = Order(customer=customer)
+        if not country:
+            country = Country.objects.all()[0]
+
+        a = Address(customer=customer, country=country)
+        return a
+
+    def make_test_order(self, customer=None, shipping_address=None):
+        if not customer:
+            try:
+                customer = Customer.objects.all()[0]
+            except IndexError:
+                customer = self.make_test_customer()
+                customer.save()
+
+        if not shipping_address:
+            try:
+                shipping_address = Address.objects.all()[0]
+            except IndexError:
+                shipping_address = self.make_test_address(customer=customer)
+                shipping_address.save()
+
+
+        o = Order(customer=customer, shipping_address=shipping_address)
         return o
 
     def make_test_discount(self):
@@ -850,3 +875,29 @@ class StockTest(WebshopTestCase):
         # Now check whether the discount has not been applied
         discount = Discount.objects.get(pk=discount.pk)
         self.assertEqual(discount.used, 1)
+
+
+class ShippingTest(WebshopTestCase):
+    """ Test shipping for orders. """
+
+    def make_test_shippingmethod(self, order_cost=Decimal('10.00')):
+        """ Make a shipping method for testing. """
+        s = ShippingMethod()
+        s.order_cost = order_cost
+        return s
+
+    def test_shippingorder(self):
+        # Shipping method
+        s = self.make_test_shippingmethod()
+        s.save()
+
+        # Create product
+        p = self.make_test_product(price=Decimal('10.00'), slug='p1')
+        p.save()
+
+        # Create order
+        o = self.make_test_order()
+        o.save()
+
+        i = OrderItem(quantity=2, product=p, piece_price=p.get_price())
+        o.orderitem_set.add(i)

@@ -41,7 +41,8 @@ from webshop.extensions.discounts.advanced.models import \
     DiscountedCartMixin, DiscountedCartItemMixin, AccountedDiscountedItemMixin
 
 from webshop.extensions.shipping.advanced.models import \
-    ShippableOrderBase, ShippableOrderItemBase, ShippableCustomerMixin, \
+    ShippedOrderMixin, ShippedOrderItemMixin, ShippableCustomerMixin, \
+    ShippedCartMixin, ShippedCartItemMixin, \
     ShippingMethodBase, OrderShippingMethodMixin, MinimumOrderAmountShippingMixin
 
 
@@ -305,7 +306,8 @@ class ProductMedia(NamedItemBase):
         return self.mediafile.url
 
 
-class Cart(StockedCartMixin,
+class Cart(ShippedCartMixin,
+           StockedCartMixin,
            DiscountedCartMixin,
            DiscountCouponMixin,
            CartBase):
@@ -323,7 +325,8 @@ class Cart(StockedCartMixin,
         return cartitem
 
 
-class CartItem(StockedCartItemMixin,
+class CartItem(ShippedCartItemMixin,
+               StockedCartItemMixin,
                DiscountedCartItemMixin,
                VariationCartItemMixin,
                CartItemBase):
@@ -344,7 +347,7 @@ class OrderStateChange(OrderStateChangeBase):
     pass
 
 
-class Order(#ShippedOrderMixin,
+class Order(ShippedOrderMixin,
             StockedOrderMixin,
             DiscountedOrderMixin,
             DiscountCouponMixin, AccountedDiscountedItemMixin,
@@ -361,7 +364,7 @@ class Order(#ShippedOrderMixin,
                              help_text=_('Optional notes regarding this order.'))
 
 
-class OrderItem(ShippableOrderItemBase,
+class OrderItem(ShippedOrderItemMixin,
                 StockedOrderItemMixin,
                 DiscountedOrderItemMixin,
                 AccountedDiscountedItemMixin,
