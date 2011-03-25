@@ -14,6 +14,13 @@ from basic_webshop.models import *
 
 class WebshopTestCase(TestCase):
     """ Base class with helper function for actual tests. """
+
+    def make_test_shippingmethod(self, order_cost=Decimal('10.00')):
+        """ Make a shipping method for testing. """
+        s = ShippingMethod()
+        s.order_cost = order_cost
+        return s
+
     def make_test_category(self):
         """ Return a test category """
 
@@ -324,7 +331,9 @@ class OrderTest(WebshopTestCase):
 
         # To order
         o = Order.from_cart(cart)
-        o.save()
+
+        # Update discounts etcetera
+        o.update()
 
         self.assertEqual(len(o.get_items()), 1)
         self.assertEqual(o.get_items()[0].product, p)
@@ -362,7 +371,9 @@ class OrderTest(WebshopTestCase):
 
         # To order
         o = Order.from_cart(cart)
-        o.save()
+
+        # Update discounts etcetera
+        o.update()
 
         self.assertEqual(len(o.get_items()), 2)
         self.assert_(o.get_items().get(product=p))
@@ -457,7 +468,7 @@ class DiscountTest(WebshopTestCase):
 
         # No discounts
         o = i.order
-        o.update_discount()
+        o.update()
         o.save()
 
         self.assertEqual(o.discounts.all()[0], discount)
@@ -498,7 +509,9 @@ class DiscountTest(WebshopTestCase):
 
         # To order
         order = Order.from_cart(cart)
-        order.save()
+
+        # Update discounts etcetera
+        order.update()
 
         # Check order discounts
         self.assertEqual(order.get_order_discount(), Decimal('2.00'))
@@ -523,8 +536,7 @@ class DiscountTest(WebshopTestCase):
 
         # No discounts
         o = i.order
-        o.update_discount()
-        o.save()
+        o.update()
 
         self.assertEqual(o.discounts.all()[0], discount)
         self.assertEqual(o.get_order_discount(), Decimal('1.00'))
@@ -549,16 +561,14 @@ class DiscountTest(WebshopTestCase):
 
         # No discounts
         o = i.order
-        o.update_discount()
-        o.save()
+        o.update()
 
         self.assertEqual(o.discounts.all().count(), 0)
         self.assertEqual(o.get_order_discount(), Decimal('0.00'))
         self.assertEqual(o.get_price(), Decimal('10.00'))
 
         o.coupon_code = code
-        o.update_discount()
-        o.save()
+        o.update()
 
         self.assertEqual(o.discounts.all()[0], discount)
         self.assertEqual(o.get_order_discount(), Decimal('2.00'))
@@ -582,16 +592,14 @@ class DiscountTest(WebshopTestCase):
 
         # No discounts
         o = i.order
-        o.update_discount()
-        o.save()
+        o.update()
 
         self.assertEqual(o.discounts.all().count(), 0)
         self.assertEqual(o.get_order_discount(), Decimal('0.00'))
         self.assertEqual(o.get_price(), Decimal('10.00'))
 
         o.coupon_code = code
-        o.update_discount()
-        o.save()
+        o.update()
 
         self.assertEqual(o.discounts.all()[0], discount)
         self.assertEqual(o.get_order_discount(), Decimal('1.00'))
@@ -614,8 +622,7 @@ class DiscountTest(WebshopTestCase):
 
         # No discounts
         o = i.order
-        o.update_discount()
-        o.save()
+        o.update()
 
         self.assertEqual(o.discounts.all()[0], discount)
         self.assertEqual(o.get_order_discount(), Decimal('2.00'))
@@ -641,8 +648,7 @@ class DiscountTest(WebshopTestCase):
 
         # No discounts
         o = i.order
-        o.update_discount()
-        o.save()
+        o.update()
 
         self.assertEqual(o.discounts.all()[0], discount)
         self.assertEqual(o.get_order_discount(), Decimal('2.00'))
@@ -667,8 +673,7 @@ class DiscountTest(WebshopTestCase):
 
         # No discounts
         o = i.order
-        o.update_discount()
-        o.save()
+        o.update()
 
         self.assertEqual(o.discounts.all().count(), 0)
         self.assertEqual(o.get_order_discount(), Decimal('0.00'))
@@ -851,7 +856,7 @@ class StockTest(WebshopTestCase):
         o.orderitem_set.add(i)
 
         # Make sure we update discounts for this order
-        o.update_discount()
+        o.update()
 
         # Check the stock, this should raise no error
         o.check_stock()
@@ -880,12 +885,6 @@ class StockTest(WebshopTestCase):
 class ShippingTest(WebshopTestCase):
     """ Test shipping for orders. """
 
-    def make_test_shippingmethod(self, order_cost=Decimal('10.00')):
-        """ Make a shipping method for testing. """
-        s = ShippingMethod()
-        s.order_cost = order_cost
-        return s
-
     def test_shippingorder(self):
         # Shipping method
         s = self.make_test_shippingmethod()
@@ -898,6 +897,7 @@ class ShippingTest(WebshopTestCase):
         # Create order
         o = self.make_test_order()
         o.save()
+        o.update()
 
         i = OrderItem(quantity=2, product=p, piece_price=p.get_price())
         o.orderitem_set.add(i)

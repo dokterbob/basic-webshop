@@ -354,6 +354,14 @@ class Order(ShippedOrderMixin,
             OrderBase):
     """ Basic order model. """
 
+    def update(self):
+        """ Update discounts and shipping costs. """
+        assert self.pk, 'Order should be saved before updating'
+
+        self.update_shipping()
+        self.update_discount()
+        # self.save()
+
     @classmethod
     def from_cart(self, cart):
         order = super(Order, self).from_cart(cart)

@@ -178,7 +178,7 @@ class BilledOrderMixin(models.Model):
     class Meta:
         abstract = True
 
-    billing_address = models.ForeignKey(ADDRESS_MODEL,
+    billing_address = models.ForeignKey(ADDRESS_MODEL, null=True, blank=True,
                                         related_name='billed%(class)s_set')
 
 
