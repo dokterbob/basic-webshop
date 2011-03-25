@@ -241,11 +241,11 @@ class CountriesShippingMixin(models.Model):
         for which the country requirement has not been specified otherwise.
         """
 
-        superclass = super(CountryShippingMixin, cls)
+        superclass = super(CountriesShippingMixin, cls)
 
         valid = superclass.get_valid_methods(**kwargs)
 
-        valid_no_country = valid.filter(country__isnull=True)
+        valid_no_country = valid.filter(countries__isnull=True)
 
         if country:
             valid = valid.filter(countries=country) | valid_no_country
