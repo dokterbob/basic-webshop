@@ -265,7 +265,8 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
         if category_slug:
             logger.debug('Looking up category with slug %s for detail view',
                          category_slug)
-            category = get_object_or_404(Category.in_shop, slug=category_slug)
+            category = get_object_or_404(Category.get_main_categories(), \
+                                         slug=category_slug)
 
             if subcategory_slug:
                 logger.debug('Looking up subcategory with slug %s for detail view',
