@@ -261,10 +261,12 @@ class NumberedOrderBase(models.Model):
         abstract = True
 
     invoice_number = models.CharField(_('invoice number'), db_index=True,
-                                      editable=False, max_length=255)
+                                      editable=False, max_length=255,
+                                      unique=True, null=True, default=None)
     order_number = models.CharField(_('order number'), db_index=True,
-                                    null=False, editable=False,
-                                    max_length=255)
+                                    editable=False,
+                                    max_length=255,
+                                    unique=True)
 
     def generate_invoice_number(self):
         """
@@ -286,6 +288,9 @@ class NumberedOrderBase(models.Model):
         if not self.order_number:
             self.order_number = self.generate_order_number()
 
+            logger.debug('Generated order number %s for %s',
+                         self.order_number, self.order_number)
+
         super(NumberedOrderBase, self).save(*args, **kwargs)
 
     def confirm(self):
@@ -295,6 +300,9 @@ class NumberedOrderBase(models.Model):
 
         assert not self.invoice_number
         self.invoice_number = self.generate_invoice_number()
+
+        logger.debug('Generated invoice number %s for %s',
+                     self.invoice_number, self.order_number)
 
         # Note: This save operation might not me necessary
         self.save()

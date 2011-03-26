@@ -287,3 +287,37 @@ class OrderTest(WebshopTestCase):
 
         self.assertEqual(OrderStateChange.objects.count(), 3)
         self.assertEqual(OrderStateChange.get_latest(o).state, new_state)
+
+    def test_order_number(self):
+        """ Test whether a valid order number is generated. """
+        # Create order
+        o = self.make_test_order()
+        o.save()
+
+        # Make sure an order number exists in the first place
+        self.assert_(o.order_number)
+
+        # TODO: Confirm validity of the order number here
+
+    def test_invoice_number(self):
+        """ Test whether a valid invoice number is generated. """
+
+        # Create order
+        o1 = self.make_test_order()
+        o1.save()
+
+        # Create order
+        o2 = self.make_test_order()
+        o2.save()
+
+        # Create order
+        o3 = self.make_test_order()
+        o3.save()
+
+        self.assertFalse(o1.invoice_number)
+        o1.confirm()
+        self.assert_(o1.invoice_number)
+
+        o2.confirm()
+
+        self.assertEqual(o2.invoice_number, unicode(o1.invoice_number + 1))

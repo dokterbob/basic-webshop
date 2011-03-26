@@ -355,14 +355,22 @@ class Order(ShippedOrderMixin,
             OrderBase):
     """ Basic order model. """
 
+    def __unicode__(self):
+        return self.order_number
+
     def generate_invoice_number(self):
         """
         Generate consequent invoice numbers.
         """
+
         # Query the highest invoice number
-        qs = self.__class__.objects.all()
+        qs = self.__class__.objects.filter(invoice_number__isnull=False)
         max_query = qs.aggregate(models.Max('invoice_number'))
-        max_number = max_query.get('max_invoice_number', None)
+        max_number = max_query['invoice_number__max']
+
+        # Make sure we're an cast into int
+        if max_number:
+            max_number = int(max_number)
 
         # Get the starting number from the settings file
         from django.conf import settings
@@ -373,7 +381,8 @@ class Order(ShippedOrderMixin,
         if start_number > max_number:
             return start_number
 
-        return max_number
+        # import ipdb; ipdb.set_trace()
+        return unicode(max_number + 1)
 
     def generate_order_number(self):
         """
@@ -397,7 +406,7 @@ class Order(ShippedOrderMixin,
 
         number = order_count + 1
 
-        return 'cos%s%s' % (datestr, number)
+        return 'cos%s%03d' % (datestr, number)
 
     def update(self):
         """
