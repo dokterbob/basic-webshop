@@ -204,6 +204,17 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
         return self
     display_name.short_description = _('name')
 
+    def is_available(self, quantity=1):
+        """ Make sure we also check for variations. """
+        variations = self.productvariation_set.all()
+        if variations.exists():
+            for variation in variations:
+                if variation.is_available(quantity):
+                    return True
+
+        return super(Product, self).is_available(quantity)
+
+
 class RatingField(models.IntegerField):
     def formfield(self, **kwargs):
         defaults = {'min_value': 0, 'max_value': 5}
