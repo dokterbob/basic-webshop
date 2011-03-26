@@ -627,8 +627,8 @@ class DiscountTest(WebshopTestCase):
         self.assertEqual(o.get_order_discount(), Decimal('2.00'))
         self.assertEqual(o.get_price(), Decimal('8.00'))
 
-        o.register_confirmation()
-        o.register_confirmation()
+        o.confirm()
+        o.confirm()
 
         # Discount.register_use(o.discounts.all(), count=2)
 
@@ -655,7 +655,7 @@ class DiscountTest(WebshopTestCase):
 
 
         # Make sure no more uses are left
-        o.register_confirmation()
+        o.confirm()
         # Discount.register_use(o.discounts.all())
 
         # Update the discount object
@@ -764,7 +764,7 @@ class StockTest(WebshopTestCase):
         o.check_stock()
 
         # Register order confirmation, update stock
-        o.register_confirmation()
+        o.confirm()
 
         p = Product.objects.get(pk=p.pk)
         self.assertEquals(p.stock, 0)
@@ -808,7 +808,7 @@ class StockTest(WebshopTestCase):
         o.check_stock()
 
         # Register order confirmation
-        o.register_confirmation()
+        o.confirm()
 
         v = ProductVariation.objects.get(pk=v.pk)
         self.assertEquals(v.stock, 0)
@@ -861,7 +861,7 @@ class StockTest(WebshopTestCase):
         o.check_stock()
 
         # Register order confirmation
-        o.register_confirmation()
+        o.confirm()
 
         discount = Discount.objects.get(pk=discount.pk)
         self.assertEqual(discount.used, 1)
