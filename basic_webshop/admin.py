@@ -65,7 +65,9 @@ admin.site.register(ShippingMethod, ShippingMethodAdmin)
 
 
 class ProductRatingAdmin(admin.ModelAdmin):
-    pass
+    date_hierarchy = 'date_added'
+    list_filter = ('language', )
+    readonly_fields = ('user', 'product', 'date_added', 'language')
 
 admin.site.register(ProductRating, ProductRatingAdmin)
 

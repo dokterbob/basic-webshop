@@ -219,14 +219,20 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
 from django.utils.translation import get_language
 from django.contrib.auth.models import User
 
-class RatingField(models.IntegerField):
-    def formfield(self, *args, **kwargs):
-        kwargs.update({'min_value': 0, 'max_value': 5})
-        return super(RatingField, self).formfield(*args, **kwargs)
+RATING_CHOICES = \
+    ((0, 0),
+     (1, 1),
+     (2, 2),
+     (3, 3),
+     (4, 4),
+     (5, 5),)
 
-class ProductRating(models.Model):
+class ProductRating(DatedItemBase, models.Model):
     """ Customer product rating where the customer can give a small description
     and rating 1-5 """
+
+    class Meta:
+        ordering = ('-date_added', )
 
     # Automatically set fields
     product = models.ForeignKey(Product, editable=False)
@@ -235,8 +241,15 @@ class ProductRating(models.Model):
                                 default=get_language)
 
     # User controlled fields
-    rating = RatingField(_('rating'))
+    rating = models.PositiveSmallIntegerField(_('rating'),
+                                              choices=RATING_CHOICES)
     description = models.TextField(_('review'))
+
+    def __unicode__(self):
+        return _(u'%(rating)d for %(product)s on %(date)s') % \
+            {'rating': self.rating,
+             'product': self.product,
+             'date': self.date_added.date()}
 
 
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
