@@ -310,7 +310,7 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
 
 # Just added ProductDetail as a base class, as errors for this 
 # form have to go... somewhere.
-class CartAdd(CartAddBase, ProductDetail):
+class CartAdd(CartAddBase):
     """ View for adding a quantity of products to the cart. """
     
     def get_success_url(self):
