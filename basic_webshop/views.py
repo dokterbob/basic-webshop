@@ -1,8 +1,6 @@
 import logging
 logger = logging.getLogger('basic_webshop')
 
-from django.utils.functional import SimpleLazyObject
-
 from django.shortcuts import get_object_or_404
 from django.shortcuts import get_list_or_404
 
@@ -20,16 +18,9 @@ from django.contrib import messages
 from basic_webshop.models import Product, Category, Cart, CartItem, Brand
 
 
-from webshop.core.views import InShopViewMixin, CartAddFormMixin, CartAddBase
+from webshop.core.views import InShopViewMixin
 
 from basic_webshop.forms import RatingForm
-
-# This view is not used anymore
-# class CategoryList(TemplateView):
-#     """ A dummy view taking the list of categories from the Mixin
-#         and displaying it using a simple template. """
-#
-#     template_name = 'basic_webshop/category_list.html'
 
 
 class BrandList(ListView):
@@ -237,7 +228,9 @@ class SubSubCategoryDetail(SubCategoryDetail):
                                  slug=subsubcategory_slug)
 
 
-class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
+from basic_webshop.forms import CartAddForm
+
+class ProductDetail(InShopViewMixin, DetailView):
     """ List details for a product. """
 
     model = Product
@@ -260,9 +253,11 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
         product = self.object
 
         # Rating code
-        if self.request.method == 'POST':
+        if self.request.method == 'POST' and \
+            'rating_submit' in self.request.POST:
+
             # We're catching a post: parse results of the form
-            ratingform = RatingForm(user, product, self.request.POST)
+            ratingform = RatingForm(user, product, self.request.POST, prefix='rating')
             if ratingform.is_valid():
                 logger.debug(u'Rating saved for product %s' % product)
                 ratingform.save()
@@ -272,9 +267,39 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
                                      _(u'Your rating has been succesfully saved.'))
 
                 # Start with an empty form
-                ratingform = RatingForm(user, product)
+                ratingform = RatingForm(user, product, prefix='rating')
         else:
-            ratingform = RatingForm(user, product)
+            ratingform = RatingForm(user, product, prefix='rating')
+
+        # Cart adding
+        cart = Cart.from_request(self.request)
+        if self.request.method == 'POST' and \
+            'cart_submit' in self.request.POST:
+
+            cartaddform = CartAddForm(self.object,
+                                      cart,
+                                      self.request.POST, prefix='cartadd')
+
+
+            if cartaddform.is_valid():
+                logger.debug(u'Adding items to cart for %s' % product)
+
+                if not cart.pk:
+                    # Make sure our Cart is saved
+                    cart.save()
+
+                    # Store a reference to the newly created persistent cart
+                    # onto the request
+                    cart.to_request(self.request)
+
+                cartaddform.save()
+
+                messages.add_message(self.request,
+                                     messages.SUCCESS,
+                                     _(u'Added %s to shopping cart.') \
+                                     % product)
+        else:
+            cartaddform = CartAddForm(product, cart, prefix='cartadd')
 
         # Get category and/or subcategry from cookie
         category_slug = self.request.COOKIES.get('category_slug', None)
@@ -320,6 +345,7 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
         context.update({
             'voterange': range(1, 6),
             'ratingform': ratingform,
+            'cartaddform': cartaddform,
             'category': category,
             'subcategory': subcategory,
         })
@@ -327,22 +353,8 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
         return context
 
 
-# Just added ProductDetail as a base class, as errors for this
-# form have to go... somewhere.
-class CartAdd(CartAddBase):
-    """ View for adding a quantity of products to the cart. """
-    def get_success_url(self):
-        """ Get the URL to redirect to after a successful update of
-            the shopping cart. This defaults to the shopping cart
-            detail view. """
-
-        return reverse('cart_detail')
-
-
-
 from django.forms.models import modelformset_factory
 
-from webshop.core.utils import get_cart_from_request
 from django.views.generic.edit import BaseFormView
 
 class CartEditFormMixin(object):
@@ -362,7 +374,7 @@ class CartEditFormMixin(object):
 
     def get_form(self, form_class):
         """ Gets an instance of the formset. """
-        cart = get_cart_from_request(self.request)
+        cart = Cart.from_request(self.request)
 
         qs = cart.get_items()
 

@@ -1,8 +1,10 @@
-from django.forms import ModelForm
+from django import forms
+from django.utils.translation import ugettext_lazy as _
+
 from basic_webshop.models import ProductRating
 
 
-class RatingForm(ModelForm):
+class RatingForm(forms.ModelForm):
     """ Form for ratings. """
 
     class Meta:
@@ -28,3 +30,39 @@ class RatingForm(ModelForm):
             instance.save()
 
         return instance
+
+
+class CartAddForm(forms.Form):
+    """
+    Simple form for adding products to the cart from the product detail page.
+
+    ..todo::
+        Find a way to account for adding variations here.
+    """
+
+    quantity_error = _('The requested quantity of this product is not available.')
+
+    def __init__(self, product, cart, *args, **kwargs):
+        """ Store cart and product on the form object. """
+
+        self.cart = cart
+        self.product = product
+
+        super(CartAddForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        """ Add the requested item(s) to the cart. """
+
+        quantity = self.cleaned_data['quantity']
+        self.cart.add_item(self.product, quantity)
+
+    def clean_quantity(self):
+        """ Check stock for given quantity. """
+        quantity = self.cleaned_data['quantity']
+
+        if not self.product.is_available(quantity):
+            raise forms.ValidationError(self.quantity_error)
+
+        return quantity
+
+    quantity = forms.IntegerField(min_value=1, initial=1)
