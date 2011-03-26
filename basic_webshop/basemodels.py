@@ -260,10 +260,10 @@ class NumberedOrderBase(models.Model):
     class Meta:
         abstract = True
 
-    invoice_number = models.CharField(_('invoice number'), db_index=True,
+    invoice_number = models.SlugField(_('invoice number'), db_index=True,
                                       editable=False, max_length=255,
                                       unique=True, null=True, default=None)
-    order_number = models.CharField(_('order number'), db_index=True,
+    order_number = models.SlugField(_('order number'), db_index=True,
                                     editable=False,
                                     max_length=255,
                                     unique=True)
