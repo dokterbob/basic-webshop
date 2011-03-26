@@ -5,6 +5,8 @@ from django.test import TestCase
 from countries.models import Country
 
 from webshop.core.tests import CoreTestMixin
+from webshop.core.exceptions import AlreadyConfirmedException
+
 from webshop.extensions.category.simple.tests import CategoryTestMixin
 
 from webshop.extensions.stock.exceptions import NoStockAvailableException
@@ -628,18 +630,38 @@ class DiscountTest(WebshopTestCase):
         self.assertEqual(o.get_price(), Decimal('8.00'))
 
         o.confirm()
+
+        # Check the discount object
+        discount = Discount.objects.get(pk=discount.pk)
+        self.assertEqual(discount.used, 1)
+
+        # Do the same dance over again with a different order
+        ######
+
+        # Delete the original order
+        o.delete()
+
+        # Create orderitem
+        i = self.make_test_orderitem(quantity=2, piece_price=Decimal('10.00'))
+        i.save()
+
+        # No discounts
+        o = i.order
+        o.update()
         o.confirm()
 
-        # Discount.register_use(o.discounts.all(), count=2)
-
-        # Update the discount object
+        # Check the discount object
         discount = Discount.objects.get(pk=discount.pk)
         self.assertEqual(discount.used, 2)
 
-        # There should still be one more use possible
+        self.assertEqual(o.discounts.all()[0], discount)
+        self.assertEqual(o.get_order_discount(), Decimal('2.00'))
+        self.assertEqual(o.get_price(), Decimal('18.00'))
 
         # Start with a new order
         o.delete()
+
+        # There should still be one more use possible
 
         # Create orderitem
         i = self.make_test_orderitem(quantity=1, piece_price=Decimal('10.00'))
@@ -761,10 +783,17 @@ class StockTest(WebshopTestCase):
         o.orderitem_set.add(i)
 
         # Check the stock, this should raise no error
-        o.check_stock()
+        o.prepare_confirm()
 
         # Register order confirmation, update stock
         o.confirm()
+
+        # Prepare again: this should raise an AlreadyConfirmedException
+        self.assertRaises(AlreadyConfirmedException, o.prepare_confirm)
+
+        # This should raise an AssertionError as it is potentially to call
+        # confirm twice!
+        self.assertRaises(AssertionError, o.confirm)
 
         p = Product.objects.get(pk=p.pk)
         self.assertEquals(p.stock, 0)
@@ -805,7 +834,7 @@ class StockTest(WebshopTestCase):
         o.orderitem_set.add(i)
 
         # Check the stock, this should raise no error
-        o.check_stock()
+        o.prepare_confirm()
 
         # Register order confirmation
         o.confirm()
@@ -858,7 +887,7 @@ class StockTest(WebshopTestCase):
         o.update()
 
         # Check the stock, this should raise no error
-        o.check_stock()
+        o.prepare_confirm()
 
         # Register order confirmation
         o.confirm()
