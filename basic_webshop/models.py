@@ -351,11 +351,61 @@ class Order(ShippedOrderMixin,
             StockedOrderMixin,
             DiscountedOrderMixin,
             DiscountCouponMixin, AccountedDiscountedItemMixin,
+            NumberedOrderBase,
             OrderBase):
     """ Basic order model. """
 
+    def generate_invoice_number(self):
+        """
+        Generate consequent invoice numbers.
+        """
+        # Query the highest invoice number
+        qs = self.__class__.objects.all()
+        max_query = qs.aggregate(models.Max('invoice_number'))
+        max_number = max_query.get('max_invoice_number', None)
+
+        # Get the starting number from the settings file
+        from django.conf import settings
+        start_number = getattr(settings, 'WEBSHOP_INVOICE_NUMBER_START', 1)
+
+        # When start > max: return start
+        # Otherwise, return max
+        if start_number > max_number:
+            return start_number
+
+        return max_number
+
+    def generate_order_number(self):
+        """
+        Generate order numbers according to:
+        cosYYYYMMDDNN
+        """
+        # We might not have been saved
+        if self.date_added:
+            date = self.date_added.date()
+        else:
+            from datetime import date
+            date = date.today()
+
+        datestr = date.isoformat().replace('-','')
+
+        order_qs = self.__class__.objects.all()
+        order_qs = order_qs.filter(date_added__year=date.year)
+        order_qs = order_qs.filter(date_added__month=date.month)
+        order_qs = order_qs.filter(date_added__day=date.day)
+        order_count = order_qs.count()
+
+        number = order_count + 1
+
+        return 'cos%s%s' % (datestr, number)
+
     def update(self):
-        """ Update discounts and shipping costs. """
+        """
+        Update discounts and shipping costs.
+
+        Note: we might want to integrate this functionality right into
+        the shipping/discounts code. Should be more elegant.
+        """
         assert self.pk, 'Order should be saved before updating'
 
         self.update_shipping()

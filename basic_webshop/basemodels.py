@@ -254,5 +254,49 @@ class CountriesShippingMixin(models.Model):
 
         return valid
 
+# Base classes for orders with invoice numbers and order numbers
+class NumberedOrderBase(models.Model):
+    """ Base class for `Order` with invoice and order numbers. """
+    class Meta:
+        abstract = True
+
+    invoice_number = models.CharField(_('invoice number'), db_index=True,
+                                      editable=False, max_length=255)
+    order_number = models.CharField(_('order number'), db_index=True,
+                                    null=False, editable=False,
+                                    max_length=255)
+
+    def generate_invoice_number(self):
+        """
+        Generates an invoice number for the current order. Should be
+        overridden in subclasses.
+        """
+        raise NotImplementedError
+
+    def generate_order_number(self):
+        """
+        Generates an order number for the current order. Should be
+        overridden in subclasses.
+        """
+        raise NotImplementedError
+
+    def save(self, *args, **kwargs):
+        """ Generate an order number upon saving the order. """
+
+        if not self.order_number:
+            self.order_number = self.generate_order_number()
+
+        super(NumberedOrderBase, self).save(*args, **kwargs)
+
+    def confirm(self):
+        """ Make sure we set an invoice number upon order confirmation. """
+
+        super(NumberedOrderBase, self).confirm()
+
+        assert not self.invoice_number
+        self.invoice_number = self.generate_invoice_number()
+
+        # Note: This save operation might not me necessary
+        self.save()
 
 
