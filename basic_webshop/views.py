@@ -13,6 +13,10 @@ from django.core.urlresolvers import reverse
 from django.views.generic import DetailView, ListView, \
                                  TemplateView
 
+from django.utils.translation import ugettext_lazy as _
+
+from django.contrib import messages
+
 from basic_webshop.models import Product, Category, Cart, CartItem, Brand
 
 
@@ -24,7 +28,7 @@ from basic_webshop.forms import RatingForm
 # class CategoryList(TemplateView):
 #     """ A dummy view taking the list of categories from the Mixin
 #         and displaying it using a simple template. """
-#     
+#
 #     template_name = 'basic_webshop/category_list.html'
 
 
@@ -232,6 +236,7 @@ class SubSubCategoryDetail(SubCategoryDetail):
         return get_object_or_404(object.get_subcategories(),
                                  slug=subsubcategory_slug)
 
+
 class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
     """ List details for a product. """
 
@@ -249,16 +254,29 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
         """
 
         context = super(ProductDetail, self).get_context_data(**kwargs)
-        ratingform = None
-        if self.request.method == 'POST':
-            ratingform = RatingForm(self.request.POST)
-            if ratingform.is_valid():
-                ratingform.save()
-                # Empty the form
-                ratingform = RatingForm(initial={'product': object, 'user': self.request.user})
-        else:
-            ratingform = RatingForm(initial={'product': object, 'user': self.request.user})
 
+        # User and product for quick reference
+        user = self.request.user
+        product = self.object
+
+        # Rating code
+        if self.request.method == 'POST':
+            # We're catching a post: parse results of the form
+            ratingform = RatingForm(user, product, self.request.POST)
+            if ratingform.is_valid():
+                logger.debug(u'Rating saved for product %s' % product)
+                ratingform.save()
+
+                messages.add_message(self.request,
+                                     messages.SUCCESS,
+                                     _(u'Your rating has been succesfully saved.'))
+
+                # Start with an empty form
+                ratingform = RatingForm(user, product)
+        else:
+            ratingform = RatingForm(user, product)
+
+        # Get category and/or subcategry from cookie
         category_slug = self.request.COOKIES.get('category_slug', None)
         subcategory_slug = self.request.COOKIES.get('subcategory_slug', None)
 
@@ -298,6 +316,7 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
             else:
                 subcategory = None
 
+        # Update the context
         context.update({
             'voterange': range(1, 6),
             'ratingform': ratingform,
@@ -308,16 +327,15 @@ class ProductDetail(CartAddFormMixin, InShopViewMixin, DetailView):
         return context
 
 
-# Just added ProductDetail as a base class, as errors for this 
+# Just added ProductDetail as a base class, as errors for this
 # form have to go... somewhere.
 class CartAdd(CartAddBase):
     """ View for adding a quantity of products to the cart. """
-    
     def get_success_url(self):
         """ Get the URL to redirect to after a successful update of
             the shopping cart. This defaults to the shopping cart
             detail view. """
-        
+
         return reverse('cart_detail')
 
 
@@ -327,62 +345,42 @@ from django.forms.models import modelformset_factory
 from webshop.core.utils import get_cart_from_request
 from django.views.generic.edit import BaseFormView
 
-from django.contrib import messages
-
 class CartEditFormMixin(object):
     """ Mixin providing a formset for updating the quantities of
         products in the shopping cart. """
-    
-    
+
+
     def get_form_class(self):
-        """ Do a little trick and see whether it works: returning a 
+        """ Do a little trick and see whether it works: returning a
             formset instead of a form here.
         """
         formset_class =  modelformset_factory(CartItem,
                                               exclude=('cart', 'product'),
                                               extra=0)
-        
+
         return formset_class
-    
-    
+
     def get_form(self, form_class):
         """ Gets an instance of the formset. """
         cart = get_cart_from_request(self.request)
-        
-        qs = CartItem.objects.filter(cart=cart, quantity__gte=1)
 
+        qs = cart.get_items()
 
-        if self.request.method in ('POST', 'PUT'):\
-            return form_class(self.request.POST, queryset=qs)
-
-            # return form_class(
-            #     data=self.request.POST,
-            #     files=self.request.FILES,
-            #     initial=self.get_initial(),
-            #     instance=self.object,
-            # )
+        if self.request.method == 'POST':\
+            return form_class(self.request.POST, queryset=qs, prefix='cart')
         else:
-            return form_class(queryset=qs)
-        #     return form_class(
-        #         initial=self.get_initial(),
-        #         instance=self.object,
-        #     )
-        # 
-        # formset = 
-        # 
-        # return formset
+            return form_class(queryset=qs, prefix=cart)
 
-        
     def get_context_data(self, **kwargs):
-        """ Add a form for editing the quantities of articles to 
-            the template. """            
-        
+        """ Add a form for editing the quantities of articles to
+            the template. """
+
         context = super(CartEditFormMixin, self).get_context_data(**kwargs)
-        
+
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         context.update({'carteditformset': form})
-        
+
         return context
 
 
@@ -390,12 +388,12 @@ class CartDetail(CartEditFormMixin, TemplateView):
     """ A simple template view returning cart details,
         since the cart is already given in the template context from
         the WebshopViewMixin. """
-    
+
     template_name = 'basic_webshop/cart_detail.html'
-    
+
 
 class CartEdit(CartDetail, BaseFormView):
-    """ View for updating the quantities of objects in the shopping 
+    """ View for updating the quantities of objects in the shopping
         cart. """
 
     http_method_names = ['post', ]
@@ -403,31 +401,31 @@ class CartEdit(CartDetail, BaseFormView):
         override the `get` method in BaseFormView. """
 
     def get_success_url(self):
-        """ The URL to return to after the form was processed 
+        """ The URL to return to after the form was processed
             succesfully. This function should be overridden. """
-        
+
         # TODO
         # Decide whether or not to make the default success url a
         # configuration value or not.
         #raise NotImplemented
 
         return reverse('cart_detail')
-            
+
     def form_valid(self, form):
         """ Save the formset. """
-        
+
         logger.debug('Supervalide form man, dude, cool; %s', form)
         form.save()
-        
+
         messages.add_message(self.request, messages.SUCCESS,
-            'Updated shopping cart.')
-        
+            _('Updated shopping cart.'))
+
         return super(CartEdit, self).form_valid(form)
 
 
 class ShopIndex(TemplateView):
     """ An index view for the shop, containing only the default context
         of the WebshopViewMixin. """
-    
+
     template_name = 'basic_webshop/index.html'
 
