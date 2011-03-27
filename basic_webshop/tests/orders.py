@@ -318,6 +318,8 @@ class OrderTest(WebshopTestCase):
         o1.confirm()
         self.assert_(o1.invoice_number)
 
+        # import ipdb; ipdb.set_trace()
         o2.confirm()
 
-        self.assertEqual(o2.invoice_number, unicode(o1.invoice_number + 1))
+        self.assertEqual(o2.invoice_number,
+                         int(o1.invoice_number) + 1)

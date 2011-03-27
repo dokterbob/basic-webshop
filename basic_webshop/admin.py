@@ -22,6 +22,14 @@ from simplesite.settings import PAGEIMAGE_SIZE
 from simplesite.utils import ExtendibleModelAdminMixin
 
 
+class PricedItemAdminMixin(object):
+    """ Admin mixin for priced items. """
+    def get_price(self, obj):
+        price = obj.get_price()
+        return price
+    get_price.short_description = _('price')
+
+
 class OrderStateChangeInline(admin.TabularInline):
     model = OrderStateChange
 
@@ -39,21 +47,31 @@ class OrderItemInlineBase(admin.TabularInline):
 
     readonly_fields = ('price', )
 
-class OrderItemInline(admin.TabularInline):
+class OrderItemInline(admin.TabularInline, PricedItemAdminMixin):
     model = OrderItem
 
     fields = ('order_line', 'quantity', 'piece_price',
-              'discount', 'price',)
-    readonly_fields = ('price', )
+              'discount', 'get_price',)
+    readonly_fields = ('get_price', )
 
     extra = 0
 
 
-#class OrderAdmin(admin.ModelAdmin):
-#    inlines = (OrderItemInline, OrderStateChangeInline)
-#    readonly_fields = ('billing_address', 'customer', 'coupon_code')
-#
-#admin.site.register(Order, OrderAdmin)
+class OrderAdmin(admin.ModelAdmin, PricedItemAdminMixin):
+   inlines = (OrderItemInline, OrderStateChangeInline)
+   readonly_fields = ('get_full_address', 'customer', 'coupon_code',
+                      'get_price', 'get_total_discounts',)
+   list_display = ('shipping_address',
+                   'invoice_number', 'order_number')
+   date_hierarchy = 'date_added'
+   fields = ('state', 'order_discount', 'order_shipping_costs', 'notes', ) + \
+             readonly_fields
+
+   def get_total_discounts(self, obj):
+       return obj.get_total_discounts()
+   get_total_discounts.short_description = _('total discounts')
+
+admin.site.register(Order, OrderAdmin)
 
 
 class ShippingMethodAdmin(admin.ModelAdmin):
@@ -90,7 +108,7 @@ admin.site.register(Customer, CustomerAdmin)
 
 # class AddressAdmin(admin.ModelAdmin):
 #     pass
-# 
+#
 # admin.site.register(Address, AddressAdmin)
 
 
@@ -331,6 +349,7 @@ class DiscountAdmin(admin.ModelAdmin):
     readonly_fields = ('used', )
     filter_horizontal = ('categories', 'products')
     list_filter = ('start_date', 'end_date', 'use_coupon')
+    search_fields = ('name', )
 
     max_products_display = 2
     def admin_products(self, obj):

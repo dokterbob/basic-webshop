@@ -75,6 +75,16 @@ class Address(CustomerAddressBase):
     country = CountryField()
     telephone_number = models.CharField(_('phone number'), max_length=50)
 
+    def get_full(self):
+        """ Return the full address formatted for shipping. """
+        data = [self.addressee, self.postal_adress, ]
+        if self.postal_address2:
+            data.append(self.postal_address2)
+
+        data += [self.zip_code, city, country]
+
+        return "\n".join(data)
+
 class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase, MultilingualTranslation):
     """ Basic webshop customer. """
     objects = UserManager()
@@ -387,10 +397,30 @@ class Order(ShippedOrderMixin,
     def __unicode__(self):
         return self.order_number
 
+    def get_full_address(self):
+        """ Formatted shipping address. """
+        return self.shipping_address.get_full()
+    get_full_address.short_description = _('address')
+
+    def get_full_discounts(self):
+        """ Formatted discounts. """
+        if self.discounts:
+            return "\n".join(self.discounts)
+    get_full_discounts.short_description = _('discounts')
+
     def generate_invoice_number(self):
         """
         Generate consequent invoice numbers.
         """
+
+        assert not self.invoice_number, 'Invoice number already generated.'
+
+        # We might not have been saved
+        if self.date_added:
+            date = self.date_added.date()
+        else:
+            from datetime import date
+            date = date.today()
 
         # Query the highest invoice number
         qs = self.__class__.objects.filter(invoice_number__isnull=False)
@@ -408,16 +438,17 @@ class Order(ShippedOrderMixin,
         # When start > max: return start
         # Otherwise, return max
         if start_number > max_number:
-            return start_number
+            return '%d%d' % (date.year, start_number)
 
-        # import ipdb; ipdb.set_trace()
-        return unicode(max_number + 1)
+        return max_number + 1
 
     def generate_order_number(self):
         """
         Generate order numbers according to:
         cosYYYYMMDDNN
         """
+        assert not self.invoice_number, 'Invoice number already generated.'
+
         # We might not have been saved
         if self.date_added:
             date = self.date_added.date()
