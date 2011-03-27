@@ -4,6 +4,7 @@ logger = logging.getLogger('basic_webshop')
 from django.shortcuts import get_object_or_404
 from django.shortcuts import get_list_or_404
 
+from django.db import models
 from django.http import Http404
 
 from django.core.urlresolvers import reverse
@@ -15,7 +16,8 @@ from django.utils.translation import get_language, ugettext_lazy as _
 
 from django.contrib import messages
 
-from basic_webshop.models import Product, Category, Cart, CartItem, Brand
+from basic_webshop.models import \
+    Product, Category, Cart, CartItem, Brand, ProductRating
 
 
 from webshop.core.views import InShopViewMixin
@@ -149,7 +151,7 @@ class CategoryAspectDetail(CategoryDetail):
 
         context.update({'products': products,
                         'current_aspect': aspect})
-  
+
         return context
 
 class SubCategoryDetail(CategoryDetail):
@@ -360,8 +362,22 @@ class ProductDetail(InShopViewMixin, DetailView):
             else:
                 subcategory = None
 
+        # Voterange is used to render the rating result
+        voterange = xrange(1, 6)
+
+        # Ratings
+        ratings = ProductRating.objects.filter(product=product)
+        # Filter by language
+        language_code = get_language()
+        ratings = ratings.filter(language=language_code)
+
+        # Average rating and total ratings count
+        average_rating = ratings.aggregate(models.Avg('rating')).get('rating__avg', None)
+
         # Update the context
         context.update({
+            'ratings': ratings,
+            'average_rating': average_rating,
             'voterange': range(1, 6),
             'ratingform': ratingform,
             'cartaddform': cartaddform,
