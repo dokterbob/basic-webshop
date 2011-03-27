@@ -5,12 +5,6 @@ from django.conf.urls.defaults import *
 from basic_webshop.views import *
 
 urlpatterns = patterns('',
-    # surl(r'^$',
-    #      ShopIndex.as_view(), name='shop_index'),
-    #
-    # surl(r'^categories/$',
-    #      CategoryList.as_view(), name='category_list'),
-
     surl(r'^categories/<category_slug:s>/<aspect=new|picks|sale|all>/$',
          CategoryAspectDetail.as_view(), name='category_aspect_detail'),
 
@@ -37,6 +31,5 @@ urlpatterns = patterns('',
 
     surl(r'^cart/$',
          CartDetail.as_view(), name='cart_detail'),
-    surl(r'^cart/edit/$', CartEdit.as_view(), name='cart_edit'),
 
 )

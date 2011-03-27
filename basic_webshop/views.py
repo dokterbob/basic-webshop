@@ -1,16 +1,17 @@
 import logging
 logger = logging.getLogger('basic_webshop')
 
-from django.shortcuts import get_object_or_404
-from django.shortcuts import get_list_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 
 from django.db import models
 from django.http import Http404
 
 from django.core.urlresolvers import reverse
 
+from django.forms.models import modelformset_factory
+
 from django.views.generic import DetailView, ListView, \
-                                 TemplateView
+                                 UpdateView
 
 from django.utils.translation import get_language, ugettext_lazy as _
 
@@ -22,12 +23,13 @@ from basic_webshop.models import \
 
 from webshop.core.views import InShopViewMixin
 
-from basic_webshop.forms import RatingForm
+from basic_webshop.forms import RatingForm, CartAddForm
 
 
 class BrandList(ListView):
     """ List of brands. """
     model = Brand
+
 
 class BrandDetail(DetailView):
     """ Detail view for brand. """
@@ -46,9 +48,11 @@ class BrandDetail(DetailView):
 
         return context
 
+
 class BrandProducts(BrandDetail):
     """ List of products by brand. """
     template_name='basic_webshop/brand_products.html'
+
 
 class CategoryDetail(DetailView):
     """ View with all products in category x, a list of subcategories, category
@@ -154,6 +158,7 @@ class CategoryAspectDetail(CategoryDetail):
 
         return context
 
+
 class SubCategoryDetail(CategoryDetail):
     """
     This is pretty much the same as an ordinary category view except that
@@ -231,6 +236,7 @@ class SubCategoryDetail(CategoryDetail):
         return get_object_or_404(object.get_subcategories(),
                                  slug=subcategory_slug)
 
+
 class SubSubCategoryDetail(SubCategoryDetail):
     """
     Same as SubCategoryDetail but a level lower
@@ -248,8 +254,6 @@ class SubSubCategoryDetail(SubCategoryDetail):
         return get_object_or_404(object.get_subcategories(),
                                  slug=subsubcategory_slug)
 
-
-from basic_webshop.forms import CartAddForm
 
 class ProductDetail(InShopViewMixin, DetailView):
     """ List details for a product. """
@@ -388,18 +392,39 @@ class ProductDetail(InShopViewMixin, DetailView):
         return context
 
 
-from django.forms.models import modelformset_factory
+class CartDetail(UpdateView):
+    model = Cart
+    template_name = 'basic_webshop/cart_detail.html'
 
-from django.views.generic.edit import BaseFormView
+    def get_object(self):
+        model = self.model()
 
-class CartEditFormMixin(object):
-    """ Mixin providing a formset for updating the quantities of
-        products in the shopping cart. """
+        cart = model.from_request(self.request)
 
+        return cart
+
+    def form_valid(self, form):
+        """ Save the formset. """
+
+        form.save()
+
+        messages.add_message(self.request, messages.SUCCESS,
+            _('Updated shopping cart.'))
+
+        return super(CartDetail, self).form_valid(form)
+
+    def get_success_url(self):
+        """
+        The URL to return to after the form was processed
+        succesfully. This function should be overridden.
+        """
+
+        return reverse('cart_detail')
 
     def get_form_class(self):
-        """ Do a little trick and see whether it works: returning a
-            formset instead of a form here.
+        """
+        Do a little trick and see whether it works: returning a
+        formset instead of a form here.
         """
         formset_class =  modelformset_factory(CartItem,
                                               exclude=('cart', 'product'),
@@ -407,72 +432,14 @@ class CartEditFormMixin(object):
 
         return formset_class
 
-    def get_form(self, form_class):
-        """ Gets an instance of the formset. """
-        cart = Cart.from_request(self.request)
+    def get_form_kwargs(self):
+        kwargs = super(CartDetail, self).get_form_kwargs()
 
-        qs = cart.get_items()
+        # We're never editing the current instance
+        del kwargs['instance']
 
-        if self.request.method == 'POST':\
-            return form_class(self.request.POST, queryset=qs, prefix='cart')
-        else:
-            return form_class(queryset=qs, prefix=cart)
+        # As we're building a formset, make sure we pass along the queryset
+        # with CartItem objects
+        kwargs['queryset'] = self.object.get_items()
 
-    def get_context_data(self, **kwargs):
-        """ Add a form for editing the quantities of articles to
-            the template. """
-
-        context = super(CartEditFormMixin, self).get_context_data(**kwargs)
-
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        context.update({'carteditformset': form})
-
-        return context
-
-
-class CartDetail(CartEditFormMixin, TemplateView):
-    """ A simple template view returning cart details,
-        since the cart is already given in the template context from
-        the WebshopViewMixin. """
-
-    template_name = 'basic_webshop/cart_detail.html'
-
-
-class CartEdit(CartDetail, BaseFormView):
-    """ View for updating the quantities of objects in the shopping
-        cart. """
-
-    http_method_names = ['post', ]
-    """ Only allow for post requests to this view. This is necessary to
-        override the `get` method in BaseFormView. """
-
-    def get_success_url(self):
-        """ The URL to return to after the form was processed
-            succesfully. This function should be overridden. """
-
-        # TODO
-        # Decide whether or not to make the default success url a
-        # configuration value or not.
-        #raise NotImplemented
-
-        return reverse('cart_detail')
-
-    def form_valid(self, form):
-        """ Save the formset. """
-
-        logger.debug('Supervalide form man, dude, cool; %s', form)
-        form.save()
-
-        messages.add_message(self.request, messages.SUCCESS,
-            _('Updated shopping cart.'))
-
-        return super(CartEdit, self).form_valid(form)
-
-
-class ShopIndex(TemplateView):
-    """ An index view for the shop, containing only the default context
-        of the WebshopViewMixin. """
-
-    template_name = 'basic_webshop/index.html'
-
+        return kwargs

@@ -6,7 +6,7 @@
     <h1>Shopping cart</h1>
     
     <h2>Products</h2>
-    <form action="{% url cart_edit %}" method="post">
+    <form action="" method="post">
         {% csrf_token %}
         {{ carteditformset.management_form }}
 
@@ -17,7 +17,7 @@
                 <th>Price per piece</th>
                 <th>Total price</th>
             </tr>
-            {% for form in carteditformset.forms %}
+            {% for form in form.forms %}
                 {% with form.instance as cartitem %}
                 {{ form.id }}
                 <tr>
