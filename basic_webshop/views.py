@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from django.views.generic import DetailView, ListView, \
                                  TemplateView
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import get_language, ugettext_lazy as _
 
 from django.contrib import messages
 
@@ -149,7 +149,7 @@ class CategoryAspectDetail(CategoryDetail):
 
         context.update({'products': products,
                         'current_aspect': aspect})
-
+  
         return context
 
 class SubCategoryDetail(CategoryDetail):
@@ -161,38 +161,57 @@ class SubCategoryDetail(CategoryDetail):
 
     def get_context_data(self, object, **kwargs):
         """ Do all sorts of funkey filtering and view related stuff. """
-        sort_order = self.request.GET.get('sort_order', None)
-
         context = super(SubCategoryDetail, self).get_context_data(object,
                                                                   **kwargs)
         category = object
         products = context['products']
 
+        # Filter by brand
+        # <URL>?filter_brand=<brand_slug>
+        filter_brand = self.request.GET.get('filter_brand', None)
+
+        if filter_brand:
+            logger.debug('Filtering by brand')
+            products = get_list_or_404(products, brand__slug = filter_brand)
+
+        # <URL>?sort_order=<name|brand|price>
+        # <URL>?sort_order=bla&sort_reverse=1
+        sort_order = self.request.GET.get('sort_order', None)
+        sort_reverse = self.request.GET.get('sort_reverse', False)
+
+        # Do sorting
         if sort_order == 'name':
-            # TODO: This doesn't work correctly yet. This should be sorted by name
-            products = products.order_by('slug')
+            logger.debug('Ordering by name')
+
+            # Order by translated name
+            language_code = get_language()
+            products = products.filter(translations__language_code=\
+                                       language_code)
+            products = products.order_by('translations__name')
         elif sort_order == 'brand':
+            logger.debug('Ordering by brand')
+
             products = products.order_by('brand')
         elif sort_order == 'price':
+            logger.debug('Ordering by price')
+
             products = products.order_by('price')
         else:
             if sort_order != None:
                 logger.warning('Unknown sort order requested.')
                 raise Http404("This sort order doesn't exist.")
 
-
-        filter_brand = self.request.GET.get('filter_brand', None)
-        if filter_brand:
-            products = get_list_or_404(products, brand__slug = filter_brand)
-
-
-        # Note: this might be more easthetically
-        # (Also keeping context construction and logica separate)
-        # context = {'sort_order': sort_order, ...})
+        # Optionally, reverse sorting
+        # <URL>?sort_order=<bla>?sort_reverse=<0|1>
+        if sort_reverse == '1':
+            logger.debug('Reversing sort order')
+            products = products.reverse()
 
         context.update({
             'sort_order': sort_order,
+            'sort_reverse': sort_reverse,
             'current_brand': filter_brand,
+            'products': products
         })
 
         return context
