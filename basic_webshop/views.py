@@ -4,14 +4,14 @@ logger = logging.getLogger('basic_webshop')
 from django.shortcuts import get_object_or_404, get_list_or_404
 
 from django.db import models
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 
 from django.core.urlresolvers import reverse
 
 from django.forms.models import modelformset_factory
 
 from django.views.generic import DetailView, ListView, \
-                                 UpdateView, RedirectView
+                                 UpdateView, View
 
 from django.utils.translation import get_language, ugettext_lazy as _
 
@@ -450,7 +450,7 @@ class CartDetail(UpdateView):
         return kwargs
 
 
-class ProtectedView(object):
+class ProtectedView(View):
     """ View mixin making sure the user is logged in. """
 
     @method_decorator(login_required)
@@ -476,24 +476,51 @@ class OrderViewMixin(ProtectedView):
         return qs
 
 
-class OrderCreate(ProtectedView, RedirectView):
+class OrderCreate(ProtectedView):
     """ Create an order from the shopping cart and redirect to it. """
 
-    def get_redirect_url(self):
-        """ Create an Order object from the Cart - and redirect to it. """
+    def post(self, request, *args, **kwargs):
+        order = self.create_order()
 
+        assert order
+
+        url = self.get_redirect_url(order)
+
+        return HttpResponseRedirect(url)
+
+    def create_order(self):
+        """ Create an Order object from the Cart"""
         cart = Cart.from_request(self.request)
 
         assert cart.pk, 'Cart not persistent'
         assert cart.customer, 'No customer for Cart'
-        assert cart.customer.get_latest_address(), 'No address for customer'
+        assert cart.customer.get_address(), 'No address for customer'
         assert cart.get_items(), 'No items in Cart'
 
         order = Order.from_cart(cart)
-        order.update()
 
-        assert order.check_stock()
+        # Don't assume transactions here - clean up after ourselves manually
+        try:
+            order.update()
 
+            # Double-check whether stock is available
+            order.check_stock()
+
+            # Delete old potential errors for this cart
+            Order.objects.filter(cart=cart).exclude(pk=order.pk).delete()
+
+        except:
+            # Delete the order if something went wrong - as to prevent
+            # double order numbers
+            if order.pk:
+                order.delete()
+
+            raise
+
+        return order
+
+    def get_redirect_url(self, order):
+        """ Redirect to the current order's URL. """
         return order.get_absolute_url()
 
 

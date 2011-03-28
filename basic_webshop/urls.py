@@ -45,7 +45,7 @@ urlpatterns = patterns('',
         OrderCreate.as_view(), name='order_create'),
 
     surl(r'^orders/<slug:s>/$',
-        OrderDetail.as_view(), name='order_list'),
+        OrderDetail.as_view(), name='order_detail'),
 
     surl(r'^orders/<slug:s>/shipping/$',
         OrderShipping.as_view(), name='order_shipping'),

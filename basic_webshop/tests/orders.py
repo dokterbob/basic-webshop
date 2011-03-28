@@ -297,7 +297,12 @@ class OrderTest(WebshopTestCase):
         # Make sure an order number exists in the first place
         self.assert_(o.order_number)
 
-        # TODO: Confirm validity of the order number here
+        # Create order
+        o2 = self.make_test_order()
+        o2.save()
+
+        # Make sure an order number exists in the first place
+        self.assert_(o2.order_number)
 
     def test_invoice_number(self):
         """ Test whether a valid invoice number is generated. """

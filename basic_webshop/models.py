@@ -105,6 +105,12 @@ class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase, Mu
     # Mathijs speaks: let's just make birthdays optional. :P
     birthday = models.DateField(_('birthday'), null=True)
 
+    def get_address(self):
+        """ Get 'the first and best' address from the customer. """
+        try:
+            return self.address_set.all()[0]
+        except IndexError:
+            pass
 
 ARTICLE_NUMBER_LENGTH = 11
 class ArticleNumberMixin(models.Model):
@@ -363,6 +369,9 @@ class Cart(ShippedCartMixin,
 
         return cartitem
 
+    def __unicode__(self):
+        return u'%d for %s' % (self.pk, self.customer)
+
 
 class CartItem(ShippedCartItemMixin,
                StockedCartItemMixin,
@@ -407,6 +416,12 @@ class Order(ShippedOrderMixin,
         if self.discounts:
             return "\n".join(self.discounts)
     get_full_discounts.short_description = _('discounts')
+
+    @models.permalink
+    def get_absolute_url(self):
+        """ Order overview URL. """
+
+        return ('order_detail', (), {'slug': self.order_number})
 
     def generate_invoice_number(self):
         """
@@ -465,8 +480,13 @@ class Order(ShippedOrderMixin,
         order_count = order_qs.count()
 
         number = order_count + 1
+        
+        order_number = 'cos%s%03d' % (datestr, number)
+       
+        assert not Order.objects.filter(order_number=order_number).exists(), \
+            'Order number not unique'
 
-        return 'cos%s%03d' % (datestr, number)
+        return order_number
 
     def update(self):
         """
