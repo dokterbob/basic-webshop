@@ -154,7 +154,7 @@ class CustomerAddressBase(models.Model):
 
     addressee = models.CharField(_('addressee'), max_length=255, blank=True,
         help_text=_('Automatically set from user name if left blank.'))
-    customer = models.ForeignKey(CUSTOMER_MODEL)
+    customer = models.ForeignKey(CUSTOMER_MODEL, editable=False)
 
     def save(self):
         """

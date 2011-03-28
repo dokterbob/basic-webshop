@@ -73,7 +73,7 @@ class Address(CustomerAddressBase):
     zip_code = models.CharField(_('zip code'), max_length=50)
     city = models.CharField(_('city'), max_length=50)
     country = CountryField()
-    telephone_number = models.CharField(_('phone number'), max_length=50)
+    telephone_number = models.CharField(_('phone number'), max_length=50, blank=True)
 
     def __unicode__(self):
         return self.addressee

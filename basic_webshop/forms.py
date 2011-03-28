@@ -1,7 +1,10 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from basic_webshop.models import ProductRating
+from basic_webshop.models import ProductRating, Address
 
 
 class RatingForm(forms.ModelForm):
@@ -66,3 +69,26 @@ class CartAddForm(forms.Form):
         return quantity
 
     quantity = forms.IntegerField(min_value=1, initial=1)
+
+
+class AddressUpdateForm(forms.ModelForm):
+    """ Form for updating Address objects. """
+
+    class Meta:
+        model = Address
+
+    def __init__(self, *args, **kwargs):
+        """ We should allways be instantiated with an instance. """
+        assert 'instance' in kwargs, 'This form is only for updating'
+        super(AddressUpdateForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        """ Make sure we never override an existing Address. """
+        instance = super(AddressUpdateForm, self).save(commit=False)
+        instance.pk = None
+
+        if commit and self.has_changed():
+            logger.debug('Saving new Address instance')
+            instance.save()
+
+        return instance

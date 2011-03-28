@@ -25,7 +25,7 @@ from basic_webshop.models import \
 
 from webshop.core.views import InShopViewMixin
 
-from basic_webshop.forms import RatingForm, CartAddForm
+from basic_webshop.forms import RatingForm, CartAddForm, AddressUpdateForm
 
 
 class BrandList(ListView):
@@ -521,8 +521,8 @@ class OrderCreate(ProtectedView):
         return order
 
     def get_redirect_url(self, order):
-        """ Redirect to the current order's URL. """
-        return order.get_absolute_url()
+        """ Redirect to the current order's shipping URL. """
+        return reverse('order_shipping', kwargs={'slug': order.order_number})
 
 
 class OrderList(OrderViewMixin, ListView):
@@ -535,6 +535,16 @@ class OrderDetail(OrderViewMixin, DetailView):
     pass
 
 
-class OrderShipping(OrderViewMixin, DetailView, UpdateView):
-    """ """
-    pass
+class OrderShipping(OrderViewMixin, UpdateView):
+    """ Form view for shipping details """
+    form_class = AddressUpdateForm
+
+    def get_object(self):
+        """ Get an Address object from the order. """
+        self.order = super(OrderShipping, self).get_object()
+        return self.order.shipping_address
+
+    def get_success_url(self):
+        """ Redirect to the current order's overview URL. """
+        order = self.order
+        return reverse('order_detail', kwargs={'slug': order.order_number})
