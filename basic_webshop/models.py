@@ -57,6 +57,14 @@ from basic_webshop.basemodels import *
 
 from countries.fields import CountryField
 
+# Silly optimizations for SQLite
+from django.db import connection
+cursor = connection.cursor()
+if cursor.db.vendor == 'sqlite':
+    logger.debug('Enabling PRAGMA optimizations for SQLite')
+    cursor.execute('PRAGMA temp_store=MEMORY;')
+    cursor.execute('PRAGMA synchronous=OFF;')
+
 
 class ShippingMethod(NamedItemBase,
                      OrderShippingMethodMixin,
