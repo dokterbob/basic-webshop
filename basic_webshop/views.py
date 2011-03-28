@@ -549,3 +549,46 @@ class OrderShipping(OrderViewMixin, UpdateView):
         """ Redirect to the current order's overview URL. """
         order = self.order
         return reverse('order_detail', kwargs={'slug': order.order_number})
+
+
+from docdata.models import PaymentCluster
+
+class OrderCheckout(OrderViewMixin):
+    """ Start payment process for this order. """
+
+    def post(self, request, *args, **kwargs):
+        order = self.get_object()
+        assert order
+        assert order.pk
+
+        payment = self.create_payment(order)
+        assert payment
+        assert payment.pk
+
+        url = self.get_redirect_url(payment)
+
+        return HttpResponseRedirect(url)
+
+    def create_payment(self, order):
+        """ Create payment object for order. """
+        data = {
+            "client_id" : "001",
+            "price" : "10.00",
+            "cur_price" : "eur",
+            "client_email" : "user@domein.nl",
+            "client_firstname" : "Triple",
+            "client_lastname" : "Deal",
+            "client_address" : "Euclideslaan 2",
+            "client_zip" : "3584 BN",
+            "client_city" : "Utrecht",
+            "client_country" : "nl",
+            "client_language" : "nl",
+            "description" : "test transaction",
+        }
+        payment = PaymentCluster()
+        payment.create_cluster(data)
+        return payment
+
+    def get_redirect_url(self, payment):
+        """ Return a redirect URL for a given payment. """
+        return payment.payment_url()

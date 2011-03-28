@@ -51,4 +51,10 @@ urlpatterns = patterns('',
     surl(r'^orders/<slug:s>/shipping/$',
         OrderShipping.as_view(), name='order_shipping'),
 
+    surl(r'^orders/<slug:s>/checkout/$',
+        OrderCheckout.as_view(), name='order_checkout'),
+
+    # Payment
+    (r'^payment/', include('docdata.urls')),
+
 )
