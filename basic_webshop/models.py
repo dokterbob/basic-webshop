@@ -69,21 +69,25 @@ class ShippingMethod(NamedItemBase,
 
 class Address(CustomerAddressBase):
     postal_address = models.CharField(_('address'), max_length=50)
-    postal_address2 = models.CharField('', blank=True, max_length=50)
+    postal_address2 = models.CharField(_('address'), blank=True, max_length=50)
     zip_code = models.CharField(_('zip code'), max_length=50)
     city = models.CharField(_('city'), max_length=50)
     country = CountryField()
     telephone_number = models.CharField(_('phone number'), max_length=50)
 
-    def get_full(self):
-        """ Return the full address formatted for shipping. """
-        data = [self.addressee, self.postal_adress, ]
+    def __unicode__(self):
+        return self.addressee
+
+    def formatted(self):
+        """ Return the address formatted for shipping. """
+        data = [self.addressee, self.postal_address, ]
         if self.postal_address2:
             data.append(self.postal_address2)
 
-        data += [self.zip_code, city, country]
+        data += [self.zip_code, self.city, unicode(self.country)]
 
         return "\n".join(data)
+
 
 class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase, MultilingualTranslation):
     """ Basic webshop customer. """
@@ -406,16 +410,16 @@ class Order(ShippedOrderMixin,
     def __unicode__(self):
         return self.order_number
 
-    def get_full_address(self):
+    def get_formatted_address(self):
         """ Formatted shipping address. """
-        return self.shipping_address.get_full()
-    get_full_address.short_description = _('address')
+        return self.shipping_address.formatted_address()
+    get_formatted_address.short_description = _('address')
 
-    def get_full_discounts(self):
+    def get_formatted_discounts(self):
         """ Formatted discounts. """
         if self.discounts:
             return "\n".join(self.discounts)
-    get_full_discounts.short_description = _('discounts')
+    get_formatted_discounts.short_description = _('discounts')
 
     @models.permalink
     def get_absolute_url(self):

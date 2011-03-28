@@ -59,7 +59,7 @@ class OrderItemInline(admin.TabularInline, PricedItemAdminMixin):
 
 class OrderAdmin(admin.ModelAdmin, PricedItemAdminMixin):
    inlines = (OrderItemInline, OrderStateChangeInline)
-   readonly_fields = ('get_full_address', 'customer', 'coupon_code',
+   readonly_fields = ('get_formatted_address', 'customer', 'coupon_code',
                       'get_price', 'get_total_discounts',)
    list_display = ('shipping_address',
                    'invoice_number', 'order_number')
