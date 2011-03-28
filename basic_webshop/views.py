@@ -11,14 +11,16 @@ from django.core.urlresolvers import reverse
 from django.forms.models import modelformset_factory
 
 from django.views.generic import DetailView, ListView, \
-                                 UpdateView
+                                 UpdateView, RedirectView
 
 from django.utils.translation import get_language, ugettext_lazy as _
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from basic_webshop.models import \
-    Product, Category, Cart, CartItem, Brand, ProductRating
+    Product, Category, Cart, CartItem, Brand, ProductRating, Order
 
 
 from webshop.core.views import InShopViewMixin
@@ -317,6 +319,9 @@ class ProductDetail(InShopViewMixin, DetailView):
                     # onto the request
                     cart.to_request(self.request)
 
+                assert cart.pk
+                assert cart.from_request(self.request) == cart
+
                 cartaddform.save()
 
                 messages.add_message(self.request,
@@ -443,3 +448,65 @@ class CartDetail(UpdateView):
         kwargs['queryset'] = self.object.get_items()
 
         return kwargs
+
+
+class ProtectedView(object):
+    """ View mixin making sure the user is logged in. """
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ProtectedView, self).dispatch(*args, **kwargs)
+
+
+class OrderViewMixin(ProtectedView):
+    """ Base class for all Order views. """
+
+    model = Order
+    slug_field = 'order_number'
+
+    def get_queryset(self):
+        """ Make sure we only see orders pertainging to the current user. """
+
+        assert self.request.user
+        assert self.request.user.customer
+
+        qs = super(OrderViewMixin, self).get_queryset()
+        qs.filter(customer=self.request.user.customer)
+
+        return qs
+
+
+class OrderCreate(ProtectedView, RedirectView):
+    """ Create an order from the shopping cart and redirect to it. """
+
+    def get_redirect_url(self):
+        """ Create an Order object from the Cart - and redirect to it. """
+
+        cart = Cart.from_request(self.request)
+
+        assert cart.pk, 'Cart not persistent'
+        assert cart.customer, 'No customer for Cart'
+        assert cart.customer.get_latest_address(), 'No address for customer'
+        assert cart.get_items(), 'No items in Cart'
+
+        order = Order.from_cart(cart)
+        order.update()
+
+        assert order.check_stock()
+
+        return order.get_absolute_url()
+
+
+class OrderList(OrderViewMixin, ListView):
+    """ List orders for customer. """
+    pass
+
+
+class OrderDetail(OrderViewMixin, DetailView):
+    """ Overview for specific order. """
+    pass
+
+
+class OrderShipping(OrderViewMixin, DetailView, UpdateView):
+    """ """
+    pass
