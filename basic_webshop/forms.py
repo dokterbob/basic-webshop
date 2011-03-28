@@ -3,6 +3,10 @@ from django.utils.translation import ugettext_lazy as _
 
 from basic_webshop.models import ProductRating
 
+from recaptcha_works.fields import RecaptchaField
+
+import contact_form.forms
+
 
 class RatingForm(forms.ModelForm):
     """ Form for ratings. """
@@ -66,3 +70,35 @@ class CartAddForm(forms.Form):
         return quantity
 
     quantity = forms.IntegerField(min_value=1, initial=1)
+
+attrs_dict = { 'class': 'required' }
+
+class ContactForm(contact_form.forms.ContactBaseForm):
+    """
+    Contact form which requires users to enter firstname, lastname, email adress,
+    subject, message body as well a message captcha.
+    """
+
+    recipient_list = ["alexander.schrijver@gmail.com", ]
+
+    firstname = forms.CharField(max_length=100,
+                           widget=forms.TextInput(attrs=attrs_dict),
+                           label=_('Firstname'),
+                           required=True)
+    lastname = forms.CharField(max_length=100,
+                           widget=forms.TextInput(attrs=attrs_dict),
+                           label=_('Lastname'),
+                           required=True)
+    email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict,
+                                                               maxlength=200)),
+                             label=_('Email address'),
+                             required=True)
+    subject = forms.CharField(max_length=100,
+                           widget=forms.TextInput(attrs=attrs_dict),
+                           label=_('Subject'),
+                           required=True)
+    body = forms.CharField(widget=forms.Textarea(attrs=attrs_dict),
+                              label=_('Message'),
+                              required=True)
+    captcha = RecaptchaField()
+

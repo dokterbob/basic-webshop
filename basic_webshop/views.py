@@ -23,7 +23,9 @@ from basic_webshop.models import \
 
 from webshop.core.views import InShopViewMixin
 
-from basic_webshop.forms import RatingForm, CartAddForm
+from basic_webshop.forms import RatingForm, CartAddForm, ContactForm
+
+import contact_form.views
 
 
 class BrandList(ListView):
@@ -443,3 +445,6 @@ class CartDetail(UpdateView):
         kwargs['queryset'] = self.object.get_items()
 
         return kwargs
+
+class ContactFormView(contact_form.views.ContactFormView):
+    form_class = ContactForm
