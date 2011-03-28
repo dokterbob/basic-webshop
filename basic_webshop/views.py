@@ -502,6 +502,7 @@ class OrderCreate(ProtectedView):
         # Don't assume transactions here - clean up after ourselves manually
         try:
             order.update()
+            order.save()
 
             # Double-check whether stock is available
             order.check_stock()

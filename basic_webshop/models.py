@@ -477,12 +477,19 @@ class Order(ShippedOrderMixin,
         order_qs = order_qs.filter(date_added__year=date.year)
         order_qs = order_qs.filter(date_added__month=date.month)
         order_qs = order_qs.filter(date_added__day=date.day)
-        order_count = order_qs.count()
 
-        number = order_count + 1
-        
+        try:
+            latest_order = order_qs.latest('date_added')
+            # Take last three digits
+            order_number = latest_order.order_number[-3:]
+
+            # Convert to int and add one
+            number = int(order_number) + 1
+        except Order.DoesNotExist:
+            number = 1
+
         order_number = 'cos%s%03d' % (datestr, number)
-       
+
         assert not Order.objects.filter(order_number=order_number).exists(), \
             'Order number not unique'
 
@@ -503,8 +510,16 @@ class Order(ShippedOrderMixin,
 
     @classmethod
     def from_cart(self, cart):
+        """ Set coupon code and shipping address """
         order = super(Order, self).from_cart(cart)
         order.coupon_code = cart.coupon_code
+
+        # Get default shipping address from customer
+        assert cart.customer
+        address = cart.customer.get_address()
+        assert address
+        order.shipping_address = address
+
         return order
 
     notes = models.TextField(blank=True,
