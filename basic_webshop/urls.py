@@ -2,18 +2,10 @@ from surlex.dj import surl
 
 from django.conf.urls.defaults import *
 
-from django.views.generic import TemplateView
-
 from basic_webshop.views import *
 
 
 urlpatterns = patterns('',
-    surl(r'^contact/$', ContactFormView.as_view(), name='contact_form'),
-
-    surl(r'^contact/sent/$', TemplateView.as_view(
-        template_name='contact_form/contact_form_sent.html',),
-        name='contact_form_sent'),
-
     # Catalogue
     surl(r'^categories/<category_slug:s>/<aspect=new|picks|sale|all>/$',
          CategoryAspectDetail.as_view(), name='category_aspect_detail'),
