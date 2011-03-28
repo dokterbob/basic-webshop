@@ -25,7 +25,10 @@ from basic_webshop.models import \
 
 from webshop.core.views import InShopViewMixin
 
-from basic_webshop.forms import RatingForm, CartAddForm, AddressUpdateForm
+from basic_webshop.forms import \
+    RatingForm, CartAddForm, AddressUpdateForm, ContactForm
+
+import contact_form.views
 
 
 class BrandList(ListView):
@@ -548,3 +551,6 @@ class OrderShipping(OrderViewMixin, UpdateView):
         """ Redirect to the current order's overview URL. """
         order = self.order
         return reverse('order_detail', kwargs={'slug': order.order_number})
+
+class ContactFormView(contact_form.views.ContactFormView):
+    form_class = ContactForm
