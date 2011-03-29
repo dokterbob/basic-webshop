@@ -2,10 +2,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from django.db import models
-from django.utils.translation import ugettext_lazy as _
 
-from django.contrib.auth.models import UserManager
+from django.conf import settings
+
+from django.db import models
+from django.utils.translation import get_language, ugettext_lazy as _
+
+from django.contrib.auth.models import UserManager, User
 
 from webshop.core.models import ProductBase, CartBase, CartItemBase, \
                                 OrderBase, OrderItemBase, UserCustomerBase, \
@@ -44,7 +47,6 @@ from webshop.extensions.shipping.advanced.models import \
     ShippedOrderMixin, ShippedOrderItemMixin, ShippableCustomerMixin, \
     ShippedCartMixin, ShippedCartItemMixin, \
     ShippingMethodBase, OrderShippingMethodMixin, MinimumOrderAmountShippingMixin
-
 
 from multilingual_model.models import MultilingualModel, \
                                       MultilingualTranslation
@@ -109,12 +111,9 @@ class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase, Mu
     )
     gender = models.CharField(_('gender'), max_length=1, choices=GENDER_CHOICES)
 
-    # TODO: The reason birthday can be null is because the UserManager creates
-    # and saves a new user (without a birthday) which violates the not NULL
-    # constraint. The solution is to create a CustomerManager with UserManager
-    # as superclass.
-    #
-    # Mathijs speaks: let's just make birthdays optional. :P
+    language = models.CharField(_('language'), max_length=5, editable=False,
+                                default=get_language)
+
     birthday = models.DateField(_('birthday'), null=True)
 
     def get_address(self):
@@ -124,7 +123,8 @@ class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase, Mu
         except IndexError:
             pass
 
-ARTICLE_NUMBER_LENGTH = 11
+
+ARTICLE_NUMBER_LENGTH = getattr(settings, 'WEBSHOP_ARTICLE_NUMBER_LENGTH')
 class ArticleNumberMixin(models.Model):
     """
     Item with a required article number, `article_number`, which is
@@ -244,17 +244,6 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
 
 
 ###  Rating models
-from django.utils.translation import get_language
-from django.contrib.auth.models import User
-
-RATING_CHOICES = \
-    ((0, 0),
-     (1, 1),
-     (2, 2),
-     (3, 3),
-     (4, 4),
-     (5, 5),)
-
 class ProductRating(DatedItemBase, models.Model):
     """ Customer product rating where the customer can give a small description
     and rating 1-5 """
@@ -268,6 +257,13 @@ class ProductRating(DatedItemBase, models.Model):
     language = models.CharField(_('language'), max_length=5, editable=False,
                                 default=get_language)
 
+    RATING_CHOICES = \
+        ((0, 0),
+         (1, 1),
+         (2, 2),
+         (3, 3),
+         (4, 4),
+         (5, 5),)
     # User controlled fields
     rating = models.PositiveSmallIntegerField(_('rating'),
                                               choices=RATING_CHOICES)
