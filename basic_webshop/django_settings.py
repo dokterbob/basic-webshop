@@ -17,11 +17,10 @@ WEBSHOP_ORDER_STATES = (
     (00, _('New')),
     (10, _('Pending')),
     (20, _('Paid')),
-    (30, _('Cancelled')),
+    (30, _('Canceled')),
     (40, _('Rejected')),
     (50, _('Shipped')),
     # (60, _('Complete')),
-    # (70, _('Cancelled')),
 )
 WEBSHOP_ORDERSTATE_CHANGE_MODEL = 'basic_webshop.OrderStateChange'
 WEBSHOP_ORDERITEM_MODEL = 'basic_webshop.OrderItem'
