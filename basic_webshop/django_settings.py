@@ -5,23 +5,14 @@ These settings should be imported in `settings.py` by adding::
 
 """
 
-from django.utils.translation import ugettext_lazy as _
-
+from basic_webshop.order_states import ORDER_STATES
 
 WEBSHOP_CUSTOMER_MODEL = 'basic_webshop.Customer'
 WEBSHOP_PRODUCT_MODEL = 'basic_webshop.Product'
 WEBSHOP_CART_MODEL = 'basic_webshop.Cart'
 WEBSHOP_CARTITEM_MODEL = 'basic_webshop.CartItem'
 WEBSHOP_ORDER_MODEL = 'basic_webshop.Order'
-WEBSHOP_ORDER_STATES = (
-    (00, _('New')),
-    (10, _('Pending')),
-    (20, _('Paid')),
-    (30, _('Canceled')),
-    (40, _('Rejected')),
-    (50, _('Shipped')),
-    # (60, _('Complete')),
-)
+WEBSHOP_ORDER_STATES = ORDER_STATES
 WEBSHOP_ORDERSTATE_CHANGE_MODEL = 'basic_webshop.OrderStateChange'
 WEBSHOP_ORDERITEM_MODEL = 'basic_webshop.OrderItem'
 WEBSHOP_CATEGORY_MODEL = 'basic_webshop.Category'
