@@ -660,6 +660,8 @@ class OrderCheckoutStatus(OrderDetail):
     template_name_suffix = '_checkout_status'
 
     def get_template_names(self):
+        """ Make sure we get propert templates."""
+
         template_names = super(OrderCheckoutStatus, self).get_template_names()
 
         assert 'status' in self.kwargs
@@ -671,6 +673,7 @@ class OrderCheckoutStatus(OrderDetail):
         return template_names
 
     def get_context_data(self, *args, **kwargs):
+        """ Add the current status to the context. """
         context = super(OrderCheckoutStatus, self).get_context_data(*args,
                                                                     **kwargs)
 
