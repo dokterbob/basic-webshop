@@ -487,16 +487,22 @@ class Order(ShippedOrderMixin,
         order_qs = order_qs.filter(date_added__day=date.day)
 
         try:
-            latest_order = order_qs.latest('date_added')
+            # Get today's latest order number
+            latest_order = order_qs.order_by('-order_number')[0]
+
             # Take last three digits
             order_number = latest_order.order_number[-3:]
 
+            logger.debug('Current latest order number: %s', order_number)
+
             # Convert to int and add one
             number = int(order_number) + 1
-        except Order.DoesNotExist:
+
+        except IndexError:
             number = 1
 
         order_number = 'cos%s%03d' % (datestr, number)
+        logger.debug('Generated order number: %s', order_number)
 
         assert not Order.objects.filter(order_number=order_number).exists(), \
             'Order number not unique'
@@ -525,7 +531,7 @@ class Order(ShippedOrderMixin,
         # Get default shipping address from customer
         assert cart.customer
         address = cart.customer.get_address()
-        assert address
+        # assert address
         order.shipping_address = address
 
         return order
