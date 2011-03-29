@@ -59,6 +59,8 @@ from basic_webshop.basemodels import *
 
 from countries.fields import CountryField
 
+from docdata.models import PaymentCluster
+
 # Silly optimizations for SQLite
 from django.db import connection
 cursor = connection.cursor()
@@ -536,9 +538,12 @@ class Order(ShippedOrderMixin,
 
         return order
 
-    notes = models.TextField(blank=True,
+    notes = models.TextField(_('notes'), blank=True,
                              help_text=_('Optional notes regarding this order.'))
 
+    payment_cluster = models.OneToOneField(PaymentCluster, null=True,
+                                         verbose_name=_('payment'),
+                                         editable=False)
 
 class OrderItem(ShippedOrderItemMixin,
                 StockedOrderItemMixin,

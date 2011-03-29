@@ -54,7 +54,10 @@ urlpatterns = patterns('',
     surl(r'^orders/<slug:s>/checkout/$',
         OrderCheckout.as_view(), name='order_checkout'),
 
-    # Payment
+    surl(r'^orders/<slug:s>/checkout/<status=success|canceled|pending|error>/$',
+        OrderCheckoutStatus.as_view(), name='order_checkout_status'),
+
+    # Payment status feedback
     (r'^payment/', include('docdata.urls')),
 
 )

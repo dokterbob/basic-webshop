@@ -22,6 +22,7 @@ from django.utils.decorators import method_decorator
 from basic_webshop.models import \
     Product, Category, Cart, CartItem, Brand, ProductRating, Order
 
+from docdata.models import PaymentCluster
 
 from webshop.core.views import InShopViewMixin
 
@@ -539,6 +540,7 @@ class OrderDetail(OrderViewMixin, DetailView):
 class OrderShipping(OrderViewMixin, UpdateView):
     """ Form view for shipping details """
     form_class = AddressUpdateForm
+    template_name = 'basic_webshop/order_shipping.html'
 
     def get_object(self):
         """ Get an Address object from the order. """
@@ -550,8 +552,6 @@ class OrderShipping(OrderViewMixin, UpdateView):
         order = self.order
         return reverse('order_detail', kwargs={'slug': order.order_number})
 
-
-from docdata.models import PaymentCluster
 
 class OrderCheckout(OrderViewMixin, DetailView):
     """ Start payment process for this order. """
@@ -571,6 +571,14 @@ class OrderCheckout(OrderViewMixin, DetailView):
 
     def create_payment(self, order):
         """ Create payment object for order. """
+
+        if order.payment_cluster:
+            payment_cluster = order.payment_cluster
+            logger.info(u'Found existing payment cluster %s, using this one',
+                        payment_cluster)
+
+            return payment_cluster
+
         assert order.customer
         customer = order.customer
 
@@ -597,8 +605,46 @@ class OrderCheckout(OrderViewMixin, DetailView):
         }
         payment = PaymentCluster()
         payment.create_cluster(**data)
+
+        logger.debug(u'Created new payment cluster %s, saving', payment)
+        order.payment_cluster = payment
+        order.save()
+
         return payment
 
     def get_redirect_url(self, payment):
         """ Return a redirect URL for a given payment. """
         return payment.payment_url()
+
+
+class OrderCheckoutStatus(OrderDetail):
+    """
+    Show checkout status message. Takes a single keyword argument `status`.
+
+    This view uses `basic_webshop/order_checkout_<status>.html` as template
+    or `basic_webshop/order_checkout_status.html` when a more specific
+    template cannot be found.
+
+    This view subclasses `OrderDetail` so the `Order` object is available in
+    the context.
+    """
+    template_name_suffix = '_checkout_status'
+
+    def get_template_names(self):
+        template_names = super(OrderCheckoutStatus, self).get_template_names()
+
+        assert 'status' in self.kwargs
+        status = self.kwargs['status']
+        assert status in ('success', 'canceled', 'pending', 'error')
+
+        template_names.append('basic_webshop/order_checkout_%s.html' % status)
+
+        return template_names
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(OrderCheckoutStatus, self).get_context_data(*args,
+                                                                    **kwargs)
+
+        assert 'status' in self.kwargs
+        context['status'] = self.kwargs['status']
+
