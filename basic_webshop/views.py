@@ -553,7 +553,7 @@ class OrderShipping(OrderViewMixin, UpdateView):
 
 from docdata.models import PaymentCluster
 
-class OrderCheckout(OrderViewMixin):
+class OrderCheckout(OrderViewMixin, DetailView):
     """ Start payment process for this order. """
 
     def post(self, request, *args, **kwargs):
@@ -579,6 +579,7 @@ class OrderCheckout(OrderViewMixin):
 
         full_address = address.postal_address+'\n'+address.postal_address2
         data = {
+            "merchant_transaction_id": order.order_number,
             "client_id" : customer.pk,
             "price" : order.get_price(),
             "cur_price" : "eur",
@@ -595,7 +596,7 @@ class OrderCheckout(OrderViewMixin):
             "days_pay_period": 14
         }
         payment = PaymentCluster()
-        payment.create_cluster(data)
+        payment.create_cluster(**data)
         return payment
 
     def get_redirect_url(self, payment):
