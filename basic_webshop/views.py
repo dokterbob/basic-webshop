@@ -481,7 +481,14 @@ class OrderViewMixin(ProtectedView):
 class OrderCreate(ProtectedView):
     """ Create an order from the shopping cart and redirect to it. """
 
+    def get(self, request, *args, **kwargs):
+        """ Gets just redirect back to the shopping cart, for now. """
+
+        url = self.get_bounce_url()
+        return HttpResponseRedirect(url)
+
     def post(self, request, *args, **kwargs):
+        """ Post creates an order. """
         order = self.create_order()
 
         assert order
@@ -526,6 +533,9 @@ class OrderCreate(ProtectedView):
         """ Redirect to the current order's shipping URL. """
         return reverse('order_shipping', kwargs={'slug': order.order_number})
 
+    def get_bounce_url(self):
+        """ URL users are sent to when no order is created. """
+        return reverse('cart_detail')
 
 class OrderList(OrderViewMixin, ListView):
     """ List orders for customer. """
