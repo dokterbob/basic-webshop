@@ -571,19 +571,28 @@ class OrderCheckout(OrderViewMixin):
 
     def create_payment(self, order):
         """ Create payment object for order. """
+        assert order.customer
+        customer = order.customer
+
+        # We want the customer's data - not the order shipping details
+        address = customer.get_address()
+
+        full_address = address.postal_address+'\n'+address.postal_address2
         data = {
-            "client_id" : "001",
-            "price" : "10.00",
+            "client_id" : customer.pk,
+            "price" : order.get_price(),
             "cur_price" : "eur",
-            "client_email" : "user@domein.nl",
-            "client_firstname" : "Triple",
-            "client_lastname" : "Deal",
-            "client_address" : "Euclideslaan 2",
-            "client_zip" : "3584 BN",
-            "client_city" : "Utrecht",
-            "client_country" : "nl",
-            "client_language" : "nl",
-            "description" : "test transaction",
+            "client_company" : customer.company,
+            "client_email" : customer.email,
+            "client_firstname" : customer.first_name,
+            "client_lastname" : customer.last_name,
+            "client_address" : full_address,
+            "client_zip" : address.zip_code,
+            "client_city" : address.city,
+            "client_country" : address.country.iso,
+            "client_language" : customer.language,
+            "description" : unicode(order),
+            "days_pay_period": 14
         }
         payment = PaymentCluster()
         payment.create_cluster(data)
