@@ -14,16 +14,15 @@ WEBSHOP_CART_MODEL = 'basic_webshop.Cart'
 WEBSHOP_CARTITEM_MODEL = 'basic_webshop.CartItem'
 WEBSHOP_ORDER_MODEL = 'basic_webshop.Order'
 WEBSHOP_ORDER_STATES = (
-    (00, _('Temp')),
-    (10, _('New')),
-    (20, _('Blocked')),
-    (30, _('In Process')),
-    (40, _('Billed')),
+    (00, _('New')),
+    (10, _('Pending')),
+    (20, _('Paid')),
+    (30, _('Cancelled')),
+    (40, _('Rejected')),
     (50, _('Shipped')),
-    (60, _('Complete')),
-    (70, _('Cancelled')),
+    # (60, _('Complete')),
+    # (70, _('Cancelled')),
 )
-WEBSHOP_ORDER_COMPLETED_STATES = (60, )
 WEBSHOP_ORDERSTATE_CHANGE_MODEL = 'basic_webshop.OrderStateChange'
 WEBSHOP_ORDERITEM_MODEL = 'basic_webshop.OrderItem'
 WEBSHOP_CATEGORY_MODEL = 'basic_webshop.Category'
