@@ -557,11 +557,11 @@ class OrderCheckout(OrderViewMixin, DetailView):
     """ Start payment process for this order. """
 
     def post(self, request, *args, **kwargs):
-        order = self.get_object()
-        assert order
-        assert order.pk
+        self.object = self.get_object()
+        assert self.object
+        assert self.object.pk
 
-        payment = self.create_payment(order)
+        payment = self.create_payment()
         assert payment
         assert payment.pk
 
@@ -569,8 +569,9 @@ class OrderCheckout(OrderViewMixin, DetailView):
 
         return HttpResponseRedirect(url)
 
-    def create_payment(self, order):
+    def create_payment(self):
         """ Create payment object for order. """
+        order = self.object
 
         if order.payment_cluster:
             payment_cluster = order.payment_cluster
@@ -612,9 +613,27 @@ class OrderCheckout(OrderViewMixin, DetailView):
 
         return payment
 
+    def _make_status_url(self, status):
+        """ Cute helper funciton for generating status URL's """
+        # We're an order view, so the current order should be availabe
+        # as self.object
+        slug = self.object.order_number
+
+        url = reverse('order_checkout_status',
+                      kwargs={'slug': slug, 'status': status})
+
+        return self.request.build_absolute_uri(url)
+
     def get_redirect_url(self, payment):
         """ Return a redirect URL for a given payment. """
-        return payment.payment_url()
+
+        data = {
+            'return_url_success': self._make_status_url('success'),
+            'return_url_canceled': self._make_status_url('canceled'),
+            'return_url_pending': self._make_status_url('pending'),
+            'return_url_error': self._make_status_url('error'),
+        }
+        return payment.payment_url(**data)
 
 
 class OrderCheckoutStatus(OrderDetail):
