@@ -18,44 +18,11 @@ digraph name {
 
 
   
-    basic_webshop_basemodels_CustomerAddressBase [label=<
-    <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-     <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
-     ><FONT FACE="Helvetica Bold" COLOR="white"
-     >CustomerAddressBase</FONT></TD></TR>
-
-    
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">id</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">AutoField</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">addressee</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">CharField</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">customer</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
-        ></TD></TR>
-        
-    
-    </TABLE>
-    >]
-  
     basic_webshop_models_ShippingMethod [label=<
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
-     >ShippingMethod<BR/><FONT FACE="Helvetica Italic">OrderShippingMethodMixin,<BR/>MinimumOrderAmountShippingMixin,<BR/>CountriesShippingMixin,<BR/>ShippingMethodBase, NamedItemBase</FONT></FONT></TD></TR>
+     >ShippingMethod<BR/>&lt;<FONT FACE="Helvetica Italic">NamedItemBase,OrderShippingMethodMixin,...</FONT>&gt;</FONT></TD></TR>
 
     
         
@@ -102,7 +69,7 @@ digraph name {
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
-     >Address</FONT></TD></TR>
+     >Address<BR/>&lt;<FONT FACE="Helvetica Italic">CustomerAddressBase</FONT>&gt;</FONT></TD></TR>
 
     
         
@@ -114,31 +81,31 @@ digraph name {
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">addressee</FONT
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">addressee</FONT
         ></TD>
         <TD ALIGN="LEFT"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">CharField</FONT
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">CharField</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">customer</FONT
+        ><FONT FACE="Helvetica Italic">customer</FONT
         ></TD>
         <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
+        ><FONT FACE="Helvetica Italic">ForeignKey</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">customeraddressbase_ptr</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">OneToOneField</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">address</FONT
+        ><FONT FACE="Helvetica Bold">postal_address</FONT
         ></TD>
         <TD ALIGN="LEFT"
         ><FONT FACE="Helvetica Bold">CharField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">postal_address2</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">CharField</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -162,6 +129,13 @@ digraph name {
         ><FONT FACE="Helvetica Bold">CountryField</FONT
         ></TD></TR>
         
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">telephone_number</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">CharField</FONT
+        ></TD></TR>
+        
     
     </TABLE>
     >]
@@ -170,7 +144,7 @@ digraph name {
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
-     >Customer<BR/>&lt;<FONT FACE="Helvetica Italic">UserCustomerBase</FONT>&gt;</FONT></TD></TR>
+     >Customer<BR/>&lt;<FONT FACE="Helvetica Italic">UserCustomerBase,MultilingualTranslation</FONT>&gt;</FONT></TD></TR>
 
     
         
@@ -256,6 +230,41 @@ digraph name {
         ></TD>
         <TD ALIGN="LEFT"
         ><FONT FACE="Helvetica Italic">OneToOneField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Italic">language_code</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Italic">CharField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">company</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">CharField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Bold">gender</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Bold">CharField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Bold">language</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Bold">CharField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Bold">birthday</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Bold">DateField</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -407,7 +416,7 @@ digraph name {
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
-     >Product<BR/><FONT FACE="Helvetica Italic">MultilingualModel,ActiveItemInShopBase,ProductBase,<BR/>CategorizedItemBase,OrderedItemBase,PricedItemBase,<BR/>DatedItemBase,StockedItemMixin,RelatedProductsMixin,<BR/>BrandedProductMixin,UniqueSlugItemBase,<BR/>ArticleNumberMixin,PublishDateItemBase</FONT></FONT></TD></TR>
+     >Product<BR/>&lt;<FONT FACE="Helvetica Italic">MultilingualModel,ActiveItemInShopBase,ProductBase, ...</FONT>&gt;</FONT></TD></TR>
 
     
         
@@ -468,10 +477,10 @@ digraph name {
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">brand</FONT
+        ><FONT FACE="Helvetica Italic">brand</FONT
         ></TD>
         <TD ALIGN="LEFT"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">ForeignKey</FONT
+        ><FONT FACE="Helvetica Italic">ForeignKey</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -482,10 +491,10 @@ digraph name {
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">article_number</FONT
+        ><FONT FACE="Helvetica Italic">article_number</FONT
         ></TD>
         <TD ALIGN="LEFT"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">CharField</FONT
+        ><FONT FACE="Helvetica Italic">CharField</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
@@ -507,6 +516,74 @@ digraph name {
         ></TD>
         <TD ALIGN="LEFT"
         ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">ManyToManyField</FONT
+        ></TD></TR>
+        
+    
+    </TABLE>
+    >]
+  
+    basic_webshop_models_ProductRating [label=<
+    <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+     <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
+     ><FONT FACE="Helvetica Bold" COLOR="white"
+     >ProductRating<BR/>&lt;<FONT FACE="Helvetica Italic">DatedItemBase</FONT>&gt;</FONT></TD></TR>
+
+    
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">id</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">AutoField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">date_added</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">DateTimeField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">date_modified</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">DateTimeField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Bold">product</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Bold">user</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Bold">ForeignKey</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Bold">language</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Bold">CharField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Bold">rating</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Bold">PositiveSmallIntegerField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Bold">description</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Bold">TextField</FONT
         ></TD></TR>
         
     
@@ -773,7 +850,7 @@ digraph name {
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
-     >Cart<BR/>&lt;<FONT FACE="Helvetica Italic">CartBase</FONT>&gt;</FONT></TD></TR>
+     >Cart<BR/>&lt;<FONT FACE="Helvetica Italic">ShippedCartMixin,DiscountedCartMixin,DiscountCouponMixin,CartBase</FONT>&gt;</FONT></TD></TR>
 
     
         
@@ -791,6 +868,13 @@ digraph name {
         ><FONT FACE="Helvetica Italic">ForeignKey</FONT
         ></TD></TR>
         
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">coupon_code</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">CharField</FONT
+        ></TD></TR>
+        
     
     </TABLE>
     >]
@@ -799,7 +883,7 @@ digraph name {
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
-     >CartItem<BR/>&lt;<FONT FACE="Helvetica Italic">CartItemBase</FONT>&gt;</FONT></TD></TR>
+     >CartItem<BR/>&lt;<FONT FACE="Helvetica Italic">ShippedCartItemMixin,DiscountedCartItemMixin,VariationCartItemMixin,CartItemBase</FONT>&gt;</FONT></TD></TR>
 
     
         
@@ -832,10 +916,10 @@ digraph name {
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">variation</FONT
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">variation</FONT
         ></TD>
         <TD ALIGN="LEFT"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">ForeignKey</FONT
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">ForeignKey</FONT
         ></TD></TR>
         
     
@@ -879,10 +963,10 @@ digraph name {
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">notes</FONT
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">message</FONT
         ></TD>
         <TD ALIGN="LEFT"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">TextField</FONT
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">CharField</FONT
         ></TD></TR>
         
     
@@ -893,7 +977,7 @@ digraph name {
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
-     >Order<BR/>&lt;<FONT FACE="Helvetica Italic">BilledOrderMixin,ShippableOrderBase,OrderBase</FONT>&gt;</FONT></TD></TR>
+     >Order<BR/>&lt;<FONT FACE="Helvetica Italic">ShippedOrderMixin,DiscountedOrderMixin,DiscountCouponMixin,NumberedOrderBase,OrderBase</FONT>&gt;</FONT></TD></TR>
 
     
         
@@ -919,6 +1003,13 @@ digraph name {
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Italic">cart</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Italic">ForeignKey</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
         ><FONT FACE="Helvetica Italic">customer</FONT
         ></TD>
         <TD ALIGN="LEFT"
@@ -933,17 +1024,80 @@ digraph name {
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Italic">shipping_address</FONT
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">confirmed</FONT
         ></TD>
         <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Italic">ForeignKey</FONT
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">BooleanField</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Italic">billing_address</FONT
+        ><FONT FACE="Helvetica Italic">order_discount</FONT
         ></TD>
         <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Italic">ForeignKey</FONT
+        ><FONT FACE="Helvetica Italic">PriceField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">coupon_code</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">CharField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">shipping_address</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">ForeignKey</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Italic">order_shipping_costs</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Italic">PriceField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">shipping_method</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">ForeignKey</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Italic">invoice_number</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Italic">SlugField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Italic">order_number</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Italic">SlugField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">notes</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">TextField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Bold">payment_cluster</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Bold">OneToOneField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Bold">discounts</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Bold">ManyToManyField</FONT
         ></TD></TR>
         
     
@@ -954,7 +1108,7 @@ digraph name {
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
-     >OrderItem<BR/>&lt;<FONT FACE="Helvetica Italic">ShippableOrderItemBase,OrderItemBase,UniqueSlugItemBase,NamedItemBase,PricedItemBase</FONT>&gt;</FONT></TD></TR>
+     >OrderItem<BR/>&lt;<FONT FACE="Helvetica Italic">ShippedOrderItemMixin,DiscountedOrderItemMixin,VariationOrderItemMixin,OrderItemBase</FONT>&gt;</FONT></TD></TR>
 
     
         
@@ -973,13 +1127,6 @@ digraph name {
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Italic">name</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Italic">CharField</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
         ><FONT FACE="Helvetica Italic">order</FONT
         ></TD>
         <TD ALIGN="LEFT"
@@ -994,31 +1141,52 @@ digraph name {
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Italic">price</FONT
+        ><FONT FACE="Helvetica Italic">piece_price</FONT
         ></TD>
         <TD ALIGN="LEFT"
         ><FONT FACE="Helvetica Italic">PriceField</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">slug</FONT
+        ><FONT FACE="Helvetica Italic">order_line</FONT
         ></TD>
         <TD ALIGN="LEFT"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">SlugField</FONT
+        ><FONT FACE="Helvetica Italic">CharField</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">variation</FONT
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">variation</FONT
         ></TD>
         <TD ALIGN="LEFT"
-        ><FONT COLOR="#7B7B7B" FACE="Helvetica Bold">ForeignKey</FONT
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">ForeignKey</FONT
         ></TD></TR>
         
         <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">description</FONT
+        ><FONT FACE="Helvetica Italic">discount</FONT
         ></TD>
         <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">TextField</FONT
+        ><FONT FACE="Helvetica Italic">PriceField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Italic">shipping_costs</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Italic">PriceField</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">shipping_method</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT COLOR="#7B7B7B" FACE="Helvetica Italic">ForeignKey</FONT
+        ></TD></TR>
+        
+        <TR><TD ALIGN="LEFT" BORDER="0"
+        ><FONT FACE="Helvetica Bold">discounts</FONT
+        ></TD>
+        <TD ALIGN="LEFT"
+        ><FONT FACE="Helvetica Bold">ManyToManyField</FONT
         ></TD></TR>
         
     
@@ -1029,7 +1197,7 @@ digraph name {
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
-     >Category<BR/>&lt;<FONT FACE="Helvetica Italic">MPTTCategoryBase,MultilingualModel,NonUniqueSlugItemBase,<BR/>ActiveItemInShopBase,OrderedItemBase</FONT>&gt;</FONT></TD></TR>
+     >Category<BR/>&lt;<FONT FACE="Helvetica Italic">MPTTCategoryBase,MultilingualModel,NonUniqueSlugItemBase, ...</FONT>&gt;</FONT></TD></TR>
 
     
         
@@ -1212,7 +1380,7 @@ digraph name {
     <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
      <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
      ><FONT FACE="Helvetica Bold" COLOR="white"
-     >Discount<BR/>&lt;<FONT FACE="Helvetica Italic">NamedItemBase,ManyCategoryDiscountMixin,CouponDiscountMixin,<BR/>LimitedUseDiscountMixin,ManyProductDiscountMixin,DateRangeDiscountMixin,<BR/>OrderDiscountAmountMixin,ItemDiscountAmountMixin,OrderDiscountPercentageMixin,<BR/>ItemDiscountPercentageMixin,DiscountBase</FONT>&gt;</FONT></TD></TR>
+     >Discount<BR/>&lt;<FONT FACE="Helvetica Italic">NamedItemBase,ManyCategoryDiscountMixin, ...</FONT>&gt;</FONT></TD></TR>
 
     
         
@@ -1322,61 +1490,16 @@ digraph name {
 
 
 
-
-
   
+    
+    
     countries_models_Country [label=<
-    <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-     <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
-     ><FONT FACE="Helvetica Bold" COLOR="white"
-     >Country</FONT></TD></TR>
-
-    
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">iso</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">CharField</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">name_official</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">CharField</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">name</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">CharField</FONT
-        ></TD></TR>
-        
-        <TR><TD ALIGN="LEFT" BORDER="0"
-        ><FONT FACE="Helvetica Bold">sort_priority</FONT
-        ></TD>
-        <TD ALIGN="LEFT"
-        ><FONT FACE="Helvetica Bold">PositiveIntegerField</FONT
-        ></TD></TR>
-        
-    
-    </TABLE>
-    >]
-  
-
-
-
-
-  
-    
-    
-    basic_webshop_basemodels_CustomerAddressBase -> basic_webshop_models_Customer
-    [label="customer"] ;
-    
-  
-    
+        <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+        <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
+        ><FONT FACE="Helvetica Bold" COLOR="white"
+        >Country</FONT></TD></TR>
+        </TABLE>
+        >]
     
     basic_webshop_models_ShippingMethod -> countries_models_Country
     [label="countries"] [arrowhead=normal arrowtail=normal];
@@ -1388,9 +1511,13 @@ digraph name {
     [label="customer"] ;
     
     
-    basic_webshop_models_Address -> basic_webshop_basemodels_CustomerAddressBase
-    [label="customeraddressbase_ptr"] [arrowhead=none arrowtail=none];
-    
+    countries_models_Country [label=<
+        <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+        <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
+        ><FONT FACE="Helvetica Bold" COLOR="white"
+        >Country</FONT></TD></TR>
+        </TABLE>
+        >]
     
     basic_webshop_models_Address -> countries_models_Country
     [label="country"] ;
@@ -1464,6 +1591,24 @@ digraph name {
   
     
     
+    basic_webshop_models_ProductRating -> basic_webshop_models_Product
+    [label="product"] ;
+    
+    
+    django_contrib_auth_models_User [label=<
+        <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+        <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
+        ><FONT FACE="Helvetica Bold" COLOR="white"
+        >User</FONT></TD></TR>
+        </TABLE>
+        >]
+    
+    basic_webshop_models_ProductRating -> django_contrib_auth_models_User
+    [label="user"] ;
+    
+  
+    
+    
     basic_webshop_models_ProductTranslation -> basic_webshop_models_Product
     [label="parent"] ;
     
@@ -1528,6 +1673,10 @@ digraph name {
   
     
     
+    basic_webshop_models_Order -> basic_webshop_models_Cart
+    [label="cart"] ;
+    
+    
     basic_webshop_models_Order -> basic_webshop_models_Customer
     [label="customer"] ;
     
@@ -1536,8 +1685,24 @@ digraph name {
     [label="shipping_address"] ;
     
     
-    basic_webshop_models_Order -> basic_webshop_models_Address
-    [label="billing_address"] ;
+    basic_webshop_models_Order -> basic_webshop_models_ShippingMethod
+    [label="shipping_method"] ;
+    
+    
+    docdata_models_PaymentCluster [label=<
+        <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
+        <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4"
+        ><FONT FACE="Helvetica Bold" COLOR="white"
+        >PaymentCluster</FONT></TD></TR>
+        </TABLE>
+        >]
+    
+    basic_webshop_models_Order -> docdata_models_PaymentCluster
+    [label="payment_cluster"] [arrowhead=none arrowtail=none];
+    
+    
+    basic_webshop_models_Order -> basic_webshop_models_Discount
+    [label="discounts"] [arrowhead=normal arrowtail=normal];
     
   
     
@@ -1552,6 +1717,14 @@ digraph name {
     
     basic_webshop_models_OrderItem -> basic_webshop_models_ProductVariation
     [label="variation"] ;
+    
+    
+    basic_webshop_models_OrderItem -> basic_webshop_models_ShippingMethod
+    [label="shipping_method"] ;
+    
+    
+    basic_webshop_models_OrderItem -> basic_webshop_models_Discount
+    [label="discounts"] [arrowhead=normal arrowtail=normal];
     
   
     
@@ -1584,11 +1757,6 @@ digraph name {
     
     basic_webshop_models_Discount -> basic_webshop_models_Category
     [label="categories"] [arrowhead=normal arrowtail=normal];
-    
-  
-
-
-  
     
   
 
