@@ -380,7 +380,14 @@ class Cart(ShippedCartMixin,
         return cartitem
 
     def __unicode__(self):
-        return u'%d for %s' % (self.pk, self.customer)
+        if self.pk and self.customer:
+            return u'%d for %s' % (self.pk, self.customer)
+
+        if self.pk:
+            return unicode(self.pk)
+
+        if self.customer:
+            return unicode(self.customer)
 
 
 class CartItem(ShippedCartItemMixin,
