@@ -294,8 +294,8 @@ class CategoryAdmin(MPTTModelAdmin):
     inlines = (CategoryTranslationInlineInline, CategoryFeaturedInline, )
     list_filter = ('active', 'parent', )
     list_editable = ('sort_order', 'active')
-    list_display = ('admin_name',  'admin_products', \
-                    'sort_order', 'active')
+    list_display = ('admin_name', 'active',  'admin_products', \
+                    'sort_order')
     search_fields = ('slug', 'translations__name', )
     mptt_indent_field = 'admin_name'
 
