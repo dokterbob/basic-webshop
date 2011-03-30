@@ -29,6 +29,8 @@ from webshop.core.views import InShopViewMixin
 from basic_webshop.forms import \
     RatingForm, CartAddForm, AddressUpdateForm
 
+from basic_webshop.order_states import *
+
 
 class BrandList(ListView):
     """ List of brands. """
@@ -615,10 +617,13 @@ class OrderCheckout(OrderViewMixin, DetailView):
             "days_pay_period": 14
         }
         payment = PaymentCluster()
-        payment.create_cluster(**data)
+        #payment.create_cluster(**data)
 
         logger.debug(u'Created new payment cluster %s, saving', payment)
         order.payment_cluster = payment
+
+        # Make sure we update the order state to (payment) pending
+        order.state = ORDER_STATE_PENDING
         order.save()
 
         return payment
