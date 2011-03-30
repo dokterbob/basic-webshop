@@ -76,10 +76,11 @@ from docdata.signals import payment_status_changed
 
 from webshop.core.signals import order_state_change
 from basic_webshop.listeners import \
-    OrderPaidStatusChange, OrderPaidConfirm
+    OrderPaidStatusChange, OrderPaidConfirm, OrderPaidEmail
 
 payment_status_changed.connect(OrderPaidStatusChange.as_listener(), weak=False)
 order_state_change.connect(OrderPaidConfirm.as_listener(), weak=False)
+order_state_change.connect(OrderPaidEmail.as_listener(), weak=False)
 
 
 class ShippingMethod(NamedItemBase,

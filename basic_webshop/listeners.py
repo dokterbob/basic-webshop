@@ -6,6 +6,8 @@ from django.utils.functional import update_wrapper
 
 from django.core.exceptions import ImproperlyConfigured
 
+from webshop.core.exceptions import AlreadyConfirmedException
+
 
 class Listener(object):
     """
@@ -91,6 +93,7 @@ class EmailingListener(Listener):
                 "TemplateResponseMixin requires either a definition of "
                 "'template_name' or an implementation of 'get_template_names()'")
         else:
+
             return [self.body_template_name]
 
     def get_context_data(self):
@@ -128,10 +131,11 @@ class EmailingListener(Listener):
 
     def handler(self, sender, **kwargs):
         """ Store sender and kwargs attributes on self. """
+
         self.sender = sender
         self.kwargs = kwargs
 
-        context = self.get_context_data(**kwargs)
+        context = self.get_context_data()
 
         message = self.create_message(context)
 
@@ -155,7 +159,7 @@ class OrderPaidListener(Listener):
         logger.debug('Cluster handler called for %s but nothing paid',
                      payment_cluster)
 
-    def handler(sender, **kwargs):
+    def handler(self, sender, **kwargs):
         raise NotImplementedError('Better give me some function to fulfill')
 
 
@@ -210,10 +214,13 @@ class OrderPaidConfirm(StatusChangeListener):
         order = sender
 
         logger.debug(u'Preparing confirm for paid order %s', order)
-        order.prepare_confirm()
+        try:
+            order.prepare_confirm()
 
-        logger.debug(u'Confirming paid order %s', order)
-        order.confirm()
+            logger.debug(u'Confirming paid order %s', order)
+            order.confirm()
+        except AlreadyConfirmedException:
+            logger.warning(u'Order %s already confirmed', order)
 
 
 class OrderStateChangeEmail(EmailingListener, StatusChangeListener):
@@ -239,11 +246,11 @@ class OrderStateChangeEmail(EmailingListener, StatusChangeListener):
     """
 
     def get_context_data(self):
-        context = super(OrderPaidEmail, self).get_context_data()
+        context = super(OrderStateChangeEmail, self).get_context_data()
 
         context['order'] = self.sender
-        context['customer'] = self.kwargs['customer']
-        context['address'] = self.kwargs['address']
+        context['customer'] = self.sender.customer
+        context['address'] = self.sender.shipping_address
         context['state_change'] = self.kwargs['state_change']
 
         return context
