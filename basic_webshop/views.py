@@ -617,7 +617,7 @@ class OrderCheckout(OrderViewMixin, DetailView):
             "days_pay_period": 14
         }
         payment = PaymentCluster()
-        #payment.create_cluster(**data)
+        payment.create_cluster(**data)
 
         logger.debug(u'Created new payment cluster %s, saving', payment)
         order.payment_cluster = payment
