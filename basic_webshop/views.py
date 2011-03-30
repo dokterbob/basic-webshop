@@ -686,7 +686,7 @@ class OrderCheckoutStatus(OrderDetail):
         context['status'] = self.kwargs['status']
 
 
-class XMLView(TemplateView):
+class SitemapView(TemplateView):
     def render_to_response(self, context, **response_kwargs):
         """
         Returns a response with a template rendered with the given context.
@@ -699,3 +699,15 @@ class XMLView(TemplateView):
             **response_kwargs
         )
 
+    def get_context_data(self, *args, **kwargs):
+        """ Add the current site to the context. """
+        context = super(SitemapView, self).get_context_data(*args, **kwargs)
+
+        from django.contrib.sites.models import Site
+        domain = Site.objects.get_current().domain
+
+        context.update({
+        'host': domain,
+        })
+
+        return context
