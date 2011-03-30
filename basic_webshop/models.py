@@ -10,6 +10,8 @@ from django.utils.translation import get_language, ugettext_lazy as _
 
 from django.contrib.auth.models import UserManager, User
 
+from webshop.core.managers import ActiveItemManager
+
 from webshop.core.models import ProductBase, CartBase, CartItemBase, \
                                 OrderBase, OrderItemBase, UserCustomerBase, \
                                 OrderStateChangeBase
@@ -223,6 +225,8 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
     overrides the stock for the product. We should make note of this in the
     Admin interface.
     """
+    objects = models.Manager()
+    in_shop = ActiveItemManager()
 
     unit = models.CharField(_('unit'), blank=True, max_length=80,
                             help_text=_('Unit in which a specific article is \
@@ -597,6 +601,23 @@ class Category(MPTTCategoryBase, MultilingualModel, NonUniqueSlugItemBase, \
                AutoUniqueSlugMixin, ActiveItemInShopBase, OrderedItemBase, \
                NamedItemTranslationMixin):
     """ Basic category model. """
+
+    @classmethod
+    def get_main_categories(cls):
+        """ Only show active categories """
+        main_categories = super(Category, cls).get_main_categories()
+
+        main_categories = main_categories.filter(active=True)
+
+        return main_categories
+
+    def get_subcategories(self):
+        """ Only show active subcategories """
+        subcategories = super(Category, self).get_subcategories()
+
+        subcategories = subcategories.filter(active=True)
+
+        return subcategories
 
     highlight_image = ImageField(verbose_name=_('highlight image'),
                                  upload_to='category_highlight',
