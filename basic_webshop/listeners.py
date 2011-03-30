@@ -16,7 +16,7 @@ class Listener(object):
                 # DO SOMETHING
                 pass
 
-        funkysignal.connect(MySillyListener.as_view())
+        funkysignal.connect(MySillyListener.as_view(), weak=False)
     """
 
     def __init__(self, **kwargs):
@@ -71,7 +71,7 @@ class OrderPaidListener(Listener):
 
         if payment_cluster.is_paid:
             logger.debug('Cluster %s paid, calling handler', payment_cluster)
-            self.handler()
+            self.handler(sender, **kwargs)
 
         logger.debug('Cluster handler called for %s but nothing paid',
                      payment_cluster)
@@ -80,25 +80,28 @@ class OrderPaidListener(Listener):
         raise NotImplementedError('Better give me some function to fulfill')
 
 
+from basic_webshop import order_states
+
 class OrderPaidStatusChange(OrderPaidListener):
     """ Generate a state change on an order when it's paid. """
+    new_state = order_states.ORDER_STATE_PAID
 
     def handler(self, sender, **kwargs):
         assert self.new_state
-
-        logger.debug('Woohoo! Order paid. Updating status.')
         order = sender.order
+
+        assert order.state == order_states.ORDER_STATE_PENDING
+
+        logger.debug('Changing state to %s for paid order %s', self.new_state, order)
+
         order.state = self.new_state
         order.save()
 
-
-from basic_webshop.models import OrderStateChange
 
 class StatusChangeListener(Listener):
     """ Listener for order status changes """
 
     def dispatch(self, sender, **kwargs):
-        assert isinstance(sender, OrderStateChange)
         assert self.state
 
         old_state = getattr(self, 'old_state', None)
@@ -113,14 +116,21 @@ class StatusChangeListener(Listener):
         else:
             logger.debug(u'Signal for %s doesn\'t match listener for %s', sender, self)
 
-    def handler(sender, **kwargs):
+    def handler(self, sender, **kwargs):
         raise NotImplementedError('Better give me some function to fulfill')
 
 
-from basic_webshop import order_states
-class FunkyStateChageListener(StatusChangeListener):
-    state = order_states.ORDER_STATUS_PENDING
+class OrderPaidConfirm(StatusChangeListener):
+    old_state = order_states.ORDER_STATE_PENDING
+    state = order_states.ORDER_STATE_PAID
 
-    def handler(sender, **kwargs):
-        order = sender.order
-        logger.debug('One little mouse! Order %s is pending!', order)
+    def handler(self, sender, **kwargs):
+        """ Confirm paid order """
+        order = sender
+
+        logger.debug(u'Preparing confirm for paid order %s', order)
+        order.prepare_confirm()
+
+        logger.debug(u'Confirming paid order %s', order)
+        order.confirm()
+

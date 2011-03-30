@@ -69,6 +69,16 @@ if cursor.db.vendor == 'sqlite':
     cursor.execute('PRAGMA temp_store=MEMORY;')
     cursor.execute('PRAGMA synchronous=OFF;')
 
+# Signal handling
+from docdata.signals import payment_status_changed
+
+from webshop.core.signals import order_state_change
+from basic_webshop.listeners import \
+    OrderPaidStatusChange, OrderPaidConfirm
+
+payment_status_changed.connect(OrderPaidStatusChange.as_listener(), weak=False)
+order_state_change.connect(OrderPaidConfirm.as_listener(), weak=False)
+
 
 class ShippingMethod(NamedItemBase,
                      OrderShippingMethodMixin,
