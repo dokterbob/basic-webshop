@@ -152,7 +152,7 @@ class OrderPaidListener(Listener):
     def dispatch(self, sender, **kwargs):
         payment_cluster = sender
 
-        if payment_cluster.is_paid:
+        if payment_cluster.paid:
             logger.debug('Cluster %s paid, calling handler', payment_cluster)
             self.handler(sender, **kwargs)
 
