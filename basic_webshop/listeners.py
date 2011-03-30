@@ -1,6 +1,8 @@
 import logging
 logger = logging.getLogger(__name__)
 
+from django.conf import settings
+
 from django.utils.decorators import classonlymethod
 from django.utils.functional import update_wrapper
 
@@ -142,21 +144,33 @@ class EmailingListener(Listener):
         message.send()
 
 
-class OrderPaidListener(Listener):
+class OrderPaymentListener(Listener):
     """
-    Listener that changes an order's state from PENDING to PAID when paid
+    Listener that changes an order's state from to another when a payment
     signal is fired.
 
     The sender is expected to be `docdata.listeners.payment_status_changed`.
     """
+    paid = None
+    closed = None
+
     def dispatch(self, sender, **kwargs):
         payment_cluster = sender
 
-        if payment_cluster.paid:
-            logger.debug('Cluster %s paid, calling handler', payment_cluster)
+        assert not (self.paid is None and self.closed is None), \
+            'Either paid or closed should be set.'
+
+        assert not payment_cluster.paid is None
+        assert not payment_cluster.closed is None
+
+        # If paid is set, it should match - if closed is set it should match
+        if (self.paid == payment_cluster.paid or self.paid is None) and \
+           (self.closed == payment_cluster.closed or self.closed is None):
+
+            logger.debug('Cluster state matched for %s, calling handler', payment_cluster)
             self.handler(sender, **kwargs)
 
-        logger.debug('Cluster handler called for %s but nothing paid',
+        logger.debug('Cluster handler called for %s but not matched',
                      payment_cluster)
 
     def handler(self, sender, **kwargs):
@@ -165,9 +179,10 @@ class OrderPaidListener(Listener):
 
 from basic_webshop import order_states
 
-class OrderPaidStatusChange(OrderPaidListener):
+class OrderPaidStatusChange(OrderPaymentListener):
     """ Generate a state change on an order when it's paid. """
     new_state = order_states.ORDER_STATE_PAID
+    paid = True
 
     def handler(self, sender, **kwargs):
         assert self.new_state
@@ -176,6 +191,24 @@ class OrderPaidStatusChange(OrderPaidListener):
         assert order.state == order_states.ORDER_STATE_PENDING
 
         logger.debug('Changing state to %s for paid order %s', self.new_state, order)
+
+        order.state = self.new_state
+        order.save()
+
+
+class OrderClosedNotPaidStatusChange(OrderPaymentListener):
+    """ Change order state to failed when payment closed but not paid. """
+    new_state = order_states.ORDER_STATE_FAILED
+    paid = False
+    closed = True
+
+    def handler(self, sender, **kwargs):
+        assert self.new_state
+        order = sender.order
+
+        assert order.state == order_states.ORDER_STATE_PENDING
+
+        logger.debug('Changing state to %s for unpaid order %s', self.new_state, order)
 
         order.state = self.new_state
         order.save()
@@ -262,9 +295,42 @@ class OrderStateChangeEmail(EmailingListener, StatusChangeListener):
 
         return (order.customer.email, )
 
+
 class OrderPaidEmail(OrderStateChangeEmail):
     """ Send email when order paid. """
 
     state = order_states.ORDER_STATE_PAID
     body_template_name = 'basic_webshop/emails/order_paid_body.txt'
     subject_template_name = 'basic_webshop/emails/order_paid_subject.txt'
+
+
+class OrderFailedEmail(OrderStateChangeEmail):
+    """ Send email when payment failed (or canceled). """
+
+    state = order_states.ORDER_STATE_FAILED
+    body_template_name = 'basic_webshop/emails/order_failed_body.txt'
+    subject_template_name = 'basic_webshop/emails/order_failed_subject.txt'
+
+    def get_recipients(self):
+        """ Sent mail to customer as well as the site managers """
+        recipients = super(OrderFailedEmail, self).get_recipients()
+
+        recipients += tuple(m[1] for m in settings.MANAGERS)
+
+        return recipients
+
+
+class OrderRejectedEmail(OrderStateChangeEmail):
+    """ Send email when order rejected by shop manager. """
+
+    state = order_states.ORDER_STATE_REJECTED
+    body_template_name = 'basic_webshop/emails/order_rejected_body.txt'
+    subject_template_name = 'basic_webshop/emails/order_rejected_subject.txt'
+
+
+class OrderShippedEmail(OrderStateChangeEmail):
+    """ Send email when order shipped. """
+
+    state = order_states.ORDER_STATE_SHIPPED
+    body_template_name = 'basic_webshop/emails/order_shipped_body.txt'
+    subject_template_name = 'basic_webshop/emails/order_shipped_subject.txt'

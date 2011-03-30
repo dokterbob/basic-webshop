@@ -75,12 +75,17 @@ if cursor.db.vendor == 'sqlite':
 from docdata.signals import payment_status_changed
 
 from webshop.core.signals import order_state_change
-from basic_webshop.listeners import \
-    OrderPaidStatusChange, OrderPaidConfirm, OrderPaidEmail
+from basic_webshop.listeners import OrderPaidConfirm, \
+    OrderPaidStatusChange, OrderClosedNotPaidStatusChange, \
+    OrderPaidEmail, OrderFailedEmail, OrderRejectedEmail, OrderShippedEmail
 
 payment_status_changed.connect(OrderPaidStatusChange.as_listener(), weak=False)
+payment_status_changed.connect(OrderClosedNotPaidStatusChange.as_listener(), weak=False)
 order_state_change.connect(OrderPaidConfirm.as_listener(), weak=False)
 order_state_change.connect(OrderPaidEmail.as_listener(), weak=False)
+order_state_change.connect(OrderFailedEmail.as_listener(), weak=False)
+order_state_change.connect(OrderRejectedEmail.as_listener(), weak=False)
+order_state_change.connect(OrderShippedEmail.as_listener(), weak=False)
 
 
 class ShippingMethod(NamedItemBase,
@@ -424,7 +429,7 @@ class CartItem(ShippedCartItemMixin,
 
 class OrderStateChange(OrderStateChangeBase):
     """ Basic order state change. """
-    pass
+    #note = models.CharField(blank=True, max_length=255)
 
 
 class Order(ShippedOrderMixin,
