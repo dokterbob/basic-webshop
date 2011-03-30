@@ -1,7 +1,8 @@
 from decimal import Decimal
 
 from basic_webshop.tests.base import WebshopTestCase
-from basic_webshop.models import Order, OrderItem, OrderStateChange
+from basic_webshop.models import Order, OrderItem, OrderStateChange, Cart
+
 
 class OrderTest(WebshopTestCase):
     """ Test basic order process functionality """
@@ -183,6 +184,18 @@ class OrderTest(WebshopTestCase):
         self.assertEqual(o.coupon_code, cart.coupon_code)
         self.assertEqual(o.customer, cart.customer)
 
+        # Confirm the order - this should delete the cart
+        o.confirm()
+
+        # This should have deleted the cart - but all else should remain
+        self.assertRaises(Cart.DoesNotExist, Cart.objects.get, pk=cart.pk)
+        self.assertEqual(len(o.get_items()), 1)
+        self.assertEqual(o.get_items()[0].product, p)
+        self.assertEqual(o.get_items()[0].quantity, 5)
+        self.assertEqual(o.get_total_items(), 5)
+        self.assertEqual(o.coupon_code, cart.coupon_code)
+        self.assertEqual(o.customer, cart.customer)
+
     def test_ordervariation(self):
         """ Test converting a cart item with variation to an order. """
         # Create product
@@ -323,7 +336,6 @@ class OrderTest(WebshopTestCase):
         o1.confirm()
         self.assert_(o1.invoice_number)
 
-        # import ipdb; ipdb.set_trace()
         o2.confirm()
 
         self.assertEqual(o2.invoice_number,

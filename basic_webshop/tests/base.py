@@ -67,8 +67,8 @@ class WebshopTestCase(TestCase):
         v.slug = slug
         return v
 
-    def make_test_customer(self):
-        c = Customer()
+    def make_test_customer(self, email='info@test.com'):
+        c = Customer(email=email)
         return c
 
     def make_test_address(self, country=None, customer=None):
