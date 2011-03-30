@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from django.forms.models import modelformset_factory
 
 from django.views.generic import DetailView, ListView, \
-                                 UpdateView, View
+                                 UpdateView, View, TemplateView
 
 from django.utils.translation import get_language, ugettext_lazy as _
 
@@ -685,3 +685,29 @@ class OrderCheckoutStatus(OrderDetail):
         assert 'status' in self.kwargs
         context['status'] = self.kwargs['status']
 
+
+class SitemapView(TemplateView):
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Returns a response with a template rendered with the given context.
+        """
+        return self.response_class(
+            request = self.request,
+            template = self.get_template_names(),
+            context = context,
+            content_type = "application/xml",
+            **response_kwargs
+        )
+
+    def get_context_data(self, *args, **kwargs):
+        """ Add the current site to the context. """
+        context = super(SitemapView, self).get_context_data(*args, **kwargs)
+
+        from django.contrib.sites.models import Site
+        domain = Site.objects.get_current().domain
+
+        context.update({
+        'host': domain,
+        })
+
+        return context
