@@ -37,6 +37,7 @@ class OrderStateChangeInline(admin.TabularInline):
     readonly_fields = ('date', 'state')
 
     extra = 0
+    can_delete = False
     #
     # def has_change_permission(self, request, obj=None):
     #     return False
@@ -59,13 +60,18 @@ class OrderItemInline(admin.TabularInline, PricedItemAdminMixin):
 
 class OrderAdmin(admin.ModelAdmin, PricedItemAdminMixin):
    inlines = (OrderItemInline, OrderStateChangeInline)
-   readonly_fields = ('get_formatted_address', 'customer', 'coupon_code',
+   readonly_fields = ('order_number', 'invoice_number',
+                      'get_formatted_address', 'customer', 'coupon_code',
                       'get_price', 'get_total_discounts',)
-   list_display = ('shipping_address',
-                   'invoice_number', 'order_number')
+   list_display = ('order_number', 'date_added', 'state', 'get_price',
+                   'customer', 'invoice_number',
+                   )
+   list_filters = ('state', )
    date_hierarchy = 'date_added'
    fields = ('state', 'order_discount', 'order_shipping_costs', 'notes', ) + \
              readonly_fields
+   search_fields = ('order_number', 'customer__first_name',
+                    'customer__last_name', 'invoice_number')
 
    def get_total_discounts(self, obj):
        return obj.get_total_discounts()
