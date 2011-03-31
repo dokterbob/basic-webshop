@@ -387,6 +387,10 @@ class ProductDetail(InShopViewMixin, DetailView):
         # Average rating and total ratings count
         average_rating = ratings.aggregate(models.Avg('rating')).get('rating__avg', None)
 
+        from django.contrib.auth.forms import AuthenticationForm
+
+        loginform = AuthenticationForm()
+
         # Update the context
         context.update({
             'ratings': ratings,
@@ -394,12 +398,12 @@ class ProductDetail(InShopViewMixin, DetailView):
             'voterange': range(1, 6),
             'ratingform': ratingform,
             'cartaddform': cartaddform,
+            'loginform' : loginform,
             'category': category,
             'subcategory': subcategory,
         })
 
         return context
-
 
 class CartDetail(UpdateView):
     model = Cart
@@ -684,4 +688,3 @@ class OrderCheckoutStatus(OrderDetail):
 
         assert 'status' in self.kwargs
         context['status'] = self.kwargs['status']
-
