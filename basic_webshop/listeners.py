@@ -334,3 +334,29 @@ class OrderShippedEmail(OrderStateChangeEmail):
     state = order_states.ORDER_STATE_SHIPPED
     body_template_name = 'basic_webshop/emails/order_shipped_body.txt'
     subject_template_name = 'basic_webshop/emails/order_shipped_subject.txt'
+
+
+class CustomerRegistrationEmail(EmailingListener):
+    """
+    Send an email for newly registered customers. Yay!
+    """
+
+    body_template_name = 'registration/registration_email.txt'
+    subject_template_name = 'registration/registration_email_subject.txt'
+
+    def dispatch(self, sender, **kwargs):
+        user = kwargs['user']
+        assert user.customer
+        self.customer = user.customer
+
+        self.handler(sender, **kwargs)
+
+    def get_recipients(self):
+        return (self.customer.email, )
+
+    def get_context_data(self):
+        context = super(CustomerRegistrationEmail, self).get_context_data()
+
+        context['customer'] = self.customer
+
+        return context
