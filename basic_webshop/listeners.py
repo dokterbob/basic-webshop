@@ -123,6 +123,9 @@ class EmailingListener(Listener):
     def create_message(self, context):
         """ Create an email message. """
         subject = render_to_string(self.get_subject_template_names(), context)
+        # Clean the subject a bit for common errors (newlines!)
+        subject = subject.strip().replace('\n', ' ')
+
         body = render_to_string(self.get_body_template_names(), context)
         recipients = self.get_recipients()
         sender = self.get_sender()
