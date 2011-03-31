@@ -111,6 +111,9 @@ class Address(CustomerAddressBase):
     country = CountryField()
     phone_number = models.CharField(_('phone number'), max_length=50, blank=True)
 
+    class Meta:
+        ordering = ('-id', )
+
     def __unicode__(self):
         return self.addressee
 
@@ -141,9 +144,19 @@ class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
                                 default=get_language, choices=settings.LANGUAGES)
 
     birthday = models.DateField(_('birthday'), null=True)
+    
+    shipping_address = models.ForeignKey(Address, null=True,
+                                         related_name='shippable_customer')
 
     def get_address(self):
         """ Get 'the first and best' address from the customer. """
+        
+        if self.shipping_address:
+            return self.shipping_address
+        
+        logger.warning(u'No shipping address set for customer %s, '+
+                       u'returning last address used.', self)
+
         try:
             return self.address_set.all()[0]
         except IndexError:
