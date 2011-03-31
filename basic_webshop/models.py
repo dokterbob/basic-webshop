@@ -137,8 +137,8 @@ class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
     )
     gender = models.CharField(_('gender'), max_length=1, choices=GENDER_CHOICES)
 
-    language = models.CharField(_('language'), max_length=5, editable=False,
-                                default=get_language)
+    language = models.CharField(_('language'), max_length=5,
+                                default=get_language, choices=settings.LANGUAGES)
 
     birthday = models.DateField(_('birthday'), null=True)
 

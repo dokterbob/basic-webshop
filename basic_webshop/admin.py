@@ -104,9 +104,13 @@ class CustomerAddressInline(admin.StackedInline):
 class CustomerAdmin(admin.ModelAdmin):
     inlines = (CustomerAddressInline, )
     search_fields = ('first_name', 'last_name', 'username', 'company', )
-    list_display = ('username', 'get_full_name', 'is_active', 'company', 'gender', 'language_code', 'birthday', 'last_login', 'date_joined')
-    list_filter = ('is_active', 'gender', 'language_code', 'birthday')
-    fields = ('username', 'last_login', 'date_joined', 'first_name', 'last_name', 'email', 'is_active', 'company', 'gender', 'birthday', 'language_code', )
+    list_display = ('username', 'get_full_name', 'is_active', 'company',
+                    'gender', 'language', 'birthday', 
+                    'last_login', 'date_joined')
+    list_filter = ('is_active', 'gender', 'language', 'birthday')
+    fields = ('username', 'last_login', 'date_joined', 'first_name',
+              'last_name', 'email', 'is_active', 'company', 'gender',
+              'birthday', 'language')
     readonly_fields = ('last_login', 'date_joined')
 
 admin.site.register(Customer, CustomerAdmin)
