@@ -402,8 +402,8 @@ class ProductMedia(NamedItemBase):
 
 class Cart(ShippedCartMixin,
            StockedCartMixin,
-           DiscountedCartMixin,
            DiscountCouponMixin,
+           DiscountedCartMixin,
            CartBase):
     """ Basic shopping cart model. """
 
