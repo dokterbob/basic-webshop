@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from basic_webshop.models import ProductRating, Address
+from basic_webshop.models import ProductRating, Address, Cart, Discount
 
 
 class RatingForm(forms.ModelForm):
@@ -78,7 +78,7 @@ class AddressUpdateForm(forms.ModelForm):
         model = Address
 
     def __init__(self, *args, **kwargs):
-        """ We should allways be instantiated with an instance. """
+        """ We should always be instantiated with an instance. """
         assert 'instance' in kwargs, 'This form is only for updating'
         super(AddressUpdateForm, self).__init__(*args, **kwargs)
 
@@ -92,3 +92,33 @@ class AddressUpdateForm(forms.ModelForm):
             instance.save()
 
         return instance
+
+
+class CartDiscountCouponForm(forms.ModelForm):
+    """ Form for entering a coupon code for shopping carts. """
+
+    coupon_code_error = _('This coupon code is not valid.')
+
+    class Meta:
+        model = Cart
+        fields = ('coupon_code', )
+
+    def __init__(self, *args, **kwargs):
+        """ We should always be instantiated with an instance. """
+        assert 'instance' in kwargs, 'This form is only for updating'
+        super(CartDiscountCouponForm, self).__init__(*args, **kwargs)
+
+    def clean_coupon_code(self):
+        coupon_code = self.cleaned_data['coupon_code'].strip()
+
+        logger.debug('Checking coupong code validity for %s' % coupon_code)
+
+        valid_discounts = Discount.get_valid_discounts(
+                                            coupon_code=coupon_code,
+                                            order_discounts=True,
+                                            item_discounts=True)
+
+        if not valid_discounts.exists():
+            raise forms.ValidationError(self.coupon_code_error)
+
+        return coupon_code

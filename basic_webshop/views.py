@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from django.forms.models import modelformset_factory
 
 from django.views.generic import DetailView, ListView, \
-                                 UpdateView, View, TemplateView
+                                 UpdateView, View
 
 from django.utils.translation import get_language, ugettext_lazy as _
 
@@ -27,7 +27,7 @@ from docdata.models import PaymentCluster
 from webshop.core.views import InShopViewMixin
 
 from basic_webshop.forms import \
-    RatingForm, CartAddForm, AddressUpdateForm
+    RatingForm, CartAddForm, AddressUpdateForm, CartDiscountCouponForm
 
 from basic_webshop.order_states import *
 
@@ -405,57 +405,75 @@ class ProductDetail(InShopViewMixin, DetailView):
 
         return context
 
-class CartDetail(UpdateView):
+class CartDetail(DetailView):
     model = Cart
     template_name = 'basic_webshop/cart_detail.html'
 
+    def post(self, request, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
     def get_object(self):
         model = self.model()
-
         cart = model.from_request(self.request)
-
         return cart
 
-    def form_valid(self, form):
-        """ Save the formset. """
-
-        form.save()
-
-        messages.add_message(self.request, messages.SUCCESS,
-            _('Updated shopping cart.'))
-
-        return super(CartDetail, self).form_valid(form)
-
-    def get_success_url(self):
+    def get_context_data(self, object, **kwargs):
         """
-        The URL to return to after the form was processed
-        succesfully. This function should be overridden.
+        Add an eventual category and subcategory to the request when the
+        `category` and `subcategory` COOKIES-parameters has been specified.
         """
 
-        return reverse('cart_detail')
+        context = super(CartDetail, self).get_context_data(**kwargs)
 
-    def get_form_class(self):
-        """
-        Do a little trick and see whether it works: returning a
-        formset instead of a form here.
-        """
-        formset_class =  modelformset_factory(CartItem,
-                                              exclude=('cart', 'product'),
-                                              extra=0)
+        cart = self.object
+        cartitems = cart.get_items()
 
-        return formset_class
+        # import ipdb; ipdb.set_trace()
+        # Cart edit form
+        cartformset_class =  modelformset_factory(CartItem,
+                                                  exclude=('cart', 'product'),
+                                                  extra=0)
+        if self.request.method == 'POST' and \
+            'update_submit' in self.request.POST:
 
-    def get_form_kwargs(self):
-        kwargs = super(CartDetail, self).get_form_kwargs()
+            updateform = cartformset_class(self.request.POST,
+                                           queryset=cartitems,
+                                           prefix='updateform')
 
-        # We're never editing the current instance
-        del kwargs['instance']
+            if updateform.is_valid():
+                updateform.save()
 
-        # As we're building a formset, make sure we pass along the queryset
-        # with CartItem objects
-        kwargs['queryset'] = self.object.get_items()
+                messages.add_message(self.request, messages.SUCCESS,
+                    _('Updated shopping cart.'))
 
-        return kwargs
+        else:
+
+            updateform = cartformset_class(queryset=cartitems,
+                                           prefix='updateform')
+
+        # Coupon code form
+        if self.request.method == 'POST' and \
+            'coupon_submit' in self.request.POST:
+
+            couponform = CartDiscountCouponForm(self.request.POST,
+                                                instance=cart)
+            if couponform.is_valid():
+                couponform.save()
+
+                messages.add_message(self.request, messages.SUCCESS,
+                    _('Coupon code valid.'))
+
+        else:
+            couponform = CartDiscountCouponForm(instance=cart)
+
+        context.update({
+            'updateform': updateform,
+            'couponform': couponform,
+        })
+
+        return context
 
 
 class ProtectedView(View):
