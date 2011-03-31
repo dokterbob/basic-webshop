@@ -143,6 +143,25 @@ class EmailingListener(Listener):
 
         message.send()
 
+from django.utils import translation
+
+class TranslatedEmailingListener(EmailingListener):
+    """ Email sending listener which switched locale before processing. """
+
+    def get_language(self, sender, **kwargs):
+        """ Return the language we should switch to. """
+        raise NotImplementedError
+
+    def handler(self, sender, **kwargs):
+        language = self.get_language(sender, **kwargs)
+
+        logger.debug('Changing to language %s for email submission', language)
+        translation.activate(language)
+
+        super(TranslatedEmailingListener, self).handler(sender, **kwargs)
+
+        translation.deactivate()
+
 
 class OrderPaymentListener(Listener):
     """
@@ -256,7 +275,7 @@ class OrderPaidConfirm(StatusChangeListener):
             logger.warning(u'Order %s already confirmed', order)
 
 
-class OrderStateChangeEmail(EmailingListener, StatusChangeListener):
+class OrderStateChangeEmail(TranslatedEmailingListener, StatusChangeListener):
     """
     Send emails upon order state change.
 
@@ -277,6 +296,11 @@ class OrderStateChangeEmail(EmailingListener, StatusChangeListener):
             subject_template_name = 'basic_webshop/emails/order_paid_subject.txt'
 
     """
+
+    def get_language(self, sender, **kwargs):
+        """ Get the language from the customer. """
+
+        return sender.customer.language
 
     def get_context_data(self):
         context = super(OrderStateChangeEmail, self).get_context_data()
@@ -336,13 +360,18 @@ class OrderShippedEmail(OrderStateChangeEmail):
     subject_template_name = 'basic_webshop/emails/order_shipped_subject.txt'
 
 
-class CustomerRegistrationEmail(EmailingListener):
+class CustomerRegistrationEmail(TranslatedEmailingListener):
     """
     Send an email for newly registered customers. Yay!
     """
 
     body_template_name = 'registration/registration_email.txt'
     subject_template_name = 'registration/registration_email_subject.txt'
+
+    def get_language(self, sender, **kwargs):
+        """ Get the language from the customer. """
+
+        return self.customer.language
 
     def dispatch(self, sender, **kwargs):
         user = kwargs['user']
