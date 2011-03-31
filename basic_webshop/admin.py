@@ -361,6 +361,10 @@ class DiscountAdmin(admin.ModelAdmin):
     list_filter = ('start_date', 'end_date', 'use_coupon')
     search_fields = ('name', )
 
+    # Exclude product and category discounts
+    # NOT ONLY are they slow, they're also buggy
+    exclude = ('products', 'categories', )
+
     max_products_display = 2
     def admin_products(self, obj):
         """ TODO: Move this over to django-webshop's extension. """
