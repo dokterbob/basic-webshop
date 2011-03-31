@@ -19,27 +19,27 @@ msgstr ""
 msgid "price"
 msgstr "price"
 
-#: admin.py:72
+#: admin.py:78
 msgid "total discounts"
 msgstr "total discount"
 
-#: admin.py:243 admin.py:360
+#: admin.py:253 admin.py:370
 msgid "None"
 msgstr "none"
 
-#: admin.py:255
+#: admin.py:265
 msgid "categories"
 msgstr "categories"
 
-#: admin.py:304 models.py:182 models.py:235 models.py:331 models.py:620
+#: admin.py:314 models.py:206 models.py:261 models.py:357 models.py:670
 msgid "name"
 msgstr "name"
 
-#: admin.py:313
+#: admin.py:323
 msgid "No products"
 msgstr "no products"
 
-#: admin.py:331 admin.py:372
+#: admin.py:341 admin.py:382
 msgid "products"
 msgstr "products"
 
@@ -61,7 +61,7 @@ msgstr ""
 "Short name for an item,             used for constructing its web addres. A "
 "slug may only             contain letters, numbers and '-'."
 
-#: basemodels.py:140 models.py:83 models.py:84 models.py:422
+#: basemodels.py:140 models.py:107 models.py:108 models.py:455
 msgid "address"
 msgstr "address"
 
@@ -85,182 +85,191 @@ msgstr "invoice number"
 msgid "order number"
 msgstr "order number"
 
-#: django_settings.py:17
-msgid "New"
-msgstr "New"
-
-#: django_settings.py:18
-msgid "Pending"
-msgstr ""
-
-#: django_settings.py:19
-msgid "Paid"
-msgstr ""
-
-#: django_settings.py:20
-#, fuzzy
-msgid "Canceled"
-msgstr "Cancelled"
-
-#: django_settings.py:21
-msgid "Rejected"
-msgstr ""
-
-#: django_settings.py:22
-msgid "Shipped"
-msgstr "Shipped"
-
 #: forms.py:46
 msgid "The requested quantity of this product is not available."
 msgstr ""
 "Sorry! Unfortunately the requested quantity of this product is not available."
 
-#: models.py:85
+#: models.py:109
 msgid "zip code"
 msgstr "zip code"
 
-#: models.py:86
+#: models.py:110
 msgid "city"
 msgstr "city"
 
-#: models.py:88
+#: models.py:112
 msgid "phone number"
 msgstr "telephone"
 
-#: models.py:108
+#: models.py:132
 msgid "company"
 msgstr "company"
 
-#: models.py:111
+#: models.py:135
 msgid "Male"
 msgstr "male"
 
-#: models.py:112
+#: models.py:136
 msgid "Female"
 msgstr "female"
 
-#: models.py:114
+#: models.py:138
 msgid "gender"
 msgstr "gender"
 
-#: models.py:116 models.py:259
+#: models.py:140 models.py:285
 msgid "language"
 msgstr "language"
 
-#: models.py:119
+#: models.py:143
 msgid "birthday"
 msgstr "date of birth"
 
-#: models.py:139
+#: models.py:163
 msgid "article number"
 msgstr "article number"
 
-#: models.py:148
+#: models.py:172
 msgid "logo"
 msgstr "logo"
 
-#: models.py:166 models.py:290
+#: models.py:190 models.py:316
 msgid "description"
 msgstr "description"
 
-#: models.py:185 models.py:310
+#: models.py:209 models.py:336
 msgid "image"
 msgstr "image"
 
-#: models.py:217
+#: models.py:243
 msgid "unit"
 msgstr "unit"
 
-#: models.py:218
+#: models.py:244
 msgid ""
 "Unit in which a specific article is                             sold, eg. "
 "'100 ml' or '0.75 g'."
 msgstr "Unit in which a specific article is sold, eg. '100 ml' or '0.75 gram'."
 
-#: models.py:270
+#: models.py:296
 msgid "rating"
 msgstr "rating"
 
-#: models.py:272
+#: models.py:298
 msgid "review"
 msgstr "review"
 
-#: models.py:275
+#: models.py:301
 #, python-format
 msgid "%(rating)d for %(product)s on %(date)s"
 msgstr "%(rating)d for %(product)s on %(date)s"
 
-#: models.py:291
+#: models.py:317
 msgid "manual"
 msgstr "how to use"
 
-#: models.py:292
+#: models.py:318
 msgid "ingredients"
 msgstr "ingredients"
 
-#: models.py:293 models.py:353
+#: models.py:319 models.py:379
 msgid "media"
 msgstr "in the press"
 
-#: models.py:319
+#: models.py:345
 msgid "variation"
 msgstr "variation"
 
-#: models.py:428
+#: models.py:461
 msgid "discounts"
 msgstr "discounts"
 
-#: models.py:541
+#: models.py:574
 msgid "notes"
 msgstr ""
 
-#: models.py:542
+#: models.py:575
 msgid "Optional notes regarding this order."
 msgstr "Optional notes regarding this order."
 
-#: models.py:545
+#: models.py:578
 msgid "payment"
 msgstr ""
 
-#: models.py:584
+#: models.py:634
 msgid "highlight image"
 msgstr "highlight image"
 
-#: models.py:587
+#: models.py:637
 msgid "highlight title"
 msgstr "highlight title"
 
-#: models.py:589
+#: models.py:639
 msgid "hightlight link"
 msgstr "hightlight link"
 
-#: models.py:658
+#: models.py:708
 msgid "featured product"
 msgstr "featured product"
 
-#: models.py:659
+#: models.py:709
 msgid "featured products"
 msgstr "featured products"
 
-#: models.py:663
+#: models.py:713
 msgid "featured order"
 msgstr "featured order"
 
-#: models.py:668
+#: models.py:718
 #, python-format
 msgid "Featured product '%s'"
 msgstr "Featured product '%s'"
 
-#: views.py:296
+#: order_states.py:25
+msgid "New"
+msgstr "New"
+
+#: order_states.py:26
+msgid "Payment pending"
+msgstr ""
+
+#: order_states.py:27
+msgid "Paid"
+msgstr ""
+
+#: order_states.py:28
+msgid "Payment failed"
+msgstr ""
+
+#: order_states.py:29
+#, fuzzy
+msgid "Canceled"
+msgstr "Cancelled"
+
+#: order_states.py:30
+msgid "Rejected"
+msgstr ""
+
+#: order_states.py:31
+#, fuzzy
+msgid "Being processed"
+msgstr "In Process"
+
+#: order_states.py:32
+msgid "Shipped"
+msgstr "Shipped"
+
+#: views.py:298
 msgid "Your rating has been succesfully saved."
 msgstr "Thanks! Your rating has been succesfully saved."
 
-#: views.py:331
+#: views.py:333
 #, python-format
 msgid "Added %s to shopping cart."
 msgstr "Added %s to Shopping basket."
 
-#: views.py:419
+#: views.py:421
 msgid "Updated shopping cart."
 msgstr "Updated Shopping basket."
 
@@ -270,9 +279,6 @@ msgstr "Updated Shopping basket."
 
 #~ msgid "Blocked"
 #~ msgstr "Blocked"
-
-#~ msgid "In Process"
-#~ msgstr "In Process"
 
 #~ msgid "Billed"
 #~ msgstr "Billed"
