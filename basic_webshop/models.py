@@ -283,6 +283,12 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
 
         return super(Product, self).is_available(quantity)
 
+    def __unicode__(self):
+        product_name = super(Product, self).__unicode__()
+        brand_name = self.brand.__unicode__()
+
+        return u'%s %s' % (brand_name, product_name)
+
 
 ###  Rating models
 class ProductRating(DatedItemBase, models.Model):
