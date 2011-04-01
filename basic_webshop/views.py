@@ -428,9 +428,7 @@ class CartDetail(DetailView):
         context = super(CartDetail, self).get_context_data(**kwargs)
 
         cart = self.object
-        cartitems = cart.get_items()
 
-        # import ipdb; ipdb.set_trace()
         # Cart edit form
         cartformset_class =  modelformset_factory(CartItem,
                                                   exclude=('cart', 'product'),
@@ -438,6 +436,7 @@ class CartDetail(DetailView):
         if self.request.method == 'POST' and \
             'update_submit' in self.request.POST:
 
+            cartitems = cart.get_items()
             updateform = cartformset_class(self.request.POST,
                                            queryset=cartitems,
                                            prefix='updateform')
@@ -448,10 +447,9 @@ class CartDetail(DetailView):
                 messages.add_message(self.request, messages.SUCCESS,
                     _('Updated shopping cart.'))
 
-        else:
-
-            updateform = cartformset_class(queryset=cartitems,
-                                           prefix='updateform')
+        cartitems = cart.get_items()
+        updateform = cartformset_class(queryset=cartitems,
+                                       prefix='updateform')
 
         # Coupon code form
         if self.request.method == 'POST' and \
