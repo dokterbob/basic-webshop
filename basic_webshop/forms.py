@@ -63,35 +63,16 @@ class CartAddForm(forms.Form):
         """ Check stock for given quantity. """
         quantity = self.cleaned_data['quantity']
 
-        if not self.product.is_available(quantity):
+        cartitem = self.cart.get_item(product=self.product)
+        total_quantity = cartitem.quantity + quantity
+        if not self.product.is_available(total_quantity):
             raise forms.ValidationError(self.quantity_error)
 
         return quantity
 
-    # TODO: Prolly nicer to generate this in a certain way.
-    QUANTITY_CHOICES =  (
-        (1, 1),
-        (2, 2),
-        (3, 3),
-        (4, 4),
-        (5, 5),
-        (6, 6),
-        (7, 7),
-        (8, 8),
-        (9, 9),
-        (10, 10),
-        (11, 11),
-        (12, 12),
-        (13, 13),
-        (14, 14),
-        (15, 15),
-        (16, 16),
-        (17, 17),
-        (18, 18),
-        (19, 19),
-        (20, 20),
-    )
-    quantity = forms.IntegerField(widget=forms.Select(choices=QUANTITY_CHOICES), min_value=1, initial=1)
+    QUANTITY_CHOICES =  tuple((x, x) for x in xrange(1,20))
+    quantity = forms.IntegerField(widget= \
+        forms.Select(choices=QUANTITY_CHOICES), min_value=1, initial=1)
 
 
 class AddressUpdateForm(forms.ModelForm):
