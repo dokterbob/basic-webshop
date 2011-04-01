@@ -23,7 +23,7 @@ msgstr "price"
 msgid "total discounts"
 msgstr "total discount"
 
-#: admin.py:253 admin.py:370
+#: admin.py:253 admin.py:374
 msgid "None"
 msgstr "none"
 
@@ -31,7 +31,7 @@ msgstr "none"
 msgid "categories"
 msgstr "categories"
 
-#: admin.py:314 models.py:206 models.py:261 models.py:357 models.py:670
+#: admin.py:314 models.py:219 models.py:274 models.py:376 models.py:689
 msgid "name"
 msgstr "name"
 
@@ -39,7 +39,7 @@ msgstr "name"
 msgid "No products"
 msgstr "no products"
 
-#: admin.py:341 admin.py:382
+#: admin.py:341 admin.py:386
 msgid "products"
 msgstr "products"
 
@@ -61,7 +61,7 @@ msgstr ""
 "Short name for an item,             used for constructing its web addres. A "
 "slug may only             contain letters, numbers and '-'."
 
-#: basemodels.py:140 models.py:107 models.py:108 models.py:455
+#: basemodels.py:140 models.py:107 models.py:108 models.py:474
 msgid "address"
 msgstr "address"
 
@@ -90,6 +90,10 @@ msgid "The requested quantity of this product is not available."
 msgstr ""
 "Sorry! Unfortunately the requested quantity of this product is not available."
 
+#: forms.py:123
+msgid "This coupon code is not valid."
+msgstr ""
+
 #: models.py:109
 msgid "zip code"
 msgstr "zip code"
@@ -102,126 +106,126 @@ msgstr "city"
 msgid "phone number"
 msgstr "telephone"
 
-#: models.py:132
+#: models.py:135
 msgid "company"
 msgstr "company"
 
-#: models.py:135
+#: models.py:138
 msgid "Male"
 msgstr "male"
 
-#: models.py:136
+#: models.py:139
 msgid "Female"
 msgstr "female"
 
-#: models.py:138
+#: models.py:141
 msgid "gender"
 msgstr "gender"
 
-#: models.py:140 models.py:285
+#: models.py:143 models.py:304
 msgid "language"
 msgstr "language"
 
-#: models.py:143
+#: models.py:146
 msgid "birthday"
 msgstr "date of birth"
 
-#: models.py:163
+#: models.py:176
 msgid "article number"
 msgstr "article number"
 
-#: models.py:172
+#: models.py:185
 msgid "logo"
 msgstr "logo"
 
-#: models.py:190 models.py:316
+#: models.py:203 models.py:335
 msgid "description"
 msgstr "description"
 
-#: models.py:209 models.py:336
+#: models.py:222 models.py:355
 msgid "image"
 msgstr "image"
 
-#: models.py:243
+#: models.py:256
 msgid "unit"
 msgstr "unit"
 
-#: models.py:244
+#: models.py:257
 msgid ""
 "Unit in which a specific article is                             sold, eg. "
 "'100 ml' or '0.75 g'."
 msgstr "Unit in which a specific article is sold, eg. '100 ml' or '0.75 gram'."
 
-#: models.py:296
+#: models.py:315
 msgid "rating"
 msgstr "rating"
 
-#: models.py:298
+#: models.py:317
 msgid "review"
 msgstr "review"
 
-#: models.py:301
+#: models.py:320
 #, python-format
 msgid "%(rating)d for %(product)s on %(date)s"
 msgstr "%(rating)d for %(product)s on %(date)s"
 
-#: models.py:317
+#: models.py:336
 msgid "manual"
 msgstr "how to use"
 
-#: models.py:318
+#: models.py:337
 msgid "ingredients"
 msgstr "ingredients"
 
-#: models.py:319 models.py:379
+#: models.py:338 models.py:398
 msgid "media"
 msgstr "in the press"
 
-#: models.py:345
+#: models.py:364
 msgid "variation"
 msgstr "variation"
 
-#: models.py:461
+#: models.py:480
 msgid "discounts"
 msgstr "discounts"
 
-#: models.py:574
+#: models.py:593
 msgid "notes"
 msgstr ""
 
-#: models.py:575
+#: models.py:594
 msgid "Optional notes regarding this order."
 msgstr "Optional notes regarding this order."
 
-#: models.py:578
+#: models.py:597
 msgid "payment"
 msgstr ""
 
-#: models.py:634
+#: models.py:653
 msgid "highlight image"
 msgstr "highlight image"
 
-#: models.py:637
+#: models.py:656
 msgid "highlight title"
 msgstr "highlight title"
 
-#: models.py:639
+#: models.py:658
 msgid "hightlight link"
 msgstr "hightlight link"
 
-#: models.py:708
+#: models.py:727
 msgid "featured product"
 msgstr "featured product"
 
-#: models.py:709
+#: models.py:728
 msgid "featured products"
 msgstr "featured products"
 
-#: models.py:713
+#: models.py:732
 msgid "featured order"
 msgstr "featured order"
 
-#: models.py:718
+#: models.py:737
 #, python-format
 msgid "Featured product '%s'"
 msgstr "Featured product '%s'"
@@ -260,18 +264,22 @@ msgstr "In Process"
 msgid "Shipped"
 msgstr "Shipped"
 
-#: views.py:298
+#: views.py:327
 msgid "Your rating has been succesfully saved."
 msgstr "Thanks! Your rating has been succesfully saved."
 
-#: views.py:333
+#: views.py:362
 #, python-format
 msgid "Added %s to shopping cart."
 msgstr "Added %s to Shopping basket."
 
-#: views.py:421
+#: views.py:477
 msgid "Updated shopping cart."
 msgstr "Updated Shopping basket."
+
+#: views.py:493
+msgid "Coupon code valid."
+msgstr ""
 
 #, fuzzy
 #~ msgid "Temp"

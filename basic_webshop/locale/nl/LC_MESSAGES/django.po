@@ -24,7 +24,7 @@ msgstr "prijs"
 msgid "total discounts"
 msgstr "totale korting"
 
-#: admin.py:253 admin.py:370
+#: admin.py:253 admin.py:374
 msgid "None"
 msgstr "geen"
 
@@ -32,7 +32,7 @@ msgstr "geen"
 msgid "categories"
 msgstr "categorieën"
 
-#: admin.py:314 models.py:206 models.py:261 models.py:357 models.py:670
+#: admin.py:314 models.py:219 models.py:274 models.py:376 models.py:689
 msgid "name"
 msgstr "naam"
 
@@ -40,7 +40,7 @@ msgstr "naam"
 msgid "No products"
 msgstr "geen producten"
 
-#: admin.py:341 admin.py:382
+#: admin.py:341 admin.py:386
 msgid "products"
 msgstr "producten"
 
@@ -61,7 +61,7 @@ msgstr ""
 "Korte naam voor een een item, wordt gebruikt om het web adres te creeren. "
 "Een 'slug' moet uniek zijn en mag alleen letters, cijfers, en '-' bevatten."
 
-#: basemodels.py:140 models.py:107 models.py:108 models.py:455
+#: basemodels.py:140 models.py:107 models.py:108 models.py:474
 msgid "address"
 msgstr "adres"
 
@@ -89,6 +89,10 @@ msgstr "ordernummer"
 msgid "The requested quantity of this product is not available."
 msgstr "Helaas zijn de gevraagde aantallen van dit product niet beschikbaar."
 
+#: forms.py:123
+msgid "This coupon code is not valid."
+msgstr ""
+
 #: models.py:109
 msgid "zip code"
 msgstr "postcode"
@@ -101,127 +105,127 @@ msgstr "plaats"
 msgid "phone number"
 msgstr "telefoon"
 
-#: models.py:132
+#: models.py:135
 msgid "company"
 msgstr "bedrijfsnaam"
 
-#: models.py:135
+#: models.py:138
 msgid "Male"
 msgstr "man"
 
-#: models.py:136
+#: models.py:139
 msgid "Female"
 msgstr "vrouw"
 
-#: models.py:138
+#: models.py:141
 msgid "gender"
 msgstr "geslacht"
 
-#: models.py:140 models.py:285
+#: models.py:143 models.py:304
 msgid "language"
 msgstr "taal"
 
-#: models.py:143
+#: models.py:146
 msgid "birthday"
 msgstr "geboortedatum"
 
-#: models.py:163
+#: models.py:176
 msgid "article number"
 msgstr "artikelnummer"
 
-#: models.py:172
+#: models.py:185
 msgid "logo"
 msgstr "logo"
 
-#: models.py:190 models.py:316
+#: models.py:203 models.py:335
 msgid "description"
 msgstr "beschrijving"
 
-#: models.py:209 models.py:336
+#: models.py:222 models.py:355
 msgid "image"
 msgstr "image"
 
-#: models.py:243
+#: models.py:256
 msgid "unit"
 msgstr "eenheid"
 
-#: models.py:244
+#: models.py:257
 msgid ""
 "Unit in which a specific article is                             sold, eg. "
 "'100 ml' or '0.75 g'."
 msgstr ""
 "de eenheden waarin een artikel verkocht wordt, bijv. 100 ml, of 450 gram."
 
-#: models.py:296
+#: models.py:315
 msgid "rating"
 msgstr "rating"
 
-#: models.py:298
+#: models.py:317
 msgid "review"
 msgstr "review"
 
-#: models.py:301
+#: models.py:320
 #, python-format
 msgid "%(rating)d for %(product)s on %(date)s"
 msgstr "%(rating)d for %(product)s on %(date)s"
 
-#: models.py:317
+#: models.py:336
 msgid "manual"
 msgstr "gebruiksadvies"
 
-#: models.py:318
+#: models.py:337
 msgid "ingredients"
 msgstr "werkstoffen"
 
-#: models.py:319 models.py:379
+#: models.py:338 models.py:398
 msgid "media"
 msgstr "in de media"
 
-#: models.py:345
+#: models.py:364
 msgid "variation"
 msgstr "variatie"
 
-#: models.py:461
+#: models.py:480
 msgid "discounts"
 msgstr "korting"
 
-#: models.py:574
+#: models.py:593
 msgid "notes"
 msgstr "aantekening"
 
-#: models.py:575
+#: models.py:594
 msgid "Optional notes regarding this order."
 msgstr "optionele toelichting bij deze bestelling"
 
-#: models.py:578
+#: models.py:597
 msgid "payment"
 msgstr "betaling"
 
-#: models.py:634
+#: models.py:653
 msgid "highlight image"
 msgstr "highlight image"
 
-#: models.py:637
+#: models.py:656
 msgid "highlight title"
 msgstr "highlight titel"
 
-#: models.py:639
+#: models.py:658
 msgid "hightlight link"
 msgstr "hightlight link"
 
-#: models.py:708
+#: models.py:727
 msgid "featured product"
 msgstr "featured product"
 
-#: models.py:709
+#: models.py:728
 msgid "featured products"
 msgstr "featured producten"
 
-#: models.py:713
+#: models.py:732
 msgid "featured order"
 msgstr "featured bestelling"
 
-#: models.py:718
+#: models.py:737
 #, python-format
 msgid "Featured product '%s'"
 msgstr "Featured product '%s'"
@@ -259,15 +263,19 @@ msgstr ""
 msgid "Shipped"
 msgstr "verzonden"
 
-#: views.py:298
+#: views.py:327
 msgid "Your rating has been succesfully saved."
 msgstr "Bedankt voor je review en rating! Deze staat nu online."
 
-#: views.py:333
+#: views.py:362
 #, python-format
 msgid "Added %s to shopping cart."
 msgstr " %s toegevoegd aan de Shopping basket."
 
-#: views.py:421
+#: views.py:477
 msgid "Updated shopping cart."
 msgstr "De Shopping basket is geupdate."
+
+#: views.py:493
+msgid "Coupon code valid."
+msgstr ""
