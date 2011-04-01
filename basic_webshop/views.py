@@ -36,6 +36,28 @@ class BrandList(ListView):
     """ List of brands. """
     model = Brand
 
+    def get_context_data(self, **kwargs):
+        context = super(BrandList, self).get_context_data(**kwargs)
+
+        # Order by translated name
+        brands = self.model.objects.all()
+        language_code = get_language()
+        brands = brands.filter(translations__language_code=\
+                                   language_code)
+        brands = brands.order_by('translations__name')
+
+        context.update({
+            'brands_alphabetical': brands
+        })
+
+        return context
+        
+    def get_queryset(self):
+        queryset = super(BrandList, self).get_queryset()
+        queryset = queryset.order_by('sort_order')
+
+        return queryset
+
 
 class BrandDetail(DetailView):
     """ Detail view for brand. """
@@ -47,8 +69,15 @@ class BrandDetail(DetailView):
         brand = object
         products = brand.product_set.all()
 
+        # Order by translated name
+        brands = self.model.objects.all()
+        language_code = get_language()
+        brands = brands.filter(translations__language_code=\
+                                   language_code)
+        brands = brands.order_by('translations__name')
+
         context.update({
-            'brands': Brand.objects.all(),
+            'brands_alphabetical': brands,
             'products': products,
         })
 
