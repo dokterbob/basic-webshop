@@ -1,7 +1,7 @@
 import logging
 logger = logging.getLogger('basic_webshop')
 
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_object_or_404
 
 from django.db import models
 from django.http import Http404, HttpResponseRedirect
@@ -102,7 +102,7 @@ class CategoryDetail(DetailView):
         products = object.get_products()
 
         # Only get brands that are available in the current category
-        brands = Brand.objects.filter(product__in=products)
+        brands = Brand.objects.filter(product__in=products).distinct()
 
         ancestors = object.get_ancestors(include_self=True)
         category = subcategory = subcategories = subsubcategories = None
@@ -214,7 +214,7 @@ class SubCategoryDetail(CategoryDetail):
 
         if filter_brand:
             logger.debug('Filtering by brand')
-            products = get_list_or_404(products, brand__slug = filter_brand)
+            products = products.filter(brand__slug = filter_brand)
 
         # <URL>?sort_order=<name|brand|price>
         # <URL>?sort_order=bla&sort_reverse=1
