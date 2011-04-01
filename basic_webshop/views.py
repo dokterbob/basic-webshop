@@ -36,7 +36,9 @@ class BrandList(ListView):
     """ List of brands. """
     model = Brand
 
-    def get_queryset(self):
+    def get_context_data(self, **kwargs):
+        context = super(BrandList, self).get_context_data(**kwargs)
+
         # Order by translated name
         brands = self.model.objects.all()
         language_code = get_language()
@@ -44,7 +46,17 @@ class BrandList(ListView):
                                    language_code)
         brands = brands.order_by('translations__name')
 
-        return brands
+        context.update({
+            'brands_alphabetical': brands
+        })
+
+        return context
+        
+    def get_queryset(self):
+        queryset = super(BrandList, self).get_queryset()
+        queryset = queryset.order_by('sort_order')
+
+        return queryset
 
 
 class BrandDetail(DetailView):
