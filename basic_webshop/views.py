@@ -69,8 +69,15 @@ class BrandDetail(DetailView):
         brand = object
         products = brand.product_set.all()
 
+        # Order by translated name
+        brands = self.model.objects.all()
+        language_code = get_language()
+        brands = brands.filter(translations__language_code=\
+                                   language_code)
+        brands = brands.order_by('translations__name')
+
         context.update({
-            'brands': Brand.objects.all(),
+            'brands_alphabetical': brands,
             'products': products,
         })
 
