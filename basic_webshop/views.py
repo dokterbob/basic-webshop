@@ -36,6 +36,16 @@ class BrandList(ListView):
     """ List of brands. """
     model = Brand
 
+    def get_queryset(self):
+        # Order by translated name
+        brands = self.model.objects.all()
+        language_code = get_language()
+        brands = brands.filter(translations__language_code=\
+                                   language_code)
+        brands = brands.order_by('translations__name')
+
+        return brands
+
 
 class BrandDetail(DetailView):
     """ Detail view for brand. """
