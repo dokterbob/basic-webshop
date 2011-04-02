@@ -14,282 +14,889 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:30
-msgid "price"
-msgstr "price"
+#: settings_default.py:218
+msgid "Dutch"
+msgstr "Dutch"
 
-#: admin.py:78
-msgid "total discounts"
-msgstr "total discount"
+#: settings_default.py:219
+msgid "English"
+msgstr "English"
 
-#: admin.py:253 admin.py:374
-msgid "None"
-msgstr "none"
+#: registration_backend/fields.py:27
+#, python-format
+msgid "The domain %s could not be found."
+msgstr "Unfortunately, the domain %s could not be found."
 
-#: admin.py:265
-msgid "categories"
-msgstr "categories"
-
-#: admin.py:314 models.py:219 models.py:274 models.py:376 models.py:689
-msgid "name"
-msgstr "name"
-
-#: admin.py:323
-msgid "No products"
-msgstr "no products"
-
-#: admin.py:341 admin.py:386
-msgid "products"
-msgstr "products"
-
-#: basemodels.py:15
-msgid ""
-"Short name for an item,             used for constructing its web addres. A "
-"slug should be unique and may only             contain letters, numbers and "
-"'-'."
-msgstr ""
-"Short name for an item,             used for constructing its web addres. A "
-"slug should be unique and may only             contain letters, numbers and "
-"'-'."
-
-#: basemodels.py:110
-msgid ""
-"Short name for an item,             used for constructing its web addres. A "
-"slug may only             contain letters, numbers and '-'."
-msgstr ""
-"Short name for an item,             used for constructing its web addres. A "
-"slug may only             contain letters, numbers and '-'."
-
-#: basemodels.py:140 models.py:107 models.py:108 models.py:474
-msgid "address"
-msgstr "address"
-
-#: basemodels.py:141
-msgid "addresses"
-msgstr "addresses"
-
-#: basemodels.py:143 basemodels.py:155
-msgid "addressee"
-msgstr "addressee"
-
-#: basemodels.py:156
-msgid "Automatically set from user name if left blank."
-msgstr "Automatically set from user name if left blank."
-
-#: basemodels.py:263
-msgid "invoice number"
-msgstr "invoice number"
-
-#: basemodels.py:266
-msgid "order number"
-msgstr "order number"
-
-#: forms.py:46
-msgid "The requested quantity of this product is not available."
-msgstr ""
-"Sorry! Unfortunately the requested quantity of this product is not available."
-
-#: forms.py:123
-msgid "This coupon code is not valid."
-msgstr ""
-
-#: models.py:109
-msgid "zip code"
-msgstr "zip code"
-
-#: models.py:110
-msgid "city"
-msgstr "city"
-
-#: models.py:112
-msgid "phone number"
-msgstr "telephone"
-
-#: models.py:135
-msgid "company"
-msgstr "company"
-
-#: models.py:138
-msgid "Male"
-msgstr "male"
-
-#: models.py:139
+#: registration_backend/forms.py:17
 msgid "Female"
-msgstr "female"
+msgstr "Female"
 
-#: models.py:141
-msgid "gender"
-msgstr "gender"
+#: registration_backend/forms.py:18
+msgid "Male"
+msgstr "Male"
 
-#: models.py:143 models.py:304
-msgid "language"
-msgstr "language"
+#: registration_backend/forms.py:21
+msgid "First name"
+msgstr "First name"
 
-#: models.py:146
-msgid "birthday"
-msgstr "date of birth"
+#: registration_backend/forms.py:22
+msgid "Last name"
+msgstr "Last name"
 
-#: models.py:176
-msgid "article number"
-msgstr "article number"
+#: registration_backend/forms.py:23
+msgid "Company"
+msgstr "Company (optional)"
 
-#: models.py:185
-msgid "logo"
-msgstr "logo"
+#: registration_backend/forms.py:27
+#: registration_backend/forms.py:28
+#: templates/basic_webshop/order_detail.html:60
+msgid "Address"
+msgstr "Address"
 
-#: models.py:203 models.py:335
+#: registration_backend/forms.py:29
+#: templates/basic_webshop/order_detail.html:72
+msgid "Zip code"
+msgstr "Zip code"
+
+#: registration_backend/forms.py:30
+#: templates/basic_webshop/order_detail.html:78
+msgid "City"
+msgstr "City"
+
+#: registration_backend/forms.py:34
+msgid "Birth date"
+msgstr "Date of birth (not mandatory, but useful for special offers)"
+
+#: registration_backend/forms.py:39
+msgid "Please use only digits (no spaces), optionally "
+msgstr "Please use only digits (no spaces), optionally a + for your country code"
+
+#: registration_backend/forms.py:41
+msgid "Please enter a valid phone number."
+msgstr "Please enter a valid phone number (only digits, no spaces)."
+
+#: registration_backend/forms.py:42
+msgid "Phone number"
+msgstr "Telephone "
+
+#: registration_backend/forms.py:49
+msgid "Yes, I would like to be informed of the experiences, promotions,"
+msgstr "Yes, I want to be informed of your experiences, promotions, trends and latest cosmetic news by the COSMANIA newsletter."
+
+#: registration_backend/forms.py:66
+msgid "Address data"
+msgstr "Address"
+
+#: registration_backend/forms.py:96
+msgid "The two email fields didn't match."
+msgstr "The entered email addresses do not match."
+
+#: templates/404.html:4
+msgid "Page not found"
+msgstr "Sorry! Unfortunately, the page you have requested is no longer available."
+
+#: templates/404.html:11
+msgid "We're sorry, the current page could not be found on this website."
+msgstr "Sorry! Unfortunately, the page you have requested could not be found on this website."
+
+#: templates/404.html:12
+msgid "Click <a href=\"/\">here</a> to return to the homepage."
+msgstr "Click <a href=\"/\">here</a> to return to the homepage."
+
+#: templates/404.html:13
+msgid "Our apologies for the inconvenience!"
+msgstr "Apologies for the inconvenience!"
+
+#: templates/500.html:4
+msgid "Internal server error"
+msgstr "Sorry! The server is experiencing an internal error. Please go to our homepage, www.cosmania.nl, to find what you're looking for. Apologies for the inconvenience."
+
+#: templates/500.html:11
+msgid "There was an error while trying to serve the requested page. Please try again. If the error persists, please contact the webmaster about it. In any case, we have been notified of this error."
+msgstr "Sorry! The server is experiencing an internal error. We are doing our very best to resolve the problem. Apologies for the inconvenience."
+
+#: templates/500.html:13
+msgid "If you need assistance, you may reference this error as"
+msgstr "If you need assistance, you may reference this error as"
+
+#: templates/base.html:56
+msgid "Click to unblock"
+msgstr "Click to unblock"
+
+#: templates/portal.html:13
+#: templates/includes/nav.html:14
+#: templates/includes/modules/newsletter.html:3
+#: templates/newsletter/common.html:7
+#: templates/newsletter/newsletter_detail.html:7
+#: templates/newsletter/newsletter_list.html:10
+#: templates/newsletter/newsletter_list.html:28
+#: templates/newsletter/subscription_activate.html:3
+#: templates/newsletter/subscription_activate.html:6
+msgid "Newsletter"
+msgstr "Newsletter"
+
+#: templates/portal.html:14
+#: templates/includes/modules/newsletter.html:4
+msgid "Sign up for monthly news, specials and updates"
+msgstr "Sign up for our latest cosmetic news, promotions and trends."
+
+#: templates/portal.html:22
+#: templates/portal.html.py:31
+msgid "News"
+msgstr "News"
+
+#: templates/basic_webshop/base.html:9
+#, python-format
+msgid "%(cart.get_total_items)s item(s) in shopping cart with total value of %(cart.get_total_price|format_price)s "
+msgstr "%(cart.get_total_items)s item(s) in your Shopping basket with a total value of %(cart.get_total_price|format_price)s "
+
+#: templates/basic_webshop/base.html:14
+msgid "Shop home"
+msgstr "Continue shopping"
+
+#: templates/basic_webshop/brand_detail.html:29
+#: templates/basic_webshop/brand_list.html:12
+#: templates/basic_webshop/brand_products.html:20
+msgid "Shop by brand"
+msgstr "Our brands"
+
+#: templates/basic_webshop/brand_detail.html:56
+#: templates/basic_webshop/order_detail.html:25
+msgid "Products"
+msgstr "Their products"
+
+#: templates/basic_webshop/brand_detail.html:77
+msgid "View all products by "
+msgstr "View all products from %(brand.name)s"
+
+#: templates/basic_webshop/brand_list.html:37
+msgid "Shop this brand"
+msgstr "Shop this brand"
+
+#: templates/basic_webshop/brand_list.html:37
+msgid "Discover more"
+msgstr "Find out more"
+
+#: templates/basic_webshop/cart_detail.html:30
+msgid "Remove this from my cart"
+msgstr "Remove this from my Shopping basket"
+
+#: templates/basic_webshop/cart_detail.html:58
+msgid "No products so far."
+msgstr "Your shopping basket is empty so far."
+
+#: templates/basic_webshop/cart_detail.html:62
+msgid "Update cart"
+msgstr "Update your Shopping basket."
+
+#: templates/basic_webshop/cart_detail.html:73
+msgid "Submit discount code or gift voucher"
+msgstr "Submit discount code or gift voucher"
+
+#: templates/basic_webshop/cart_detail.html:74
+msgid "Discount code or gift voucher"
+msgstr "Discount code or gift voucher"
+
+#: templates/basic_webshop/cart_detail.html:96
+msgid "Discount"
+msgstr "Discount"
+
+#: templates/basic_webshop/cart_detail.html:105
+msgid "Total"
+msgstr "Total "
+
+#: templates/basic_webshop/cart_detail.html:114
+#: templates/basic_webshop/includes/side-steps.html:4
+msgid "Checkout"
+msgstr "Checkout"
+
+#: templates/basic_webshop/cart_detail.html:117
+msgid "Back to shop"
+msgstr "Continue shopping"
+
+#: templates/basic_webshop/cart_detail.html:118
+msgid "Clear cart"
+msgstr "Clear your Shopping basket"
+
+#: templates/basic_webshop/cart_detail.html:119
+msgid "General conditions"
+msgstr "Terms & Conditions"
+
+#: templates/basic_webshop/category_aspect.html:25
+#: templates/basic_webshop/category_detail.html:27
+#: templates/basic_webshop/subcategory_detail.html:72
+msgid "No products found in this category."
+msgstr "Currently there are no products found in this category."
+
+#: templates/basic_webshop/category_list.html:10
+msgid "No categories defined."
+msgstr "No categories defined."
+
+#: templates/basic_webshop/index.html:5
+msgid "Shop index"
+msgstr "Shop index"
+
+#: templates/basic_webshop/index.html:7
+msgid "Categories"
+msgstr "Product categories"
+
+#: templates/basic_webshop/index.html:12
+msgid "No categories found."
+msgstr "No categories found."
+
+#: templates/basic_webshop/order_checkout_canceled.html:10
+msgid "What happened?"
+msgstr "What happened?"
+
+#: templates/basic_webshop/order_checkout_canceled.html:11
+msgid "You've cancelled the payment process. Can we be of any help? Please contact us at <a href=\"mailto:iwanttoask@cosmania.nl\">iwanttoask@cosmania.nl</a>."
+msgstr "You've cancelled the payment process. Can we be of any help? Please contact us at <a href=\"mailto:iwanttoask@cosmania.nl\">iwanttoask@cosmania.nl</a>."
+
+#: templates/basic_webshop/order_checkout_canceled.html:12
+msgid "See you again soon!"
+msgstr "See you again soon!"
+
+#: templates/basic_webshop/order_checkout_error.html:10
+msgid "Sorry!"
+msgstr "Sorry!"
+
+#: templates/basic_webshop/order_checkout_error.html:11
+msgid "Unfortunately we are experiencing an error during your payment. Please check your payment details. If you have any questions contact us at <a href=\"mailto:iwanttoask@cosmania.nl\">iwanttoask@cosmania.nl</a>."
+msgstr "Unfortunately we are experiencing an error during your payment. Please check your payment details. If you have any questions contact us at <a href=\"mailto:iwanttoask@cosmania.nl\">iwanttoask@cosmania.nl</a>."
+
+#: templates/basic_webshop/order_checkout_error.html:12
+#: templates/basic_webshop/order_checkout_pending.html:13
+msgid "Best regards,"
+msgstr "Best regards,"
+
+#: templates/basic_webshop/order_checkout_pending.html:10
+msgid "Your payment is pending"
+msgstr "Your payment is pending"
+
+#: templates/basic_webshop/order_checkout_pending.html:11
+#: templates/basic_webshop/order_checkout_success.html:11
+msgid "Thank you for ordering at COSMANIA."
+msgstr "Thank you for ordering at COSMANIA."
+
+#: templates/basic_webshop/order_checkout_pending.html:12
+msgid "Once your payment via bank transfer has been received, your order will be send. Thanks for shopping with us. See you again soon!"
+msgstr "Once your payment via bank transfer has been received, your order will be send. Thanks for shopping with us. See you again soon!"
+
+#: templates/basic_webshop/order_checkout_success.html:10
+msgid "Thanks, you've paid!"
+msgstr "Thanks, you've paid!"
+
+#: templates/basic_webshop/order_checkout_success.html:12
+msgid "We hope you will enjoy your product(s). Thanks for shopping with us. See you again soon!"
+msgstr "We hope you will enjoy your product(s). Thanks for shopping with us. See you again soon!"
+
+#: templates/basic_webshop/order_detail.html:22
+msgid "Order overview"
+msgstr "Order overview"
+
+#: templates/basic_webshop/order_detail.html:50
+msgid "Shipping address"
+msgstr "Delivery address"
+
+#: templates/basic_webshop/order_detail.html:54
+msgid "Addressee"
+msgstr "Addressee"
+
+#: templates/basic_webshop/order_detail.html:84
+msgid "Country"
+msgstr "Country"
+
+#: templates/basic_webshop/order_detail.html:129
+msgid "Proceed to checkout"
+msgstr "Proceed to checkout"
+
+#: templates/basic_webshop/order_detail.html:132
+msgid "Previous step"
+msgstr "Previous step"
+
+#: templates/basic_webshop/order_list.html:7
+msgid "Order list"
+msgstr "Order overview"
+
+#: templates/basic_webshop/order_shipping.html:23
+msgid "Confirm shipping address"
+msgstr "Confirm delivery address"
+
+#: templates/basic_webshop/order_shipping.html:46
+msgid "Proceed to order overview"
+msgstr "Proceed to order overview"
+
+#: templates/basic_webshop/product_detail.html:48
+msgid "Suggestions"
+msgstr "Suggestions"
+
+#: templates/basic_webshop/product_detail.html:116
 msgid "description"
 msgstr "description"
 
-#: models.py:222 models.py:355
-msgid "image"
-msgstr "image"
-
-#: models.py:256
-msgid "unit"
-msgstr "unit"
-
-#: models.py:257
-msgid ""
-"Unit in which a specific article is                             sold, eg. "
-"'100 ml' or '0.75 g'."
-msgstr "Unit in which a specific article is sold, eg. '100 ml' or '0.75 gram'."
-
-#: models.py:315
-msgid "rating"
-msgstr "rating"
-
-#: models.py:317
-msgid "review"
-msgstr "review"
-
-#: models.py:320
-#, python-format
-msgid "%(rating)d for %(product)s on %(date)s"
-msgstr "%(rating)d for %(product)s on %(date)s"
-
-#: models.py:336
-msgid "manual"
+#: templates/basic_webshop/product_detail.html:117
+msgid "usage advice"
 msgstr "how to use"
 
-#: models.py:337
+#: templates/basic_webshop/product_detail.html:118
 msgid "ingredients"
 msgstr "ingredients"
 
-#: models.py:338 models.py:398
-msgid "media"
+#: templates/basic_webshop/product_detail.html:119
+msgid "in the press"
 msgstr "in the press"
 
-#: models.py:364
-msgid "variation"
-msgstr "variation"
+#: templates/basic_webshop/product_detail.html:125
+msgid "Out of stock"
+msgstr "Out of stock"
 
-#: models.py:480
-msgid "discounts"
-msgstr "discounts"
+#: templates/basic_webshop/product_detail.html:126
+msgid "This product is out of stock."
+msgstr "Sorry! This product is temporarily out of stock."
 
-#: models.py:593
-msgid "notes"
-msgstr ""
+#: templates/basic_webshop/product_detail.html:211
+msgid "Add to cart"
+msgstr "Add to Shopping basket"
 
-#: models.py:594
-msgid "Optional notes regarding this order."
-msgstr "Optional notes regarding this order."
+#: templates/basic_webshop/product_detail.html:219
+msgid "Previous"
+msgstr "Previous"
 
-#: models.py:597
-msgid "payment"
-msgstr ""
+#: templates/basic_webshop/product_detail.html:220
+msgid "Next"
+msgstr "Next"
 
-#: models.py:653
-msgid "highlight image"
-msgstr "highlight image"
+#: templates/basic_webshop/product_detail.html:257
+msgid "This product has not been reviewed yet."
+msgstr "Are you the first to rate and review this product?"
 
-#: models.py:656
-msgid "highlight title"
-msgstr "highlight title"
+#: templates/basic_webshop/product_detail.html:281
+msgid "Your opinion counts! Let us and other people know, what you think of this product."
+msgstr "Your opinion counts! Leave a review telling us, and others, what you think of this product."
 
-#: models.py:658
-msgid "hightlight link"
-msgstr "hightlight link"
+#: templates/basic_webshop/product_detail.html:297
+msgid "Post review"
+msgstr "Post review"
 
-#: models.py:727
-msgid "featured product"
-msgstr "featured product"
+#: templates/basic_webshop/product_detail.html:300
+msgid "You have to be logged in, in order to share your rating and review."
+msgstr "You have to be logged in, in order to share your rating and review."
 
-#: models.py:728
-msgid "featured products"
-msgstr "featured products"
+#: templates/basic_webshop/product_detail.html:310
+#: templates/includes/header.html:19
+#: templates/includes/nav.html:10
+#: templates/registration/login.html:19
+#: templates/registration/login.html:30
+msgid "Login"
+msgstr "Sign in"
 
-#: models.py:732
-msgid "featured order"
-msgstr "featured order"
+#: templates/basic_webshop/product_detail.html:313
+#: templates/registration/login.html:32
+msgid "Create an account"
+msgstr "Create your account"
 
-#: models.py:737
+#: templates/basic_webshop/subcategory_detail.html:27
+msgid "Sort by"
+msgstr "Sort by"
+
+#: templates/basic_webshop/subcategory_detail.html:30
+msgid "Name"
+msgstr "Productname"
+
+#: templates/basic_webshop/subcategory_detail.html:31
+msgid "Price"
+msgstr "Price"
+
+#: templates/basic_webshop/subcategory_detail.html:32
+msgid "Brand"
+msgstr "Brands"
+
+#: templates/basic_webshop/subcategory_detail.html:35
+msgid "Order by"
+msgstr "Sort by"
+
+#: templates/basic_webshop/subcategory_detail.html:37
+msgid "Ascending"
+msgstr "Upwards"
+
+#: templates/basic_webshop/subcategory_detail.html:38
+msgid "Descending"
+msgstr "Downwards"
+
+#: templates/basic_webshop/subcategory_detail.html:41
+msgid "Filter by brand"
+msgstr "Select by brand"
+
+#: templates/basic_webshop/subcategory_detail.html:50
+msgid "Ok"
+msgstr "Sort"
+
+#: templates/basic_webshop/includes/aspect_list.html:3
+msgid "New arrivals"
+msgstr "New arrivals"
+
+#: templates/basic_webshop/includes/aspect_list.html:4
+msgid "Our picks"
+msgstr "Our favorites"
+
+#: templates/basic_webshop/includes/aspect_list.html:6
 #, python-format
-msgid "Featured product '%s'"
-msgstr "Featured product '%s'"
+msgid "All of %(category)s"
+msgstr "All of %(category)s"
 
-#: order_states.py:25
-msgid "New"
-msgstr "New"
+#: templates/basic_webshop/includes/side-steps.html:6
+msgid "Step 1 - Shopping cart"
+msgstr "Step 1 - Shopping basket"
 
-#: order_states.py:26
-msgid "Payment pending"
-msgstr ""
+#: templates/basic_webshop/includes/side-steps.html:7
+msgid "Step 2 - Confirm shipping address"
+msgstr "Step 2 - Login/your account"
 
-#: order_states.py:27
-msgid "Paid"
-msgstr ""
+#: templates/basic_webshop/includes/side-steps.html:8
+msgid "Step 3 - Order overview"
+msgstr "Step 3 - Order overview"
 
-#: order_states.py:28
-msgid "Payment failed"
-msgstr ""
+#: templates/basic_webshop/includes/side-steps.html:9
+msgid "Step 4 - Finished"
+msgstr "Step 4 - Payment"
 
-#: order_states.py:29
-#, fuzzy
-msgid "Canceled"
-msgstr "Cancelled"
+#: templates/basic_webshop/includes/side-steps.html:13
+#: templates/registration/includes/side.html:12
+msgid "Help"
+msgstr "Customer service"
 
-#: order_states.py:30
-msgid "Rejected"
-msgstr ""
+#: templates/basic_webshop/includes/side-steps.html:14
+#: templates/registration/includes/side.html:13
+msgid "General Conditions"
+msgstr "Terms & Conditions"
 
-#: order_states.py:31
-#, fuzzy
-msgid "Being processed"
-msgstr "In Process"
+#: templates/basic_webshop/includes/subsub_category_list.html:5
+msgid "Category"
+msgstr "Categories"
 
-#: order_states.py:32
-msgid "Shipped"
-msgstr "Shipped"
+#: templates/contact_form/contact_form.html:9
+msgid "Contactformulier"
+msgstr "Contact form"
 
-#: views.py:327
-msgid "Your rating has been succesfully saved."
-msgstr "Thanks! Your rating has been succesfully saved."
+#: templates/contact_form/contact_form.html:30
+msgid "Bericht versturen"
+msgstr "Send"
 
-#: views.py:362
+#: templates/contact_form/contact_form_sent.html:10
+msgid "Wij hebben uw aanvraag succesvol ontvangen, bedankt voor uw reactie. U krijgt, indien nodig, zo spoedig mogelijk een reactie."
+msgstr "Your question or remark has been received - Thanks! We'll get back to you soon. Regards, Marije and Marcel | COSMANIA"
+
+#: templates/includes/categories.html:3
+msgid "Cover"
+msgstr "Cover"
+
+#: templates/includes/categories.html:9
+msgid "Brands"
+msgstr "Brands"
+
+#: templates/includes/categories.html:10
+msgid "Backstage"
+msgstr "Backstage"
+
+#: templates/includes/footer.html:6
+#: templates/includes/nav.html:28
+msgid "Cosmania on facebook"
+msgstr "Cosmania on Facebook"
+
+#: templates/includes/footer.html:6
+#: templates/includes/nav.html:28
+msgid "Cosmania on twitter"
+msgstr "Cosmania on Twitter"
+
+#: templates/includes/footer.html:39
+msgid "All images and content are property of Cosmania"
+msgstr "All images and content are property of COSMANIA"
+
+#: templates/includes/header.html:16
+msgid "username"
+msgstr "username"
+
+#: templates/includes/header.html:17
+msgid "password"
+msgstr "password"
+
+#: templates/includes/header.html:19
+msgid "Forgot password"
+msgstr "Forgotten your password?"
+
+#: templates/includes/header.html:20
+#: templates/registration/activate.html:7
+#: templates/registration/login.html:7
+#: templates/registration/logout.html:19
+#: templates/registration/password_change_done.html:7
+#: templates/registration/password_change_form.html:7
+#: templates/registration/password_reset_complete.html:7
+#: templates/registration/password_reset_confirm.html:7
+#: templates/registration/password_reset_done.html:7
+#: templates/registration/password_reset_form.html:7
+#: templates/registration/registration_complete.html:15
+#: templates/registration/registration_form.html:20
+#: templates/registration/registration_form.html:51
+#: templates/registration/includes/side.html:3
+msgid "Create account"
+msgstr "Create your account"
+
+#: templates/includes/header.html:31
+#: templates/includes/forms/newsletter.html:7
+msgid "email address"
+msgstr "email address"
+
+#: templates/includes/header.html:32
+#: templates/includes/forms/newsletter.html:8
+msgid "Sign up"
+msgstr "Sign up"
+
+#: templates/includes/nav.html:8
+#: templates/registration/logout.html:32
+msgid "Logout"
+msgstr "Log out"
+
+#: templates/includes/nav.html:13
+msgid "Your account"
+msgstr "Create your account"
+
+#: templates/includes/nav.html:15
+msgid "Customer service"
+msgstr "Customer service"
+
+#: templates/includes/forms/search.html:4
+msgid "search"
+msgstr "search"
+
+#: templates/includes/forms/search.html:5
+msgid "Search"
+msgstr "search"
+
+#: templates/newsletter/newsletter_detail.html:3
+msgid "Newsletter detail"
+msgstr "Newsletter detail"
+
+#: templates/newsletter/newsletter_list.html:3
+msgid "Newsletter list"
+msgstr "Newsletter list"
+
+#: templates/newsletter/newsletter_list.html:12
+#: templates/newsletter/subscription_subscribe.html:18
+#: templates/newsletter/subscription_subscribe_user.html:11
+#: templates/newsletter/subscription_update.html:15
+msgid "Subscribe"
+msgstr "Sign up"
+
+#: templates/newsletter/newsletter_list.html:23
+msgid "Update subscriptions"
+msgstr "Update subscriptions"
+
+#: templates/newsletter/submission_archive.html:3
+#: templates/newsletter/submission_archive.html:7
+#: templates/newsletter/submission_detail.html:3
+#: templates/newsletter/submission_detail.html:5
+msgid "Newsletter archive"
+msgstr "Newsletter archive"
+
+#: templates/newsletter/submission_archive.html:15
+msgid "Back to list"
+msgstr "Back to overview"
+
+#: templates/newsletter/subscription_activate.html:3
+#: templates/newsletter/subscription_activate.html:6
+msgid "activate"
+msgstr "activate"
+
+#: templates/newsletter/subscription_activate.html:10
+msgid "Your subscription has successfully been activated."
+msgstr "Thanks for signing up! As from now, you will automatically the COSMANIA newsletter in your mailbox.See you soon,Marije and MarcelCOSMANIA"
+
+#: templates/newsletter/subscription_activate.html:13
+msgid "You have successfully been unsubscribed."
+msgstr "You have been successfully unsubscribed from the COSMANIA newsletter.Feel free to sign up again when you start to miss us!Regards,Marije and MarcelCOSMANIA"
+
+#: templates/newsletter/subscription_activate.html:16
+msgid "Your subscription has successfully been updated."
+msgstr "We have succesfully updated your subscription."
+
+#: templates/newsletter/subscription_activate.html:22
+msgid "Activate"
+msgstr "Click the link to confirm your subscription."
+
+#: templates/newsletter/subscription_subscribe.html:3
+#: templates/newsletter/subscription_subscribe.html:5
+#: templates/newsletter/subscription_subscribe_user.html:3
+#: templates/newsletter/subscription_subscribe_user.html:5
+msgid "Newsletter subscribe"
+msgstr "Sign up for the COSMANIA newsletter"
+
+#: templates/newsletter/subscription_subscribe.html:7
+#: templates/newsletter/subscription_update.html:7
+msgid "Due to a technical error we were not able to submit your confirmation email. This could be because your email address is invalid."
+msgstr "Due to a technical error we are not able to send you your confirmation email. Please check if you have entered a valid email address. "
+
+#: templates/newsletter/subscription_subscribe.html:8
+#: templates/newsletter/subscription_update.html:8
+msgid "If the error persists, please don't hesitate to contact us at the following email address:"
+msgstr "If the error persists, please don't hesitate to contact us at the following email address: iwanttoreport@cosmania.nl"
+
+#: templates/newsletter/subscription_subscribe.html:11
+msgid "Your subscription was successfully recieved and an activation email has been sent to you. In that email you will find a link which you need to follow in order to activate your subscription."
+msgstr "Hello!I t's great that you want to stay up-to-date on COSMANIA's news! You're only one click away from subscribing to the COSMANIA newsletter. You'll receive an email with an activation link to confirm your subscription.If you prefer not to receive our newsletter, simply delete that email.See you soon,Marije and MarcelCOSMANIA"
+
+#: templates/newsletter/subscription_subscribe_user.html:7
+#: templates/newsletter/subscription_unsubscribe_user.html:7
+msgid "Welcome,"
+msgstr "Welcome!"
+
+#: templates/newsletter/subscription_subscribe_user.html:9
+msgid "Do you want to subscribe to this newsletter?"
+msgstr "Want to be informed of our experiences, promotions, trends and latest cosmetic news? Sign up for our newsletter."
+
+#: templates/newsletter/subscription_unsubscribe.html:3
+#: templates/newsletter/subscription_unsubscribe.html:5
+#: templates/newsletter/subscription_unsubscribe_user.html:3
+#: templates/newsletter/subscription_unsubscribe_user.html:5
+msgid "Newsletter unsubscribe"
+msgstr "Unsubscribe to the COSMANIA newsletter"
+
+#: templates/newsletter/subscription_unsubscribe.html:7
+msgid "Your unsubscription request has successfully been recieved. An email has been sent to you with a link you need to follow in order to confirm your unsubscription."
+msgstr "Are you sure you no longer wish to receive the COSMANIA newsletter? What a shame! We will send you an email with a link to unsubscribe and have your name removed from our list.Feel free to sign up again when you start to miss us!Regards,Marije and MarcelCOSMANIA"
+
+#: templates/newsletter/subscription_unsubscribe.html:11
+#: templates/newsletter/subscription_unsubscribe_user.html:11
+msgid "Unsubscribe"
+msgstr "Confirm"
+
+#: templates/newsletter/subscription_unsubscribe_user.html:9
+msgid "Do you want to unsubscribe from this newsletter?"
+msgstr "Do you want to unsubscribe to the COSMANIA newsletter?"
+
+#: templates/newsletter/subscription_update.html:3
+#: templates/newsletter/subscription_update.html:5
+msgid "Newsletter update"
+msgstr "Newsletter update"
+
+#: templates/newsletter/subscription_update.html:11
+msgid "Your update request was successfully recieved and an activation email has been sent to you. In that email you will find a link which you need to follow in order to update your subscription."
+msgstr "Your update request was successfully received and an activation email has been sent to you. In that email you will find a link which you need to follow in order to update your subscription."
+
+#: templates/pagination/pagination.html:6
+msgid "previous"
+msgstr "previous"
+
+#: templates/pagination/pagination.html:25
+msgid "next"
+msgstr "next"
+
+#: templates/registration/activate.html:8
+#: templates/registration/logout.html:20
+#: templates/registration/password_change_done.html:8
+#: templates/registration/password_change_form.html:8
+#: templates/registration/password_reset_complete.html:8
+#: templates/registration/password_reset_confirm.html:8
+#: templates/registration/password_reset_done.html:8
+#: templates/registration/password_reset_form.html:8
+#: templates/registration/registration_complete.html:16
+#: templates/registration/registration_form.html:21
+msgid "home"
+msgstr "Cover"
+
+#: templates/registration/activate.html:21
+msgid "Activation successful"
+msgstr "You've signed up successfully!"
+
+#: templates/registration/activate.html:23
 #, python-format
-msgid "Added %s to shopping cart."
-msgstr "Added %s to Shopping basket."
+msgid "You can now proceed to <a href=\"%(login_url)s\">login.</a>"
+msgstr "You can now proceed to <a href=\"%(login_url)s\">login.</a>"
 
-#: views.py:477
-msgid "Updated shopping cart."
-msgstr "Updated Shopping basket."
+#: templates/registration/activate.html:25
+msgid "Activation failed"
+msgstr "Unfortunately, your activation failed."
 
-#: views.py:493
-msgid "Coupon code valid."
-msgstr ""
+#: templates/registration/activate.html:26
+msgid "Something went wrong while activating your account. This might mean that the activation code was wrong or that your account has already been activated."
+msgstr "Sorry! Unfortunately something went wrong while activating your account. Please try again to login with your account details."
+
+#: templates/registration/login.html:33
+msgid "Reset your password"
+msgstr "Reset your password"
+
+#: templates/registration/password_change_done.html:21
+msgid "Password change successful"
+msgstr "Thanks! You've changed our password successfully. From now on, you may sign in using your new password."
+
+#: templates/registration/password_change_done.html:22
+msgid "Your password was changed."
+msgstr "Thanks! You've changed our password successfully. From now on, you may sign in using your new password."
+
+#: templates/registration/password_change_form.html:20
+msgid "Password change"
+msgstr "Change your password"
+
+#: templates/registration/password_change_form.html:21
+msgid "Please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly."
+msgstr "Please enter your old password first, for security's sake, and then enter your new password twice for verification."
+
+#: templates/registration/password_change_form.html:31
+#: templates/registration/password_reset_confirm.html:33
+msgid "Change my password"
+msgstr "Change my password"
+
+#: templates/registration/password_reset_complete.html:20
+msgid "Password reset complete"
+msgstr "Your password has now been reset successfully."
+
+#: templates/registration/password_reset_complete.html:21
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr "Thanks! Your password has been set now. From now on, you may sign in using this password."
+
+#: templates/registration/password_reset_complete.html:22
+msgid "Log in"
+msgstr "Sign in"
+
+#: templates/registration/password_reset_confirm.html:21
+msgid "Enter new password"
+msgstr "Enter your new password"
+
+#: templates/registration/password_reset_confirm.html:22
+msgid "Please enter your new password twice so we can verify you typed it in correctly."
+msgstr "Please enter your new password twice."
+
+#: templates/registration/password_reset_confirm.html:39
+msgid "Password reset unsuccessful"
+msgstr "Sorry! Your password has not been reset successfully."
+
+#: templates/registration/password_reset_confirm.html:40
+msgid "The password reset link was invalid, possibly because it has already been used. Please request a new password reset."
+msgstr "The password reset link was invalid, possibly because it has already been used. Please request a new password reset."
+
+#: templates/registration/password_reset_done.html:20
+msgid "Password reset successful"
+msgstr "Congratulations. Your password has been reset successfully!"
+
+#: templates/registration/password_reset_done.html:21
+msgid "We've e-mailed you instructions for setting your password to the e-mail address you submitted. You should be receiving it shortly."
+msgstr "Thanks! You will shortly receive an email from COSMANIA with a personalized link. Click on this link to create a new password."
+
+#: templates/registration/password_reset_form.html:21
+msgid "Password reset"
+msgstr "Reset your password"
+
+#: templates/registration/password_reset_form.html:22
+msgid "Forgotten your password? Enter your e-mail address below, and we'll e-mail instructions for setting a new one."
+msgstr "Forgotten your password? It can happen to the best of us! Enter your email address below, and you'll receive an email from us within a few minutes with which you can create a new password. At COSMANIA, privacy is very important to us, which is why we cannot access your password. For that reason, we are unable to send you your current password and therefore ask you to create a new one."
+
+#: templates/registration/password_reset_form.html:31
+msgid "Reset my password"
+msgstr "Reset your password"
+
+#: templates/registration/registration_complete.html:28
+msgid "User registration successful"
+msgstr "You have been succesfully registered!"
+
+#: templates/registration/registration_complete.html:29
+msgid "Your account has been registered succesfully, you are now logged in."
+msgstr "Your account has been registered succesfully, you are now logged in. Enjoy shopping!"
+
+#: templates/registration/registration_complete.html:32
+msgid "You can now proceed with what you wanted to do."
+msgstr "Enjoy shopping!"
+
+#: templates/registration/registration_form.html:36
+msgid "User registration"
+msgstr "Your details"
+
+#: templates/registration/includes/side.html:6
+msgid "Step 1 - Submit details"
+msgstr "Step 1 - Submit your details"
+
+#: templates/registration/includes/side.html:7
+msgid "Step 2 - Confirm"
+msgstr "Step 2 - Confirm your details"
+
+#: templates/registration/includes/side.html:8
+msgid "Step 3 - Finished"
+msgstr "Step 3 - Finished"
+
+#: templates/simplesite/backstage.html:12
+msgid "Please wait while your tweets are being loaded..."
+msgstr "Please wait while our tweets are being loaded..."
+
+#: templates/simplesite/backstage.html:56
+#: templates/simplesite/backstage.html:93
+msgid "Read more..."
+msgstr "Read more..."
+
+#: templates/simplesite/base.html:16
+#: templates/simplesite/page.html:6
+msgid "Subjects"
+msgstr "Subjects"
+
+#: templates/simplesite/backstage/page.html:17
+msgid "More news"
+msgstr "More news"
 
 #, fuzzy
-#~ msgid "Temp"
-#~ msgstr "Temp"
+#~ msgid "Order checkout succesful"
+#~ msgstr ""
+#~ "Thanks! You've changed our password successfully. From now on, you may "
+#~ "sign in using your new password."
 
-#~ msgid "Blocked"
-#~ msgstr "Blocked"
+#, fuzzy
+#~ msgid "Your order checkout has been completed succesfully."
+#~ msgstr "You've now signed in succesfully."
 
-#~ msgid "Billed"
-#~ msgstr "Billed"
+#~ msgid "Random module"
+#~ msgstr "Random module"
 
-#~ msgid "Complete"
-#~ msgstr "Completed"
+#~ msgid "Register"
+#~ msgstr "Create a new account"
+
+#~ msgid "DD-MM-YYYY"
+#~ msgstr "DD-MM-YYYY"
+
+#~ msgid "Click <a href="
+#~ msgstr "Click <a href="
+
+#~ msgid "Logged in as:"
+#~ msgstr "Signed in as:"
+
+#, fuzzy
+#~ msgid "Product"
+#~ msgstr "Product"
+
+#~ msgid "Quantity"
+#~ msgstr "Quantity"
+
+#~ msgid "Price per piece"
+#~ msgstr "Unit price"
+
+#~ msgid "Proceed to order"
+#~ msgstr "Continue shopping"
+
+#~ msgid "Current status"
+#~ msgstr "Current status"
+
+#~ msgid "Order number"
+#~ msgstr "Order number"
+
+#~ msgid "Order status history"
+#~ msgstr "Order status history"
+
+#~ msgid ""
+#~ "If you want to get a notification when it is back in stock again, please "
+#~ "leave your e-mail address."
+#~ msgstr ""
+#~ "If you want to be the first to know when it's available again, then leave "
+#~ "your email address here."
+
+#~ msgid "Log out"
+#~ msgstr "Log out"
+
+#~ msgid "Adresgegevens:"
+#~ msgstr "Address"
