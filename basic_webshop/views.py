@@ -461,7 +461,8 @@ class CartDetail(DetailView):
         # Cart edit form
         cartformset_class =  modelformset_factory(CartItem,
                                                   exclude=('cart', 'product'),
-                                                  extra=0)
+                                                  extra=0,
+                                                  form=CartItemForm)
         if self.request.method == 'POST' and \
             'update_submit' in self.request.POST:
 
@@ -475,6 +476,12 @@ class CartDetail(DetailView):
 
                 messages.add_message(self.request, messages.SUCCESS,
                     _('Updated shopping cart.'))
+            
+            else:
+                for field_errors in updateform.errors:
+                    for field in field_errors:
+                        messages.add_message(self.request, messages.ERROR,
+                            field_errors[field][0])
 
         cartitems = cart.get_items()
         updateform = cartformset_class(queryset=cartitems,

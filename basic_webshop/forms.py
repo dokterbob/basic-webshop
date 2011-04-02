@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from basic_webshop.models import ProductRating, Address, Cart, Discount
+from basic_webshop.models import ProductRating, Address, Cart, CartItem, Discount
 
 
 class RatingForm(forms.ModelForm):
@@ -73,6 +73,30 @@ class CartAddForm(forms.Form):
     QUANTITY_CHOICES =  tuple((x, x) for x in xrange(1,20))
     quantity = forms.IntegerField(widget= \
         forms.Select(choices=QUANTITY_CHOICES), min_value=1, initial=1)
+
+
+class CartItemForm(forms.ModelForm):
+    """ Form for updating shopping cart quantities. """
+
+    quantity_error = _('The requested quantity of this product is not available.')
+
+    class Meta:
+        model = CartItem
+
+    def clean_quantity(self):
+        """ Check stock for given quantity. """
+        quantity = self.cleaned_data['quantity']
+
+        assert self.instance
+        cartitem = self.instance
+        product = cartitem.product
+
+        cartitem = cartitem.cart.get_item(product=product)
+        total_quantity = cartitem.quantity + quantity
+        if not product.is_available(total_quantity):
+            raise forms.ValidationError(self.quantity_error)
+
+        return quantity
 
 
 class AddressUpdateForm(forms.ModelForm):
