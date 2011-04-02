@@ -239,7 +239,7 @@ class SubCategoryDetail(CategoryDetail):
 
             products = products.order_by('price')
         else:
-            if sort_order != None:
+            if sort_order:
                 logger.warning('Unknown sort order requested.')
                 raise Http404("This sort order doesn't exist.")
 
@@ -647,7 +647,8 @@ class OrderCheckout(OrderViewMixin, DetailView):
         # We want the customer's data - not the order shipping details
         address = customer.get_address()
 
-        full_address = address.postal_address+'\n'+address.postal_address2
+        full_address = u'%s\n%s' \
+            % (address.postal_address, address.postal_address2)
         data = {
             "merchant_transaction_id": order.order_number,
             "client_id" : customer.pk,
