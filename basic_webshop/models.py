@@ -105,7 +105,7 @@ class ShippingMethod(NamedItemBase,
 
 class Address(CustomerAddressBase):
     postal_address = models.CharField(_('address'), max_length=50)
-    postal_address2 = models.CharField(_('address'), blank=True, max_length=50)
+    postal_address2 = models.CharField(_('address 2'), blank=True, max_length=50)
     zip_code = models.CharField(_('zip code'), max_length=50)
     city = models.CharField(_('city'), max_length=50)
     country = CountryField()
