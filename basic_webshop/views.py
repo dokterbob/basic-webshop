@@ -27,7 +27,8 @@ from docdata.models import PaymentCluster
 from webshop.core.views import InShopViewMixin
 
 from basic_webshop.forms import \
-    RatingForm, CartAddForm, AddressUpdateForm, CartDiscountCouponForm
+    RatingForm, CartAddForm, AddressUpdateForm, CartDiscountCouponForm, \
+    CartItemForm
 
 from basic_webshop.order_states import *
 
