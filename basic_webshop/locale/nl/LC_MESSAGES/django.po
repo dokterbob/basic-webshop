@@ -16,896 +16,266 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: settings_default.py:218
-msgid "Dutch"
-msgstr "Nederlands"
+#: admin.py:30
+msgid "price"
+msgstr "prijs"
 
-#: settings_default.py:219
-msgid "English"
-msgstr "Engels"
+#: admin.py:78
+msgid "total discounts"
+msgstr "totale korting"
 
-#: registration_backend/fields.py:27
-#, python-format
-msgid "The domain %s could not be found."
-msgstr "Sorry! De pagina %s die je zoekt is helaas niet (meer) beschikbaar. Misschien kun je vinden wat je zoekt op onze homepage www.cosmania.nl. Excuses voor het ongemak. Hartelijke groet, Marije en Marcel | COSMANIA"
+#: admin.py:253 admin.py:374
+msgid "None"
+msgstr "geen"
 
-#: registration_backend/forms.py:17
-msgid "Female"
-msgstr "Vrouw"
+#: admin.py:265
+msgid "categories"
+msgstr "categorieën"
 
-#: registration_backend/forms.py:18
+#: admin.py:314 models.py:219 models.py:274 models.py:376 models.py:689
+msgid "name"
+msgstr "naam"
+
+#: admin.py:323
+msgid "No products"
+msgstr "geen producten"
+
+#: admin.py:341 admin.py:386
+msgid "products"
+msgstr "producten"
+
+#: basemodels.py:15
+msgid ""
+"Short name for an item,             used for constructing its web addres. A "
+"slug should be unique and may only             contain letters, numbers and "
+"'-'."
+msgstr ""
+"Korte naam voor een een item, wordt gebruikt om het web adres te creeren. "
+"Een 'slug' moet uniek zijn en mag alleen letters, cijfers, en '-' bevatten."
+
+#: basemodels.py:110
+msgid ""
+"Short name for an item,             used for constructing its web addres. A "
+"slug may only             contain letters, numbers and '-'."
+msgstr ""
+"Korte naam voor een een item, wordt gebruikt om het web adres te creeren. "
+"Een 'slug' moet uniek zijn en mag alleen letters, cijfers, en '-' bevatten."
+
+#: basemodels.py:140 models.py:107 models.py:108 models.py:474
+msgid "address"
+msgstr "adres"
+
+#: basemodels.py:141
+msgid "addresses"
+msgstr "adressen"
+
+#: basemodels.py:143 basemodels.py:155
+msgid "addressee"
+msgstr "geadresseerde"
+
+#: basemodels.py:156
+msgid "Automatically set from user name if left blank."
+msgstr "wordt automatisch ingevuld als username als deze niet wordt ingevuld"
+
+#: basemodels.py:263
+msgid "invoice number"
+msgstr "factuurnummer"
+
+#: basemodels.py:266
+msgid "order number"
+msgstr "ordernummer"
+
+#: forms.py:46
+msgid "The requested quantity of this product is not available."
+msgstr "Helaas zijn de gevraagde aantallen van dit product niet beschikbaar."
+
+#: forms.py:123
+msgid "This coupon code is not valid."
+msgstr ""
+
+#: models.py:109
+msgid "zip code"
+msgstr "postcode"
+
+#: models.py:110
+msgid "city"
+msgstr "plaats"
+
+#: models.py:112
+msgid "phone number"
+msgstr "telefoon"
+
+#: models.py:135
+msgid "company"
+msgstr "bedrijfsnaam"
+
+#: models.py:138
 msgid "Male"
-msgstr "Man"
+msgstr "man"
 
-#: registration_backend/forms.py:21
-msgid "First name"
-msgstr "Voornaam"
+#: models.py:139
+msgid "Female"
+msgstr "vrouw"
 
-#: registration_backend/forms.py:22
-msgid "Last name"
-msgstr "Achternaam"
+#: models.py:141
+msgid "gender"
+msgstr "geslacht"
 
-#: registration_backend/forms.py:23
-msgid "Company"
-msgstr "Bedrijfsnaam (optioneel)"
+#: models.py:143 models.py:304
+msgid "language"
+msgstr "taal"
 
-#: registration_backend/forms.py:27
-#: registration_backend/forms.py:28
-#: templates/basic_webshop/order_detail.html:60
-msgid "Address"
-msgstr "Adres"
+#: models.py:146
+msgid "birthday"
+msgstr "geboortedatum"
 
-#: registration_backend/forms.py:29
-#: templates/basic_webshop/order_detail.html:72
-msgid "Zip code"
-msgstr "Postcode"
+#: models.py:176
+msgid "article number"
+msgstr "artikelnummer"
 
-#: registration_backend/forms.py:30
-#: templates/basic_webshop/order_detail.html:78
-msgid "City"
-msgstr "Plaats"
+#: models.py:185
+msgid "logo"
+msgstr "logo"
 
-#: registration_backend/forms.py:34
-msgid "Birth date"
-msgstr "Geboortedatum"
-
-#: registration_backend/forms.py:39
-msgid "Please use only digits (no spaces), optionally "
-msgstr "Gebruik alsjeblieft alleen cijfers, geen spaties en eventueel een + voor je landencode."
-
-#: registration_backend/forms.py:41
-msgid "Please enter a valid phone number."
-msgstr "Vul alsjeblieft een geldig telefoonnummer in (gebruik alleen cijfers, geen spaties)"
-
-#: registration_backend/forms.py:42
-msgid "Phone number"
-msgstr "Telefoonnummer"
-
-#: registration_backend/forms.py:49
-msgid "Yes, I would like to be informed of the experiences, promotions,"
-msgstr "Ja, ik vind het leuk om op de hoogte te blijven van de belevenissen, acties en het cosmeticanieuws van COSMANIA door middel van de nieuwsbrief."
-
-#: registration_backend/forms.py:66
-msgid "Address data"
-msgstr "Adresgegevens"
-
-#: registration_backend/forms.py:96
-msgid "The two email fields didn't match."
-msgstr "De ingevulde emailadressen komen niet met elkaar overeen."
-
-#: templates/404.html:4
-msgid "Page not found"
-msgstr "Sorry! De pagina die je zoekt is helaas niet (meer) beschikbaar. Misschien kun je vinden wat je zoekt op onze homepage www.cosmania.nl. Excuses voor het ongemak. Hartelijke groet, Marije en Marcel | COSMANIA"
-
-#: templates/404.html:11
-msgid "We're sorry, the current page could not be found on this website."
-msgstr "Sorry! De pagina die je zoekt is helaas niet (meer) beschikbaar. Misschien kun je vinden wat je zoekt op onze homepage www.cosmania.nl. Excuses voor het ongemak. Hartelijke groet, Marije en Marcel | COSMANIA"
-
-#: templates/404.html:12
-msgid "Click <a href=\"/\">here</a> to return to the homepage."
-msgstr "Klik <a href=\"/\">hier</a> om terug te gaan naar de homepage."
-
-#: templates/404.html:13
-msgid "Our apologies for the inconvenience!"
-msgstr "Onze excuses voor het ongemak!"
-
-#: templates/500.html:4
-msgid "Internal server error"
-msgstr "Sorry! De server ondervindt momenteel een interne fout. We doen er alles aan om het probleem zo snel mogelijk op te lossen. Excuses voor het ongemak!"
-
-#: templates/500.html:11
-msgid "There was an error while trying to serve the requested page. Please try again. If the error persists, please contact the webmaster about it. In any case, we have been notified of this error."
-msgstr "Sorry! De server ondervindt momenteel een interne fout. Probeer het straks nog een keer. Als je weer dezelfde foutmelding krijgt, neem dan contact met ons op via ditwilikmelden@cosmania.nl. We zullen er alles aan doen om het probleem zo snel mogelijk op te lossen. Excuses voor het ongemak!"
-
-#: templates/500.html:13
-msgid "If you need assistance, you may reference this error as"
-msgstr "Als je hulp inschakelt, dan kun je het volgende nummer als referentie opgeven:"
-
-#: templates/base.html:56
-msgid "Click to unblock"
-msgstr "Klik hier om te deblokkeren"
-
-#: templates/portal.html:13
-#: templates/includes/nav.html:14
-#: templates/includes/modules/newsletter.html:3
-#: templates/newsletter/common.html:7
-#: templates/newsletter/newsletter_detail.html:7
-#: templates/newsletter/newsletter_list.html:10
-#: templates/newsletter/newsletter_list.html:28
-#: templates/newsletter/subscription_activate.html:3
-#: templates/newsletter/subscription_activate.html:6
-msgid "Newsletter"
-msgstr "Nieuwsbrief"
-
-#: templates/portal.html:14
-#: templates/includes/modules/newsletter.html:4
-msgid "Sign up for monthly news, specials and updates"
-msgstr "Nieuws, aanbiedingen en info. Blijf op de hoogte met onze nieuwsbrief!"
-
-#: templates/portal.html:22
-#: templates/portal.html.py:31
-msgid "News"
-msgstr "Nieuws"
-
-#: templates/basic_webshop/base.html:9
-#, python-format
-msgid "%(cart.get_total_items)s item(s) in shopping cart with total value of %(cart.get_total_price|format_price)s "
-msgstr "%(cart.get_total_items)s product(en) in Shopping basket met een totale waarde van %(cart.get_total_price|format_price)s "
-
-#: templates/basic_webshop/base.html:14
-msgid "Shop home"
-msgstr "Verder winkelen"
-
-#: templates/basic_webshop/brand_detail.html:29
-#: templates/basic_webshop/brand_list.html:12
-#: templates/basic_webshop/brand_products.html:20
-msgid "Shop by brand"
-msgstr "Selecteer op merk"
-
-#: templates/basic_webshop/brand_detail.html:56
-#: templates/basic_webshop/order_detail.html:25
-msgid "Products"
-msgstr "Je producten"
-
-#: templates/basic_webshop/brand_detail.html:77
-msgid "View all products by "
-msgstr "Bekijk alle producten van %(brand.name)s"
-
-#: templates/basic_webshop/brand_list.html:37
-msgid "Shop this brand"
-msgstr "Shop dit merk"
-
-#: templates/basic_webshop/brand_list.html:37
-msgid "Discover more"
-msgstr "Ontdek meer"
-
-#: templates/basic_webshop/cart_detail.html:30
-msgid "Remove this from my cart"
-msgstr "Verwijder dit product uit mijn Shopping basket"
-
-#: templates/basic_webshop/cart_detail.html:58
-msgid "No products so far."
-msgstr "Momenteel heb je nog geen producten in je Shopping basket."
-
-#: templates/basic_webshop/cart_detail.html:62
-msgid "Update cart"
-msgstr "Update je Shopping basket"
-
-#: templates/basic_webshop/cart_detail.html:73
-msgid "Submit discount code or gift voucher"
-msgstr "Voeg toe"
-
-#: templates/basic_webshop/cart_detail.html:74
-msgid "Discount code or gift voucher"
-msgstr "Voeg je eventuele cadeaubon of kortingscode toe"
-
-#: templates/basic_webshop/cart_detail.html:96
-msgid "Discount"
-msgstr "Korting"
-
-#: templates/basic_webshop/cart_detail.html:105
-msgid "Total"
-msgstr "Totaal"
-
-#: templates/basic_webshop/cart_detail.html:114
-#: templates/basic_webshop/includes/side-steps.html:4
-msgid "Checkout"
-msgstr "Naar je gegevens"
-
-#: templates/basic_webshop/cart_detail.html:117
-msgid "Back to shop"
-msgstr "Verder winkelen"
-
-#: templates/basic_webshop/cart_detail.html:118
-msgid "Clear cart"
-msgstr "Maak je Shopping basket leeg"
-
-#: templates/basic_webshop/cart_detail.html:119
-msgid "General conditions"
-msgstr "Algemene voorwaarden"
-
-#: templates/basic_webshop/category_aspect.html:25
-#: templates/basic_webshop/category_detail.html:27
-#: templates/basic_webshop/subcategory_detail.html:72
-msgid "No products found in this category."
-msgstr "Momenteel zijn er nog geen producten beschikbaar in deze categorie."
-
-#: templates/basic_webshop/category_list.html:10
-msgid "No categories defined."
-msgstr "Er is geen categorie bepaald"
-
-#: templates/basic_webshop/index.html:5
-msgid "Shop index"
-msgstr "Shop index"
-
-#: templates/basic_webshop/index.html:7
-msgid "Categories"
-msgstr "Productcategorieën"
-
-#: templates/basic_webshop/index.html:12
-msgid "No categories found."
-msgstr "Er zijn geen productcategorieën gevonden."
-
-#: templates/basic_webshop/order_checkout_canceled.html:10
-msgid "What happened?"
-msgstr "Wat is er gebeurd?"
-
-#: templates/basic_webshop/order_checkout_canceled.html:11
-msgid "You've cancelled the payment process. Can we be of any help? Please contact us at <a href=\"mailto:iwanttoask@cosmania.nl\">iwanttoask@cosmania.nl</a>."
-msgstr "Je hebt het betaalproces afgebroken. Kunnen we je ergens mee helpen? Je kunt ons bereiken via <a href=\"mailto:ditwilikvragen@cosmania.nl\">ditwilikvragen@cosmania.nl</a>."
-
-#: templates/basic_webshop/order_checkout_canceled.html:12
-msgid "See you again soon!"
-msgstr "Tot snel!"
-
-#: templates/basic_webshop/order_checkout_error.html:10
-msgid "Sorry!"
-msgstr "Sorry!"
-
-#: templates/basic_webshop/order_checkout_error.html:11
-msgid "Unfortunately we are experiencing an error during your payment. Please check your payment details. If you have any questions contact us at <a href=\"mailto:iwanttoask@cosmania.nl\">iwanttoask@cosmania.nl</a>."
-msgstr "Helaas ondervinden we een foutmelding tijdens je betaling. Check alsjeblieft nog een keer je betalingsgegevens. Heb je vragen, neem dan gerust contact met ons op via <a href=\"mailto:ditwilikvragen@cosmania.nl\">ditwilikvragen@cosmania.nl</a>."
-
-#: templates/basic_webshop/order_checkout_error.html:12
-#: templates/basic_webshop/order_checkout_pending.html:13
-msgid "Best regards,"
-msgstr "Hartelijke groet,"
-
-#: templates/basic_webshop/order_checkout_pending.html:10
-msgid "Your payment is pending"
-msgstr "We wachten op je betaling."
-
-#: templates/basic_webshop/order_checkout_pending.html:11
-#: templates/basic_webshop/order_checkout_success.html:11
-msgid "Thank you for ordering at COSMANIA."
-msgstr "Dank je voor het bestellen bij COSMANIA."
-
-#: templates/basic_webshop/order_checkout_pending.html:12
-msgid "Once your payment via bank transfer has been received, your order will be send. Thanks for shopping with us. See you again soon!"
-msgstr "Zodra je betaling binnen is, gaan we de bestelling in behandeling nemen. Tot snel!"
-
-#: templates/basic_webshop/order_checkout_success.html:10
-msgid "Thanks, you've paid!"
-msgstr "Bedankt!"
-
-#: templates/basic_webshop/order_checkout_success.html:12
-msgid "We hope you will enjoy your product(s). Thanks for shopping with us. See you again soon!"
-msgstr "Bedankt voor je bestelling, je betaling is gelukt. Je order wordt nu snel in behandeling genomen en zal binnen 2 werkdagen bij je zijn. Veel plezier alvast en tot snel!"
-
-#: templates/basic_webshop/order_detail.html:22
-msgid "Order overview"
-msgstr "Besteloverzicht"
-
-#: templates/basic_webshop/order_detail.html:50
-msgid "Shipping address"
-msgstr "Bezorgadres"
-
-#: templates/basic_webshop/order_detail.html:54
-msgid "Addressee"
-msgstr "Geadresseerde"
-
-#: templates/basic_webshop/order_detail.html:84
-msgid "Country"
-msgstr "Land"
-
-#: templates/basic_webshop/order_detail.html:129
-msgid "Proceed to checkout"
-msgstr "Stapje verder"
-
-#: templates/basic_webshop/order_detail.html:132
-msgid "Previous step"
-msgstr "Stapje terug"
-
-#: templates/basic_webshop/order_list.html:7
-msgid "Order list"
-msgstr "Bestelling"
-
-#: templates/basic_webshop/order_shipping.html:23
-msgid "Confirm shipping address"
-msgstr "Bevestig je bezorgadres"
-
-#: templates/basic_webshop/order_shipping.html:46
-msgid "Proceed to order overview"
-msgstr "Ga verder naar je besteloverzicht"
-
-#: templates/basic_webshop/product_detail.html:48
-msgid "Suggestions"
-msgstr "Suggesties"
-
-#: templates/basic_webshop/product_detail.html:116
+#: models.py:203 models.py:335
 msgid "description"
-msgstr "omschrijving"
+msgstr "beschrijving"
 
-#: templates/basic_webshop/product_detail.html:117
-msgid "usage advice"
+#: models.py:222 models.py:355
+msgid "image"
+msgstr "image"
+
+#: models.py:256
+msgid "unit"
+msgstr "eenheid"
+
+#: models.py:257
+msgid ""
+"Unit in which a specific article is                             sold, eg. "
+"'100 ml' or '0.75 g'."
+msgstr ""
+"de eenheden waarin een artikel verkocht wordt, bijv. 100 ml, of 450 gram."
+
+#: models.py:315
+msgid "rating"
+msgstr "rating"
+
+#: models.py:317
+msgid "review"
+msgstr "review"
+
+#: models.py:320
+#, python-format
+msgid "%(rating)d for %(product)s on %(date)s"
+msgstr "%(rating)d for %(product)s on %(date)s"
+
+#: models.py:336
+msgid "manual"
 msgstr "gebruiksadvies"
 
-#: templates/basic_webshop/product_detail.html:118
+#: models.py:337
 msgid "ingredients"
 msgstr "werkstoffen"
 
-#: templates/basic_webshop/product_detail.html:119
-msgid "in the press"
+#: models.py:338 models.py:398
+msgid "media"
 msgstr "in de media"
 
-#: templates/basic_webshop/product_detail.html:125
-msgid "Out of stock"
-msgstr "Tijdelijk uit voorraad"
+#: models.py:364
+msgid "variation"
+msgstr "variatie"
 
-#: templates/basic_webshop/product_detail.html:126
-msgid "This product is out of stock."
-msgstr "Helaas! Dit product is op dit moment even niet op voorraad. "
+#: models.py:480
+msgid "discounts"
+msgstr "korting"
 
-#: templates/basic_webshop/product_detail.html:211
-msgid "Add to cart"
-msgstr "IN SHOPPING BASKET"
+#: models.py:593
+msgid "notes"
+msgstr "aantekening"
 
-#: templates/basic_webshop/product_detail.html:219
-msgid "Previous"
-msgstr "Vorige"
+#: models.py:594
+msgid "Optional notes regarding this order."
+msgstr "optionele toelichting bij deze bestelling"
 
-#: templates/basic_webshop/product_detail.html:220
-msgid "Next"
-msgstr "Volgende"
+#: models.py:597
+msgid "payment"
+msgstr "betaling"
 
-#: templates/basic_webshop/product_detail.html:257
-msgid "This product has not been reviewed yet."
-msgstr "Review jij dit product als eerste?"
+#: models.py:653
+msgid "highlight image"
+msgstr "highlight image"
 
-#: templates/basic_webshop/product_detail.html:281
-msgid "Your opinion counts! Let us and other people know, what you think of this product."
-msgstr "Jouw mening telt! Laat ons en anderen weten wat jij van dit product vindt."
+#: models.py:656
+msgid "highlight title"
+msgstr "highlight titel"
 
-#: templates/basic_webshop/product_detail.html:297
-msgid "Post review"
-msgstr "Plaats review en rating"
+#: models.py:658
+msgid "hightlight link"
+msgstr "hightlight link"
 
-#: templates/basic_webshop/product_detail.html:300
-msgid "You have to be logged in, in order to share your rating and review."
-msgstr "Je moet ingelogd zijn om je rating en review te kunnen geven."
+#: models.py:727
+msgid "featured product"
+msgstr "featured product"
 
-#: templates/basic_webshop/product_detail.html:310
-#: templates/includes/header.html:19
-#: templates/includes/nav.html:10
-#: templates/registration/login.html:19
-#: templates/registration/login.html:30
-msgid "Login"
-msgstr "Inloggen"
+#: models.py:728
+msgid "featured products"
+msgstr "featured producten"
 
-#: templates/basic_webshop/product_detail.html:313
-#: templates/registration/login.html:32
-msgid "Create an account"
-msgstr "Maak je account aan"
+#: models.py:732
+msgid "featured order"
+msgstr "featured bestelling"
 
-#: templates/basic_webshop/subcategory_detail.html:27
-msgid "Sort by"
-msgstr "Sorteer op"
-
-#: templates/basic_webshop/subcategory_detail.html:30
-msgid "Name"
-msgstr "Productnaam"
-
-#: templates/basic_webshop/subcategory_detail.html:31
-msgid "Price"
-msgstr "Prijs"
-
-#: templates/basic_webshop/subcategory_detail.html:32
-msgid "Brand"
-msgstr "Merk"
-
-#: templates/basic_webshop/subcategory_detail.html:35
-msgid "Order by"
-msgstr "Sorteer op"
-
-#: templates/basic_webshop/subcategory_detail.html:37
-msgid "Ascending"
-msgstr "Oplopend"
-
-#: templates/basic_webshop/subcategory_detail.html:38
-msgid "Descending"
-msgstr "Aflopend"
-
-#: templates/basic_webshop/subcategory_detail.html:41
-msgid "Filter by brand"
-msgstr "Selecteer op merk"
-
-#: templates/basic_webshop/subcategory_detail.html:50
-msgid "Ok"
-msgstr "Sorteer"
-
-#: templates/basic_webshop/includes/aspect_list.html:3
-msgid "New arrivals"
-msgstr "Net binnen"
-
-#: templates/basic_webshop/includes/aspect_list.html:4
-msgid "Our picks"
-msgstr "Onze favorieten"
-
-#: templates/basic_webshop/includes/aspect_list.html:6
+#: models.py:737
 #, python-format
-msgid "All of %(category)s"
-msgstr "Alles van %(category)s"
+msgid "Featured product '%s'"
+msgstr "Featured product '%s'"
 
-#: templates/basic_webshop/includes/side-steps.html:6
-msgid "Step 1 - Shopping cart"
-msgstr "Stap 1 - Shopping basket"
+#: order_states.py:25
+msgid "New"
+msgstr "nieuw"
 
-#: templates/basic_webshop/includes/side-steps.html:7
-msgid "Step 2 - Confirm shipping address"
-msgstr "Stap 2 - Inloggen/naar je gegevens"
+#: order_states.py:26
+#, fuzzy
+msgid "Payment pending"
+msgstr "in behandeling"
 
-#: templates/basic_webshop/includes/side-steps.html:8
-msgid "Step 3 - Order overview"
-msgstr "Stap 3 - Besteloverzicht"
+#: order_states.py:27
+msgid "Paid"
+msgstr "betaald"
 
-#: templates/basic_webshop/includes/side-steps.html:9
-msgid "Step 4 - Finished"
-msgstr "Stap 4 - Betalen"
+#: order_states.py:28
+msgid "Payment failed"
+msgstr ""
 
-#: templates/basic_webshop/includes/side-steps.html:13
-#: templates/registration/includes/side.html:12
-msgid "Help"
-msgstr "Help & contact"
+#: order_states.py:29
+msgid "Canceled"
+msgstr "geannuleerd"
 
-#: templates/basic_webshop/includes/side-steps.html:14
-#: templates/registration/includes/side.html:13
-msgid "General Conditions"
-msgstr "Algemene voorwaarden"
+#: order_states.py:30
+msgid "Rejected"
+msgstr "afgewezen"
 
-#: templates/basic_webshop/includes/subsub_category_list.html:5
-msgid "Category"
-msgstr "Categorie"
+#: order_states.py:31
+msgid "Being processed"
+msgstr ""
 
-#: templates/contact_form/contact_form.html:9
-msgid "Contactformulier"
-msgstr "Contactformulier"
+#: order_states.py:32
+msgid "Shipped"
+msgstr "verzonden"
 
-#: templates/contact_form/contact_form.html:30
-msgid "Bericht versturen"
-msgstr "Verstuur"
+#: views.py:327
+msgid "Your rating has been succesfully saved."
+msgstr "Bedankt voor je review en rating! Deze staat nu online."
 
-#: templates/contact_form/contact_form_sent.html:10
-msgid "Wij hebben uw aanvraag succesvol ontvangen, bedankt voor uw reactie. U krijgt, indien nodig, zo spoedig mogelijk een reactie."
-msgstr "Hij is binnen! Bedankt voor je vraag of opmerking. Je hoort van ons. Tot snel, Marije en Marcel | COSMANIA"
-
-#: templates/includes/categories.html:3
-msgid "Cover"
-msgstr "Cover"
-
-#: templates/includes/categories.html:9
-msgid "Brands"
-msgstr "Merken"
-
-#: templates/includes/categories.html:10
-msgid "Backstage"
-msgstr "Backstage"
-
-#: templates/includes/footer.html:6
-#: templates/includes/nav.html:28
-msgid "Cosmania on facebook"
-msgstr "Cosmania op Facebook"
-
-#: templates/includes/footer.html:6
-#: templates/includes/nav.html:28
-msgid "Cosmania on twitter"
-msgstr "Cosmania op Twitter"
-
-#: templates/includes/footer.html:39
-msgid "All images and content are property of Cosmania"
-msgstr "Alle beelden en inhoud op deze webshop zijn eigendom van COSMANIA"
-
-#: templates/includes/header.html:16
-msgid "username"
-msgstr "gebruikersnaam"
-
-#: templates/includes/header.html:17
-msgid "password"
-msgstr "wachtwoord"
-
-#: templates/includes/header.html:19
-msgid "Forgot password"
-msgstr "Wachtwoord vergeten?"
-
-#: templates/includes/header.html:20
-#: templates/registration/activate.html:7
-#: templates/registration/login.html:7
-#: templates/registration/logout.html:19
-#: templates/registration/password_change_done.html:7
-#: templates/registration/password_change_form.html:7
-#: templates/registration/password_reset_complete.html:7
-#: templates/registration/password_reset_confirm.html:7
-#: templates/registration/password_reset_done.html:7
-#: templates/registration/password_reset_form.html:7
-#: templates/registration/registration_complete.html:15
-#: templates/registration/registration_form.html:20
-#: templates/registration/registration_form.html:51
-#: templates/registration/includes/side.html:3
-msgid "Create account"
-msgstr "Maak je account aan"
-
-#: templates/includes/header.html:31
-#: templates/includes/forms/newsletter.html:7
-msgid "email address"
-msgstr "emailadres"
-
-#: templates/includes/header.html:32
-#: templates/includes/forms/newsletter.html:8
-msgid "Sign up"
-msgstr "Verstuur"
-
-#: templates/includes/nav.html:8
-#: templates/registration/logout.html:32
-msgid "Logout"
-msgstr "Uitloggen"
-
-#: templates/includes/nav.html:13
-msgid "Your account"
-msgstr "Je account"
-
-#: templates/includes/nav.html:15
-msgid "Customer service"
-msgstr "Klantenservice"
-
-#: templates/includes/forms/search.html:4
-msgid "search"
-msgstr "zoek"
-
-#: templates/includes/forms/search.html:5
-msgid "Search"
-msgstr "zoek"
-
-#: templates/newsletter/newsletter_detail.html:3
-msgid "Newsletter detail"
-msgstr "Details van de nieuwsbrief"
-
-#: templates/newsletter/newsletter_list.html:3
-msgid "Newsletter list"
-msgstr "Lijst van nieuwsbrieven"
-
-#: templates/newsletter/newsletter_list.html:12
-#: templates/newsletter/subscription_subscribe.html:18
-#: templates/newsletter/subscription_subscribe_user.html:11
-#: templates/newsletter/subscription_update.html:15
-msgid "Subscribe"
-msgstr "Inschrijven"
-
-#: templates/newsletter/newsletter_list.html:23
-msgid "Update subscriptions"
-msgstr "Update inschrijvingen"
-
-#: templates/newsletter/submission_archive.html:3
-#: templates/newsletter/submission_archive.html:7
-#: templates/newsletter/submission_detail.html:3
-#: templates/newsletter/submission_detail.html:5
-msgid "Newsletter archive"
-msgstr "Nieuwsbrief archief"
-
-#: templates/newsletter/submission_archive.html:15
-msgid "Back to list"
-msgstr "Terug naar het overzicht"
-
-#: templates/newsletter/subscription_activate.html:3
-#: templates/newsletter/subscription_activate.html:6
-msgid "activate"
-msgstr "bevestig"
-
-#: templates/newsletter/subscription_activate.html:10
-msgid "Your subscription has successfully been activated."
-msgstr "Bedankt voor je aanmelding! Vanaf nu valt de COSMANIA nieuwsbrief automatisch in je mailbox. Tot snel, Marije en Marcel | COSMANIA"
-
-#: templates/newsletter/subscription_activate.html:13
-msgid "You have successfully been unsubscribed."
-msgstr "Je bent nu afgemeld van de COSMANIA nieuwsbrief. Jammer! Voel je vrij om je weer aan te melden als je ons gaat missen! :-) Hartelijke groet, Marije en Marcel | COSMANIA"
-
-#: templates/newsletter/subscription_activate.html:16
-msgid "Your subscription has successfully been updated."
-msgstr "Het is gelukt! Je inschrijving is ge-update."
-
-#: templates/newsletter/subscription_activate.html:22
-msgid "Activate"
-msgstr "bevestig"
-
-#: templates/newsletter/subscription_subscribe.html:3
-#: templates/newsletter/subscription_subscribe.html:5
-#: templates/newsletter/subscription_subscribe_user.html:3
-#: templates/newsletter/subscription_subscribe_user.html:5
-msgid "Newsletter subscribe"
-msgstr "Schrijf je in voor de nieuwsbrief"
-
-#: templates/newsletter/subscription_subscribe.html:7
-#: templates/newsletter/subscription_update.html:7
-msgid "Due to a technical error we were not able to submit your confirmation email. This could be because your email address is invalid."
-msgstr "Sorry! Door een technische fout kunnen we jou helaas niet je bevestigingsmail sturen. Check alsjeblieft nog een keer of je een geldig emailadres hebt ingevuld."
-
-#: templates/newsletter/subscription_subscribe.html:8
-#: templates/newsletter/subscription_update.html:8
-msgid "If the error persists, please don't hesitate to contact us at the following email address:"
-msgstr "Als je weer deze foutmelding krijgt, stuur ons dan een email naar het volgende adres: ditwilmelden@cosmania.nl"
-
-#: templates/newsletter/subscription_subscribe.html:11
-msgid "Your subscription was successfully recieved and an activation email has been sent to you. In that email you will find a link which you need to follow in order to activate your subscription."
-msgstr "Leuk dat je ons nieuws wilt volgen! Je bent nog 1 klik verwijderd van de inschrijving op de COSMANIA nieuwsbrief. Je ontvangt een mail met een link om je inschrijving te bevestigen."
-
-#: templates/newsletter/subscription_subscribe_user.html:7
-#: templates/newsletter/subscription_unsubscribe_user.html:7
-msgid "Welcome,"
-msgstr "Hallo, "
-
-#: templates/newsletter/subscription_subscribe_user.html:9
-msgid "Do you want to subscribe to this newsletter?"
-msgstr "Schrijf je in voor de wekelijkse nieuwsbrief van COSMANIA. Klik op de button!"
-
-#: templates/newsletter/subscription_unsubscribe.html:3
-#: templates/newsletter/subscription_unsubscribe.html:5
-#: templates/newsletter/subscription_unsubscribe_user.html:3
-#: templates/newsletter/subscription_unsubscribe_user.html:5
-msgid "Newsletter unsubscribe"
-msgstr "Meld je af voor de nieuwsbrief"
-
-#: templates/newsletter/subscription_unsubscribe.html:7
-msgid "Your unsubscription request has successfully been recieved. An email has been sent to you with a link you need to follow in order to confirm your unsubscription."
-msgstr "Je afmelding van de COSMANIA nieuwsbrief hebben we ontvangen. Jammer! Je ontvangt nog 1 mail met een link om je afmelding te bevestigen. Voel je vrij om je weer aan te melden als je ons gaat missen! :-) Hartelijke groet, Marije en Marcel | COSMANIA"
-
-#: templates/newsletter/subscription_unsubscribe.html:11
-#: templates/newsletter/subscription_unsubscribe_user.html:11
-msgid "Unsubscribe"
-msgstr "bevestig"
-
-#: templates/newsletter/subscription_unsubscribe_user.html:9
-msgid "Do you want to unsubscribe from this newsletter?"
-msgstr "Wil je onze nieuwsbrief niet meer ontvangen?"
-
-#: templates/newsletter/subscription_update.html:3
-#: templates/newsletter/subscription_update.html:5
-msgid "Newsletter update"
-msgstr "Wil je je gegevens van de inschrijving op onze nieuwsbrief aanpassen?"
-
-#: templates/newsletter/subscription_update.html:11
-msgid "Your update request was successfully recieved and an activation email has been sent to you. In that email you will find a link which you need to follow in order to update your subscription."
-msgstr "Het is bijna gelukt! Je hebt je gegevens aangepast. Je ontvangt een mail met een link om deze aanpassingen te bevestigen."
-
-#: templates/pagination/pagination.html:6
-msgid "previous"
-msgstr "vorige"
-
-#: templates/pagination/pagination.html:25
-msgid "next"
-msgstr "volgende"
-
-#: templates/registration/activate.html:8
-#: templates/registration/logout.html:20
-#: templates/registration/password_change_done.html:8
-#: templates/registration/password_change_form.html:8
-#: templates/registration/password_reset_complete.html:8
-#: templates/registration/password_reset_confirm.html:8
-#: templates/registration/password_reset_done.html:8
-#: templates/registration/password_reset_form.html:8
-#: templates/registration/registration_complete.html:16
-#: templates/registration/registration_form.html:21
-msgid "home"
-msgstr "Cover"
-
-#: templates/registration/activate.html:21
-msgid "Activation successful"
-msgstr "Welkom! Je gegevens zijn succesvol opgeslagen."
-
-#: templates/registration/activate.html:23
+#: views.py:362
 #, python-format
-msgid "You can now proceed to <a href=\"%(login_url)s\">login.</a>"
-msgstr "Je kunt je nu inloggen <a href=\"%(login_url)s\">login.</a>"
+msgid "Added %s to shopping cart."
+msgstr " %s toegevoegd aan de Shopping basket."
 
-#: templates/registration/activate.html:25
-msgid "Activation failed"
-msgstr "Helaas. Je gegevens zijn nog niet goed opgeslagen."
+#: views.py:477
+msgid "Updated shopping cart."
+msgstr "De Shopping basket is geupdate."
 
-#: templates/registration/activate.html:26
-msgid "Something went wrong while activating your account. This might mean that the activation code was wrong or that your account has already been activated."
-msgstr "Er is blijkbaar iets misgegaan bij het opslaan van je gegevens. "
-
-#: templates/registration/login.html:33
-msgid "Reset your password"
-msgstr "Wijzig je wachtwoord"
-
-#: templates/registration/password_change_done.html:21
-msgid "Password change successful"
-msgstr "Dankjewel! Het is gelukt, je hebt je wachtwoord gewijzigd. Vanaf nu kun je hiermee inloggen."
-
-#: templates/registration/password_change_done.html:22
-msgid "Your password was changed."
-msgstr "Je wachwoord is gewijzigd."
-
-#: templates/registration/password_change_form.html:20
-msgid "Password change"
-msgstr "Wijzig je wachtwoord"
-
-#: templates/registration/password_change_form.html:21
-msgid "Please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly."
-msgstr "Vul om veiligheidsredenen je oude wachtwoord in, en vul daarna je nieuwe wachtwoord 2 keer in ter bevestiging."
-
-#: templates/registration/password_change_form.html:31
-#: templates/registration/password_reset_confirm.html:33
-msgid "Change my password"
-msgstr "Wijzig je wachtwoord"
-
-#: templates/registration/password_reset_complete.html:20
-msgid "Password reset complete"
-msgstr "Je wachtwoord is gewijzigd."
-
-#: templates/registration/password_reset_complete.html:21
-msgid "Your password has been set.  You may go ahead and log in now."
-msgstr "Dankjewel! Het is gelukt, je hebt je wachtwoord opgeslagen. Vanaf nu kun je hiermee inloggen."
-
-#: templates/registration/password_reset_complete.html:22
-msgid "Log in"
-msgstr "Inloggen"
-
-#: templates/registration/password_reset_confirm.html:21
-msgid "Enter new password"
-msgstr "Vul je nieuwe wachtwoord in"
-
-#: templates/registration/password_reset_confirm.html:22
-msgid "Please enter your new password twice so we can verify you typed it in correctly."
-msgstr "Vul je nieuwe wachtwoord 2 keer. Let op, de 2 wachtwoorden die je invoert moeten exact hetzelfde zijn."
-
-#: templates/registration/password_reset_confirm.html:39
-msgid "Password reset unsuccessful"
-msgstr "Helaas. Het wijzigen van je wachtwoord is op dit moment nog niet gelukt."
-
-#: templates/registration/password_reset_confirm.html:40
-msgid "The password reset link was invalid, possibly because it has already been used. Please request a new password reset."
-msgstr "Het was niet mogelijk om de bevestigingslink met daarin je wachtwoordwijziging te openen. Vraag alsjeblieft opnieuw een wijziging van je wachtwoord aan. "
-
-#: templates/registration/password_reset_done.html:20
-msgid "Password reset successful"
-msgstr "Het is gelukt om je wachtwoord te wijzigen."
-
-#: templates/registration/password_reset_done.html:21
-msgid "We've e-mailed you instructions for setting your password to the e-mail address you submitted. You should be receiving it shortly."
-msgstr "Je ontvangt binnen een paar minuten een mail met een link om je nieuwe wachtwoord aan te maken. Opent de link niet, plak deze dan in de adresbalk van je internetbrowser."
-
-#: templates/registration/password_reset_form.html:21
-msgid "Password reset"
-msgstr "Wachtwoord wijzigen"
-
-#: templates/registration/password_reset_form.html:22
-msgid "Forgotten your password? Enter your e-mail address below, and we'll e-mail instructions for setting a new one."
-msgstr "Wachtwoord vergeten? Dat kan de beste overkomen! Vul hieronder je emailadres in. Je ontvangt binnen enkele minuten een email waarmee je een nieuw wachtwoord op kunt geven. Bij COSMANIA vinden we privacy heel belangrijk, vandaar dat jouw wachtwoord voor ons niet zichbaar is. "
-
-#: templates/registration/password_reset_form.html:31
-msgid "Reset my password"
-msgstr "Wijzig je wachtwoord"
-
-#: templates/registration/registration_complete.html:28
-msgid "User registration successful"
-msgstr "Je gegevens zijn succesvol opgeslagen"
-
-#: templates/registration/registration_complete.html:29
-msgid "Your account has been registered succesfully, you are now logged in."
-msgstr "Welkom! Je gegevens zijn opgeslagen en je bent nu ingelogd. Je kunt nu verder gaan met wat je wilde doen. "
-
-#: templates/registration/registration_complete.html:32
-msgid "You can now proceed with what you wanted to do."
-msgstr "Shopze!"
-
-#: templates/registration/registration_form.html:36
-msgid "User registration"
-msgstr "Je account"
-
-#: templates/registration/includes/side.html:6
-msgid "Step 1 - Submit details"
-msgstr "Stap 1 - Voer je gegevens in"
-
-#: templates/registration/includes/side.html:7
-msgid "Step 2 - Confirm"
-msgstr "Stap 2 - Bevestig"
-
-#: templates/registration/includes/side.html:8
-msgid "Step 3 - Finished"
-msgstr "Stap 3 - Afgerond"
-
-#: templates/simplesite/backstage.html:12
-msgid "Please wait while your tweets are being loaded..."
-msgstr "Even geduld alsjeblieft, onze tweets worden geladen"
-
-#: templates/simplesite/backstage.html:56
-#: templates/simplesite/backstage.html:93
-msgid "Read more..."
-msgstr "Lees verder..."
-
-#: templates/simplesite/base.html:16
-#: templates/simplesite/page.html:6
-msgid "Subjects"
-msgstr "Onderwerpen"
-
-#: templates/simplesite/backstage/page.html:17
-msgid "More news"
-msgstr "Meer nieuws"
-
-#~ msgid "Order checkout canceled"
-#~ msgstr "Het bestelproces is gestopt"
-
-#, fuzzy
-#~ msgid "<!-- REPLACE ME -->"
-#~ msgstr "<!-- REPLACE ME -->"
-
-#~ msgid "Order checkout erroneous"
-#~ msgstr "Er is een fout ontstaan tijdens het bestelproces"
-
-#~ msgid "Order checkout pending"
-#~ msgstr "Het bestelproces is in behandeling"
-
-#~ msgid "Order checkout succesful"
-#~ msgstr "Het bestelproces is succesvol afgerond"
-
-#~ msgid "Your order checkout has been completed succesfully."
-#~ msgstr "Je bestelling is succesvol afgerond. "
-
-#~ msgid "Random module"
-#~ msgstr "Module"
-
-#~ msgid "Register"
-#~ msgstr "Maak je account aan"
-
-#~ msgid "DD-MM-YYYY"
-#~ msgstr "DD-MM-JJJJ"
-
-#~ msgid "Click <a href="
-#~ msgstr "Klik <a href="
-
-#~ msgid "Logged in as:"
-#~ msgstr "Ingelogd als "
-
-#~ msgid "Product"
-#~ msgstr "Omschrijving"
-
-#~ msgid "Quantity"
-#~ msgstr "Aantal"
-
-#~ msgid "Price per piece"
-#~ msgstr "Prijs per stuk"
-
-#, fuzzy
-#~ msgid "Proceed to order"
-#~ msgstr "Ga verder"
-
-#~ msgid "Current status"
-#~ msgstr "De status van de bestelling"
-
-#~ msgid "Order number"
-#~ msgstr "Ordernummer"
-
-#~ msgid "Order status history"
-#~ msgstr "Bestelgeschiedenis"
-
-#~ msgid ""
-#~ "If you want to get a notification when it is back in stock again, please "
-#~ "leave your e-mail address."
-#~ msgstr ""
-#~ "Als je een bericht wilt ontvangen als dit product weer op voorraad is, "
-#~ "laat dan je emailadres hier achter."
-
-#~ msgid "Log out"
-#~ msgstr "Uitloggen"
-
-#~ msgid "Adresgegevens:"
-#~ msgstr "Adresgevens"
+#: views.py:493
+msgid "Coupon code valid."
+msgstr ""
