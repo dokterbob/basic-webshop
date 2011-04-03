@@ -56,7 +56,7 @@ class BrandList(BrandView, ListView):
         # Order by translated name
         brands = context['brand_list']
 
-        brands_alphabetical = self.get_brands_alphabetized(brand)
+        brands_alphabetical = self.get_brands_alphabetized(brands)
 
         context.update({
             'brands_alphabetical': brands
