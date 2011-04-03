@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: django-webshop 0.1\n"
-"Report-Msgid-Bugs-To: Mathijs de Bruin <mathijs@mathijsfietst.nl>\n"
-"POT-Creation-Date: 2011-03-28 20:42+0200\n"
-"PO-Revision-Date: 2011-03-31 17:47+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-04-03 13:08+0200\n"
+"PO-Revision-Date: 2011-04-03 13:10+0100\n"
 "Last-Translator: Mathijs de Bruin <mathijs@mathijsfietst.nl>\n"
 "Language-Team: Mathijs de Bruin <mathijs@mathijsfietst.nl>\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,8 @@ msgstr "prijs"
 msgid "total discounts"
 msgstr "totale korting"
 
-#: admin.py:253 admin.py:374
+#: admin.py:253
+#: admin.py:374
 msgid "None"
 msgstr "geen"
 
@@ -32,7 +33,11 @@ msgstr "geen"
 msgid "categories"
 msgstr "categorieën"
 
-#: admin.py:314 models.py:219 models.py:274 models.py:376 models.py:689
+#: admin.py:314
+#: models.py:219
+#: models.py:274
+#: models.py:376
+#: models.py:689
 msgid "name"
 msgstr "naam"
 
@@ -40,28 +45,23 @@ msgstr "naam"
 msgid "No products"
 msgstr "geen producten"
 
-#: admin.py:341 admin.py:386
+#: admin.py:341
+#: admin.py:386
 msgid "products"
 msgstr "producten"
 
 #: basemodels.py:15
-msgid ""
-"Short name for an item,             used for constructing its web addres. A "
-"slug should be unique and may only             contain letters, numbers and "
-"'-'."
-msgstr ""
-"Korte naam voor een een item, wordt gebruikt om het web adres te creeren. "
-"Een 'slug' moet uniek zijn en mag alleen letters, cijfers, en '-' bevatten."
+msgid "Short name for an item,             used for constructing its web addres. A slug should be unique and may only             contain letters, numbers and '-'."
+msgstr "Korte naam voor een een item, wordt gebruikt om het web adres te creeren. Een 'slug' moet uniek zijn en mag alleen letters, cijfers, en '-' bevatten."
 
 #: basemodels.py:110
-msgid ""
-"Short name for an item,             used for constructing its web addres. A "
-"slug may only             contain letters, numbers and '-'."
-msgstr ""
-"Korte naam voor een een item, wordt gebruikt om het web adres te creeren. "
-"Een 'slug' moet uniek zijn en mag alleen letters, cijfers, en '-' bevatten."
+msgid "Short name for an item,             used for constructing its web addres. A slug may only             contain letters, numbers and '-'."
+msgstr "Korte naam voor een een item, wordt gebruikt om het web adres te creeren. Een 'slug' moet uniek zijn en mag alleen letters, cijfers, en '-' bevatten."
 
-#: basemodels.py:140 models.py:107 models.py:108 models.py:474
+#: basemodels.py:140
+#: models.py:107
+#: models.py:108
+#: models.py:474
 msgid "address"
 msgstr "adres"
 
@@ -69,7 +69,8 @@ msgstr "adres"
 msgid "addresses"
 msgstr "adressen"
 
-#: basemodels.py:143 basemodels.py:155
+#: basemodels.py:143
+#: basemodels.py:155
 msgid "addressee"
 msgstr "geadresseerde"
 
@@ -86,12 +87,13 @@ msgid "order number"
 msgstr "ordernummer"
 
 #: forms.py:46
+#: forms.py:81
 msgid "The requested quantity of this product is not available."
 msgstr "Helaas zijn de gevraagde aantallen van dit product niet beschikbaar."
 
-#: forms.py:123
+#: forms.py:128
 msgid "This coupon code is not valid."
-msgstr ""
+msgstr "Deze couponcode is niet geldig."
 
 #: models.py:109
 msgid "zip code"
@@ -121,7 +123,8 @@ msgstr "vrouw"
 msgid "gender"
 msgstr "geslacht"
 
-#: models.py:143 models.py:304
+#: models.py:143
+#: models.py:304
 msgid "language"
 msgstr "taal"
 
@@ -137,11 +140,13 @@ msgstr "artikelnummer"
 msgid "logo"
 msgstr "logo"
 
-#: models.py:203 models.py:335
+#: models.py:203
+#: models.py:335
 msgid "description"
 msgstr "beschrijving"
 
-#: models.py:222 models.py:355
+#: models.py:222
+#: models.py:355
 msgid "image"
 msgstr "image"
 
@@ -150,11 +155,8 @@ msgid "unit"
 msgstr "eenheid"
 
 #: models.py:257
-msgid ""
-"Unit in which a specific article is                             sold, eg. "
-"'100 ml' or '0.75 g'."
-msgstr ""
-"de eenheden waarin een artikel verkocht wordt, bijv. 100 ml, of 450 gram."
+msgid "Unit in which a specific article is                             sold, eg. '100 ml' or '0.75 g'."
+msgstr "de eenheden waarin een artikel verkocht wordt, bijv. 100 ml, of 450 gram."
 
 #: models.py:315
 msgid "rating"
@@ -177,7 +179,8 @@ msgstr "gebruiksadvies"
 msgid "ingredients"
 msgstr "werkstoffen"
 
-#: models.py:338 models.py:398
+#: models.py:338
+#: models.py:398
 msgid "media"
 msgstr "in de media"
 
@@ -235,9 +238,8 @@ msgid "New"
 msgstr "nieuw"
 
 #: order_states.py:26
-#, fuzzy
 msgid "Payment pending"
-msgstr "in behandeling"
+msgstr "In behandeling"
 
 #: order_states.py:27
 msgid "Paid"
@@ -245,7 +247,7 @@ msgstr "betaald"
 
 #: order_states.py:28
 msgid "Payment failed"
-msgstr ""
+msgstr "Betaling mislukt"
 
 #: order_states.py:29
 msgid "Canceled"
@@ -257,7 +259,7 @@ msgstr "afgewezen"
 
 #: order_states.py:31
 msgid "Being processed"
-msgstr ""
+msgstr "Wordt verwerkt"
 
 #: order_states.py:32
 msgid "Shipped"
@@ -272,10 +274,11 @@ msgstr "Bedankt voor je review en rating! Deze staat nu online."
 msgid "Added %s to shopping cart."
 msgstr " %s toegevoegd aan de Shopping basket."
 
-#: views.py:477
+#: views.py:478
 msgid "Updated shopping cart."
 msgstr "De Shopping basket is geupdate."
 
-#: views.py:493
+#: views.py:500
 msgid "Coupon code valid."
-msgstr ""
+msgstr "Couponcode geaccepteerd."
+

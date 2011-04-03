@@ -6,10 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: basic_webshop\n"
-"Report-Msgid-Bugs-To: Mathijs de Bruin <mathijs@mathijsfietst.nl>\n"
-"POT-Creation-Date: 2011-03-28 20:42+0200\n"
-"PO-Revision-Date: 2011-03-29 14:01+0100\n"
-"Last-Translator: marcel <marcel.dekker@cosmania.nl>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-04-03 13:08+0200\n"
+"PO-Revision-Date: 2011-04-03 13:09+0100\n"
+"Last-Translator: Mathijs de Bruin <mathijs@mathijsfietst.nl>\n"
 "Language-Team: Mathijs de Bruin <mathijs@mathijsfietst.nl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +23,8 @@ msgstr "price"
 msgid "total discounts"
 msgstr "total discount"
 
-#: admin.py:253 admin.py:374
+#: admin.py:253
+#: admin.py:374
 msgid "None"
 msgstr "none"
 
@@ -31,7 +32,11 @@ msgstr "none"
 msgid "categories"
 msgstr "categories"
 
-#: admin.py:314 models.py:219 models.py:274 models.py:376 models.py:689
+#: admin.py:314
+#: models.py:219
+#: models.py:274
+#: models.py:376
+#: models.py:689
 msgid "name"
 msgstr "name"
 
@@ -39,29 +44,23 @@ msgstr "name"
 msgid "No products"
 msgstr "no products"
 
-#: admin.py:341 admin.py:386
+#: admin.py:341
+#: admin.py:386
 msgid "products"
 msgstr "products"
 
 #: basemodels.py:15
-msgid ""
-"Short name for an item,             used for constructing its web addres. A "
-"slug should be unique and may only             contain letters, numbers and "
-"'-'."
-msgstr ""
-"Short name for an item,             used for constructing its web addres. A "
-"slug should be unique and may only             contain letters, numbers and "
-"'-'."
+msgid "Short name for an item,             used for constructing its web addres. A slug should be unique and may only             contain letters, numbers and '-'."
+msgstr "Short name for an item,             used for constructing its web addres. A slug should be unique and may only             contain letters, numbers and '-'."
 
 #: basemodels.py:110
-msgid ""
-"Short name for an item,             used for constructing its web addres. A "
-"slug may only             contain letters, numbers and '-'."
-msgstr ""
-"Short name for an item,             used for constructing its web addres. A "
-"slug may only             contain letters, numbers and '-'."
+msgid "Short name for an item,             used for constructing its web addres. A slug may only             contain letters, numbers and '-'."
+msgstr "Short name for an item,             used for constructing its web addres. A slug may only             contain letters, numbers and '-'."
 
-#: basemodels.py:140 models.py:107 models.py:108 models.py:474
+#: basemodels.py:140
+#: models.py:107
+#: models.py:108
+#: models.py:474
 msgid "address"
 msgstr "address"
 
@@ -69,7 +68,8 @@ msgstr "address"
 msgid "addresses"
 msgstr "addresses"
 
-#: basemodels.py:143 basemodels.py:155
+#: basemodels.py:143
+#: basemodels.py:155
 msgid "addressee"
 msgstr "addressee"
 
@@ -86,13 +86,13 @@ msgid "order number"
 msgstr "order number"
 
 #: forms.py:46
+#: forms.py:81
 msgid "The requested quantity of this product is not available."
-msgstr ""
-"Sorry! Unfortunately the requested quantity of this product is not available."
+msgstr "Sorry! Unfortunately the requested quantity of this product is not available."
 
-#: forms.py:123
+#: forms.py:128
 msgid "This coupon code is not valid."
-msgstr ""
+msgstr "This coupon code is not valid."
 
 #: models.py:109
 msgid "zip code"
@@ -122,7 +122,8 @@ msgstr "female"
 msgid "gender"
 msgstr "gender"
 
-#: models.py:143 models.py:304
+#: models.py:143
+#: models.py:304
 msgid "language"
 msgstr "language"
 
@@ -138,11 +139,13 @@ msgstr "article number"
 msgid "logo"
 msgstr "logo"
 
-#: models.py:203 models.py:335
+#: models.py:203
+#: models.py:335
 msgid "description"
 msgstr "description"
 
-#: models.py:222 models.py:355
+#: models.py:222
+#: models.py:355
 msgid "image"
 msgstr "image"
 
@@ -151,9 +154,7 @@ msgid "unit"
 msgstr "unit"
 
 #: models.py:257
-msgid ""
-"Unit in which a specific article is                             sold, eg. "
-"'100 ml' or '0.75 g'."
+msgid "Unit in which a specific article is                             sold, eg. '100 ml' or '0.75 g'."
 msgstr "Unit in which a specific article is sold, eg. '100 ml' or '0.75 gram'."
 
 #: models.py:315
@@ -177,7 +178,8 @@ msgstr "how to use"
 msgid "ingredients"
 msgstr "ingredients"
 
-#: models.py:338 models.py:398
+#: models.py:338
+#: models.py:398
 msgid "media"
 msgstr "in the press"
 
@@ -191,7 +193,7 @@ msgstr "discounts"
 
 #: models.py:593
 msgid "notes"
-msgstr ""
+msgstr "notes"
 
 #: models.py:594
 msgid "Optional notes regarding this order."
@@ -199,7 +201,7 @@ msgstr "Optional notes regarding this order."
 
 #: models.py:597
 msgid "payment"
-msgstr ""
+msgstr "payment"
 
 #: models.py:653
 msgid "highlight image"
@@ -236,27 +238,25 @@ msgstr "New"
 
 #: order_states.py:26
 msgid "Payment pending"
-msgstr ""
+msgstr "Payment pending"
 
 #: order_states.py:27
 msgid "Paid"
-msgstr ""
+msgstr "Paid"
 
 #: order_states.py:28
 msgid "Payment failed"
-msgstr ""
+msgstr "Payment failed"
 
 #: order_states.py:29
-#, fuzzy
 msgid "Canceled"
 msgstr "Cancelled"
 
 #: order_states.py:30
 msgid "Rejected"
-msgstr ""
+msgstr "Rejected"
 
 #: order_states.py:31
-#, fuzzy
 msgid "Being processed"
 msgstr "In Process"
 
@@ -273,13 +273,13 @@ msgstr "Thanks! Your rating has been succesfully saved."
 msgid "Added %s to shopping cart."
 msgstr "Added %s to Shopping basket."
 
-#: views.py:477
+#: views.py:478
 msgid "Updated shopping cart."
 msgstr "Updated Shopping basket."
 
-#: views.py:493
+#: views.py:500
 msgid "Coupon code valid."
-msgstr ""
+msgstr "Coupon code valid."
 
 #, fuzzy
 #~ msgid "Temp"
