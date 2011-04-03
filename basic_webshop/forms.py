@@ -70,7 +70,7 @@ class CartAddForm(forms.Form):
 
         return quantity
 
-    QUANTITY_CHOICES =  tuple((x, x) for x in xrange(1,20))
+    QUANTITY_CHOICES =  tuple((x, x) for x in xrange(1,5))
     quantity = forms.IntegerField(widget= \
         forms.Select(choices=QUANTITY_CHOICES), min_value=1, initial=1)
 
