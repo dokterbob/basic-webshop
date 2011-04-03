@@ -1,7 +1,7 @@
 import logging
 logger = logging.getLogger('basic_webshop')
 
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_object_or_404
 
 from django.db import models
 from django.http import Http404, HttpResponseRedirect
@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from django.forms.models import modelformset_factory
 
 from django.views.generic import DetailView, ListView, \
-                                 UpdateView, View, TemplateView
+                                 UpdateView, View
 
 from django.utils.translation import get_language, ugettext_lazy as _
 
@@ -27,7 +27,8 @@ from docdata.models import PaymentCluster
 from webshop.core.views import InShopViewMixin
 
 from basic_webshop.forms import \
-    RatingForm, CartAddForm, AddressUpdateForm
+    RatingForm, CartAddForm, AddressUpdateForm, CartDiscountCouponForm, \
+    CartItemForm
 
 from basic_webshop.order_states import *
 
@@ -35,6 +36,28 @@ from basic_webshop.order_states import *
 class BrandList(ListView):
     """ List of brands. """
     model = Brand
+
+    def get_context_data(self, **kwargs):
+        context = super(BrandList, self).get_context_data(**kwargs)
+
+        # Order by translated name
+        brands = self.model.objects.all()
+        language_code = get_language()
+        brands = brands.filter(translations__language_code=\
+                                   language_code)
+        brands = brands.order_by('translations__name')
+
+        context.update({
+            'brands_alphabetical': brands
+        })
+
+        return context
+        
+    def get_queryset(self):
+        queryset = super(BrandList, self).get_queryset()
+        queryset = queryset.order_by('sort_order')
+
+        return queryset
 
 
 class BrandDetail(DetailView):
@@ -47,8 +70,15 @@ class BrandDetail(DetailView):
         brand = object
         products = brand.product_set.all()
 
+        # Order by translated name
+        brands = self.model.objects.all()
+        language_code = get_language()
+        brands = brands.filter(translations__language_code=\
+                                   language_code)
+        brands = brands.order_by('translations__name')
+
         context.update({
-            'brands': Brand.objects.all(),
+            'brands_alphabetical': brands,
             'products': products,
         })
 
@@ -73,7 +103,7 @@ class CategoryDetail(DetailView):
         products = object.get_products()
 
         # Only get brands that are available in the current category
-        brands = Brand.objects.filter(product__in=products)
+        brands = Brand.objects.filter(product__in=products).distinct()
 
         ancestors = object.get_ancestors(include_self=True)
         category = subcategory = subcategories = subsubcategories = None
@@ -185,7 +215,7 @@ class SubCategoryDetail(CategoryDetail):
 
         if filter_brand:
             logger.debug('Filtering by brand')
-            products = get_list_or_404(products, brand__slug = filter_brand)
+            products = products.filter(brand__slug = filter_brand)
 
         # <URL>?sort_order=<name|brand|price>
         # <URL>?sort_order=bla&sort_reverse=1
@@ -210,7 +240,7 @@ class SubCategoryDetail(CategoryDetail):
 
             products = products.order_by('price')
         else:
-            if sort_order != None:
+            if sort_order:
                 logger.warning('Unknown sort order requested.')
                 raise Http404("This sort order doesn't exist.")
 
@@ -410,57 +440,80 @@ class ProductDetail(InShopViewMixin, DetailView):
 
         return context
 
-class CartDetail(UpdateView):
+class CartDetail(DetailView):
     model = Cart
     template_name = 'basic_webshop/cart_detail.html'
 
+    def post(self, request, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
     def get_object(self):
         model = self.model()
-
         cart = model.from_request(self.request)
-
         return cart
 
-    def form_valid(self, form):
-        """ Save the formset. """
-
-        form.save()
-
-        messages.add_message(self.request, messages.SUCCESS,
-            _('Updated shopping cart.'))
-
-        return super(CartDetail, self).form_valid(form)
-
-    def get_success_url(self):
+    def get_context_data(self, object, **kwargs):
         """
-        The URL to return to after the form was processed
-        succesfully. This function should be overridden.
+        Add an eventual category and subcategory to the request when the
+        `category` and `subcategory` COOKIES-parameters has been specified.
         """
 
-        return reverse('cart_detail')
+        context = super(CartDetail, self).get_context_data(**kwargs)
 
-    def get_form_class(self):
-        """
-        Do a little trick and see whether it works: returning a
-        formset instead of a form here.
-        """
-        formset_class =  modelformset_factory(CartItem,
-                                              exclude=('cart', 'product'),
-                                              extra=0)
+        cart = self.object
 
-        return formset_class
+        # Cart edit form
+        cartformset_class =  modelformset_factory(CartItem,
+                                                  exclude=('cart', 'product'),
+                                                  extra=0,
+                                                  form=CartItemForm)
+        if self.request.method == 'POST' and \
+            'update_submit' in self.request.POST:
 
-    def get_form_kwargs(self):
-        kwargs = super(CartDetail, self).get_form_kwargs()
+            cartitems = cart.get_items()
+            updateform = cartformset_class(self.request.POST,
+                                           queryset=cartitems,
+                                           prefix='updateform')
 
-        # We're never editing the current instance
-        del kwargs['instance']
+            if updateform.is_valid():
+                updateform.save()
 
-        # As we're building a formset, make sure we pass along the queryset
-        # with CartItem objects
-        kwargs['queryset'] = self.object.get_items()
+                messages.add_message(self.request, messages.SUCCESS,
+                    _('Updated shopping cart.'))
+            
+            else:
+                for field_errors in updateform.errors:
+                    for field in field_errors:
+                        messages.add_message(self.request, messages.ERROR,
+                            field_errors[field][0])
 
-        return kwargs
+        cartitems = cart.get_items()
+        updateform = cartformset_class(queryset=cartitems,
+                                       prefix='updateform')
+
+        # Coupon code form
+        if self.request.method == 'POST' and \
+            'coupon_submit' in self.request.POST:
+
+            couponform = CartDiscountCouponForm(self.request.POST,
+                                                instance=cart)
+            if couponform.is_valid():
+                couponform.save()
+
+                messages.add_message(self.request, messages.SUCCESS,
+                    _('Coupon code valid.'))
+
+        else:
+            couponform = CartDiscountCouponForm(instance=cart)
+
+        context.update({
+            'updateform': updateform,
+            'couponform': couponform,
+        })
+
+        return context
 
 
 class ProtectedView(View):
@@ -607,7 +660,8 @@ class OrderCheckout(OrderViewMixin, DetailView):
         # We want the customer's data - not the order shipping details
         address = customer.get_address()
 
-        full_address = address.postal_address+'\n'+address.postal_address2
+        full_address = u'%s\n%s' \
+            % (address.postal_address, address.postal_address2)
         data = {
             "merchant_transaction_id": order.order_number,
             "client_id" : customer.pk,

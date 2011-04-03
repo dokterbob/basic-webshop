@@ -105,7 +105,7 @@ class ShippingMethod(NamedItemBase,
 
 class Address(CustomerAddressBase):
     postal_address = models.CharField(_('address'), max_length=50)
-    postal_address2 = models.CharField(_('address'), blank=True, max_length=50)
+    postal_address2 = models.CharField(_('address 2'), blank=True, max_length=50)
     zip_code = models.CharField(_('zip code'), max_length=50)
     city = models.CharField(_('city'), max_length=50)
     country = CountryField()
@@ -283,6 +283,12 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
 
         return super(Product, self).is_available(quantity)
 
+    def __unicode__(self):
+        product_name = super(Product, self).__unicode__()
+        brand_name = self.brand.__unicode__()
+
+        return u'%s %s' % (brand_name, product_name)
+
 
 ###  Rating models
 class ProductRating(DatedItemBase, models.Model):
@@ -402,8 +408,8 @@ class ProductMedia(NamedItemBase):
 
 class Cart(ShippedCartMixin,
            StockedCartMixin,
-           DiscountedCartMixin,
            DiscountCouponMixin,
+           DiscountedCartMixin,
            CartBase):
     """ Basic shopping cart model. """
 

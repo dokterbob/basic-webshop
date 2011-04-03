@@ -67,6 +67,8 @@ class Listener(object):
 
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.contrib.sites.models import Site
+
 class EmailingListener(Listener):
     """ Listener which sends out emails. """
 
@@ -100,10 +102,14 @@ class EmailingListener(Listener):
 
     def get_context_data(self):
         """
-        Context for the message template rendered. Defaults to sender and
-        kwargs.
+        Context for the message template rendered. Defaults to sender, the
+        current site object and kwargs.
         """
-        context = {'sender': self.sender}
+
+        current_site = Site.objects.get_current()
+
+        context = {'sender': self.sender,
+                   'site': current_site}
 
         context.update(self.kwargs)
 
@@ -123,6 +129,9 @@ class EmailingListener(Listener):
     def create_message(self, context):
         """ Create an email message. """
         subject = render_to_string(self.get_subject_template_names(), context)
+        # Clean the subject a bit for common errors (newlines!)
+        subject = subject.strip().replace('\n', ' ')
+
         body = render_to_string(self.get_body_template_names(), context)
         recipients = self.get_recipients()
         sender = self.get_sender()
