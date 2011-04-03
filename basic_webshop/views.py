@@ -33,49 +33,47 @@ from basic_webshop.forms import \
 from basic_webshop.order_states import *
 
 
-class BrandList(ListView):
-    """ List of brands. """
+class BrandView(object):
     model = Brand
 
-    def get_context_data(self, **kwargs):
-        context = super(BrandList, self).get_context_data(**kwargs)
+    def get_brands_alphabetized(self, brands):
+        """ Return alphabetized version of brand list. """
 
-        # Order by translated name
-        brands = self.model.objects.all()
         language_code = get_language()
         brands = brands.filter(translations__language_code=\
                                    language_code)
         brands = brands.order_by('translations__name')
+
+        return brands
+
+
+
+class BrandList(BrandView, ListView):
+    """ List of brands. """
+    def get_context_data(self, **kwargs):
+        context = super(BrandView, self).get_context_data(**kwargs)
+
+        # Order by translated name
+        brands = context['brand_list']
+
+        brands_alphabetical = self.get_brands_alphabetized(brand)
 
         context.update({
             'brands_alphabetical': brands
         })
 
         return context
-        
-    def get_queryset(self):
-        queryset = super(BrandList, self).get_queryset()
-        queryset = queryset.order_by('sort_order')
 
-        return queryset
-
-
-class BrandDetail(DetailView):
+class BrandDetail(BrandView, DetailView):
     """ Detail view for brand. """
-    model = Brand
-
     def get_context_data(self, object, **kwargs):
         context = super(BrandDetail, self).get_context_data(**kwargs)
 
         brand = object
         products = brand.product_set.all()
 
-        # Order by translated name
-        brands = self.model.objects.all()
-        language_code = get_language()
-        brands = brands.filter(translations__language_code=\
-                                   language_code)
-        brands = brands.order_by('translations__name')
+        brands = self.get_queryset()
+        brands_alphabetical = self.get_brands_alphabetized(brands)
 
         context.update({
             'brands_alphabetical': brands,
@@ -477,7 +475,7 @@ class CartDetail(DetailView):
 
                 messages.add_message(self.request, messages.SUCCESS,
                     _('Updated shopping cart.'))
-            
+
             else:
                 for field_errors in updateform.errors:
                     for field in field_errors:
