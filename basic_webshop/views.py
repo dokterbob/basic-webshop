@@ -255,7 +255,7 @@ class SubCategoryDetail(CategoryDetail):
         context.update({
             'sort_order': sort_order,
             'sort_reverse': sort_reverse,
-            'current_brand': filter_brand,
+            'filter_brand': filter_brand,
             'products': products,
             'randombanners': randombanners,
         })
