@@ -182,6 +182,9 @@ class Brand(AutoUniqueSlugMixin, NamedItemTranslationMixin, MultilingualModel, \
             BrandBase, OrderedItemBase, UniqueSlugItemBase, ):
     """ Brand in the webshop """
 
+    class Meta:
+        ordering = ('sort_order', )
+
     logo = ImageField(verbose_name=_('logo'),
                        upload_to='brand_logos')
 
