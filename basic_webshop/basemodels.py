@@ -152,8 +152,7 @@ class CustomerAddressBase(models.Model):
     class Meta(AddressBase.Meta):
         abstract = True
 
-    addressee = models.CharField(_('addressee'), max_length=255, blank=True,
-        help_text=_('Automatically set from user name if left blank.'))
+    addressee = models.CharField(_('addressee'), max_length=255, blank=True)
     customer = models.ForeignKey(CUSTOMER_MODEL, editable=False)
 
     def save(self):
