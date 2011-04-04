@@ -61,10 +61,10 @@ class OrderItemInline(admin.TabularInline, PricedItemAdminMixin):
 class OrderAdmin(admin.ModelAdmin, PricedItemAdminMixin):
    inlines = (OrderItemInline, OrderStateChangeInline)
    readonly_fields = ('order_number', 'invoice_number',
-                      'get_formatted_address', 'customer', 'coupon_code',
-                      'get_price', 'get_total_discounts',)
+                      'get_formatted_address', 'customer', 'get_invoice',
+                      'coupon_code', 'get_price', 'get_total_discounts',)
    list_display = ('order_number', 'date_added', 'state', 'get_price',
-                   'customer', 'invoice_number',
+                   'customer', 'get_invoice',
                    )
    list_filters = ('state', )
    date_hierarchy = 'date_added'
@@ -76,6 +76,14 @@ class OrderAdmin(admin.ModelAdmin, PricedItemAdminMixin):
    def get_total_discounts(self, obj):
        return obj.get_total_discounts()
    get_total_discounts.short_description = _('total discounts')
+
+   def get_invoice(self, obj):
+       if obj.confirmed:
+           invoice_url = reverse('order_invoice', args=(obj.order_number,))
+
+           return u'<a href="%s">%s</a>' % (invoice_url, obj.invoice_number)
+   get_invoice.short_description = _('Invoice')
+   get_invoice.allow_tags = True
 
 admin.site.register(Order, OrderAdmin)
 
@@ -105,7 +113,7 @@ class CustomerAdmin(admin.ModelAdmin):
     inlines = (CustomerAddressInline, )
     search_fields = ('first_name', 'last_name', 'username', 'company', )
     list_display = ('username', 'get_full_name', 'is_active', 'company',
-                    'gender', 'language', 'birthday', 
+                    'gender', 'language', 'birthday',
                     'last_login', 'date_joined')
     list_filter = ('is_active', 'gender', 'language', 'birthday')
     fields = ('username', 'last_login', 'date_joined', 'first_name',

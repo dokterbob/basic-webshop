@@ -251,7 +251,7 @@ class SubCategoryDetail(CategoryDetail):
 
         from cosmania_site.models import RandomBannerModule
         randombanners = RandomBannerModule.objects.all().filter(visible=True).order_by('?')
-        
+
         context.update({
             'sort_order': sort_order,
             'sort_reverse': sort_reverse,
@@ -532,10 +532,13 @@ class OrderViewMixin(ProtectedView):
         """ Make sure we only see orders pertainging to the current user. """
 
         assert self.request.user
-        assert self.request.user.customer
+        #assert self.request.user.customer
 
         qs = super(OrderViewMixin, self).get_queryset()
-        qs.filter(customer=self.request.user.customer)
+
+        # Make sure staff can see all orders
+        if not self.request.user.is_staff:
+            qs.filter(customer=self.request.user.customer)
 
         return qs
 
@@ -608,6 +611,9 @@ class OrderDetail(OrderViewMixin, DetailView):
     """ Overview for specific order. """
     pass
 
+class OrderInvoice(OrderViewMixin, DetailView):
+    """ Overview for specific order. """
+    template_name = 'basic_webshop/order_invoice.html'
 
 class OrderShipping(OrderViewMixin, UpdateView):
     """ Form view for shipping details """

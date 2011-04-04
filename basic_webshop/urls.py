@@ -48,6 +48,9 @@ urlpatterns = patterns('',
     surl(r'^orders/<slug:s>/$',
         OrderDetail.as_view(), name='order_detail'),
 
+    surl(r'^orders/<slug:s>/invoice/$',
+        OrderInvoice.as_view(), name='order_invoice'),
+
     surl(r'^orders/<slug:s>/shipping/$',
         OrderShipping.as_view(), name='order_shipping'),
 
