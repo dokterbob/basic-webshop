@@ -65,7 +65,7 @@ class OrderAdmin(admin.ModelAdmin, PricedItemAdminMixin):
    list_display = ('order_number', 'date_added', 'state', 'get_price',
                    'customer', 'get_invoice',
                    )
-   list_filters = ('state', )
+   list_filter = ('state', )
    date_hierarchy = 'date_added'
    fields = ('state', 'order_discount', 'order_shipping_costs', 'notes', ) + \
              readonly_fields
