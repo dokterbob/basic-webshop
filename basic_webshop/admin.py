@@ -37,10 +37,8 @@ class OrderStateChangeInline(admin.TabularInline):
     readonly_fields = ('date', 'state')
 
     extra = 0
+    max_num = 0
     can_delete = False
-    #
-    # def has_change_permission(self, request, obj=None):
-    #     return False
 
 
 class OrderItemInlineBase(admin.TabularInline):
@@ -59,6 +57,7 @@ class OrderItemInline(admin.TabularInline, PricedItemAdminMixin):
 
 
 class OrderAdmin(admin.ModelAdmin, PricedItemAdminMixin):
+   save_on_top = True
    inlines = (OrderItemInline, OrderStateChangeInline)
    readonly_fields = ('order_number', 'invoice_number',
                       'get_formatted_address', 'customer', 'get_invoice',
