@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: basic_webshop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-03 22:38+0200\n"
-"PO-Revision-Date: 2011-04-04 00:28+0100\n"
-"Last-Translator: marcel <marcel.dekker@cosmania.nl>\n"
+"POT-Creation-Date: 2011-04-04 12:28+0200\n"
+"PO-Revision-Date: 2011-04-04 12:30+0100\n"
+"Last-Translator: Mathijs de Bruin <mathijs@mathijsfietst.nl>\n"
 "Language-Team: Mathijs de Bruin <mathijs@mathijsfietst.nl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,16 +23,20 @@ msgstr "price"
 msgid "total discounts"
 msgstr "total discount"
 
-#: admin.py:253
-#: admin.py:374
+#: admin.py:85
+msgid "Invoice"
+msgstr "Invoice"
+
+#: admin.py:261
+#: admin.py:382
 msgid "None"
 msgstr "none"
 
-#: admin.py:265
+#: admin.py:273
 msgid "categories"
 msgstr "categories"
 
-#: admin.py:314
+#: admin.py:322
 #: models.py:222
 #: models.py:277
 #: models.py:379
@@ -40,12 +44,12 @@ msgstr "categories"
 msgid "name"
 msgstr "name"
 
-#: admin.py:323
+#: admin.py:331
 msgid "No products"
 msgstr "no products"
 
-#: admin.py:341
-#: admin.py:386
+#: admin.py:349
+#: admin.py:394
 msgid "products"
 msgstr "products"
 
@@ -72,15 +76,11 @@ msgstr "addresses"
 msgid "addressee"
 msgstr "addressee"
 
-#: basemodels.py:156
-msgid "Automatically set from user name if left blank."
-msgstr " "
-
-#: basemodels.py:263
+#: basemodels.py:262
 msgid "invoice number"
 msgstr "invoice number"
 
-#: basemodels.py:266
+#: basemodels.py:265
 msgid "order number"
 msgstr "order number"
 
@@ -283,6 +283,9 @@ msgstr "Updated Shopping basket."
 #: views.py:504
 msgid "Coupon code valid."
 msgstr "Your entered code is valid."
+
+#~ msgid "Automatically set from user name if left blank."
+#~ msgstr " "
 
 #, fuzzy
 #~ msgid "Temp"
