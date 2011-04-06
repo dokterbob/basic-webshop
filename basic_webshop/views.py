@@ -104,22 +104,26 @@ class CategoryDetail(DetailView):
         brands = Brand.objects.filter(product__in=products).distinct()
 
         ancestors = object.get_ancestors(include_self=True)
-        category = subcategory = subcategories = subsubcategories = None
+        category = subcategory = subsubcategory = subcategories = subsubcategories = None
 
-        if object.parent:
-            category = ancestors[0]
+        if len(ancestors) >= 3:
+            subsubcategory = ancestors[2]
+        if len(ancestors) >= 2:
             subcategory = ancestors[1]
-
-            subcategories = category.get_subcategories()
             subsubcategories = subcategory.get_subcategories()
-        else:
-            category = object
+        if len(ancestors) >= 1:
+            category = ancestors[0]
             subcategories = category.get_subcategories()
 
-        context.update({'products': products,
-                       'subcategories': subcategories,
-                       'subsubcategories': subsubcategories,
-                       'brands': brands})
+        context.update({
+            'products': products,
+            'brands': brands,
+            'category': category,
+            'subcategory': subcategory,
+            'subsubcategory': subsubcategory,
+            'subcategories': subcategories,
+            'subsubcategories': subsubcategories,
+        })
 
         return context
 
