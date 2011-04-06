@@ -478,8 +478,8 @@ class Order(ShippedOrderMixin,
 
     def get_formatted_discounts(self):
         """ Formatted discounts. """
-        if self.discounts:
-            return "\n".join(self.discounts)
+        if self.discounts.exists():
+            return "\n".join(self.discounts.all())
     get_formatted_discounts.short_description = _('discounts')
 
     @models.permalink
