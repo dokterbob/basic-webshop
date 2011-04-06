@@ -5,6 +5,7 @@ from django.conf import settings
 
 from django.utils.decorators import classonlymethod
 from django.utils.functional import update_wrapper
+from django.utils.translation import get_language
 
 from django.core.exceptions import ImproperlyConfigured
 
@@ -162,6 +163,8 @@ class TranslatedEmailingListener(EmailingListener):
         raise NotImplementedError
 
     def handler(self, sender, **kwargs):
+        old_language = get_language()
+
         language = self.get_language(sender, **kwargs)
 
         logger.debug('Changing to language %s for email submission', language)
@@ -169,7 +172,7 @@ class TranslatedEmailingListener(EmailingListener):
 
         super(TranslatedEmailingListener, self).handler(sender, **kwargs)
 
-        translation.deactivate()
+        translation.activate(old_language)
 
 
 class OrderPaymentListener(Listener):
