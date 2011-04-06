@@ -237,11 +237,11 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
     filter_horizontal = ('categories', 'related')
 
     list_display = ('display_name', 'default_image', 'admin_categories', \
-                    'sort_order', 'active', )
+                    'sort_order', 'stock', 'active', )
     # list_display_links = ('name', )
     list_filter = ('active', 'date_publish', \
                    'brand', 'categories')
-    list_editable = ('sort_order', 'active')
+    list_editable = ('sort_order', 'active', 'stock')
     search_fields = ('slug', 'translations__name', 'article_number',
                      'categories__translations__name', 'categories__slug',
                      'brand__translations__name', 'brand__slug', )
