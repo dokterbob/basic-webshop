@@ -144,16 +144,16 @@ class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
                                 default=get_language, choices=settings.LANGUAGES)
 
     birthday = models.DateField(_('birthday'), null=True)
-    
+
     shipping_address = models.ForeignKey(Address, null=True,
                                          related_name='shippable_customer')
 
     def get_address(self):
         """ Get 'the first and best' address from the customer. """
-        
+
         if self.shipping_address:
             return self.shipping_address
-        
+
         logger.warning(u'No shipping address set for customer %s, '+
                        u'returning last address used.', self)
 
@@ -324,6 +324,10 @@ class ProductRating(DatedItemBase, models.Model):
             {'rating': self.rating,
              'product': self.product,
              'date': self.date_added.date()}
+
+    def get_absolute_url(self):
+        """ Return the product URL. """
+        return '%s#' % self.product.get_absolute_url()
 
 
 class ProductTranslation(MultilingualTranslation, NamedItemBase):
