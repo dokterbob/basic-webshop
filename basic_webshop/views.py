@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 
 from django.db import models
 from django.http import Http404, HttpResponseRedirect
+from django.db.models import Q
 
 from django.core.urlresolvers import reverse
 
@@ -605,6 +606,29 @@ class OrderCreate(ProtectedView):
     def get_bounce_url(self):
         """ URL users are sent to when no order is created. """
         return reverse('cart_detail')
+
+class ProductSearch(ListView):
+    model = Product
+    template_name = 'basic_webshop/product_search.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductSearch, self).get_context_data(*args, **kwargs)
+
+        query = self.request.GET.get('q', None)
+
+        if query:
+            product_list = context['product_list']
+
+            language_code = get_language()
+
+            product_list = product_list.filter(Q(Q(translations__language_code = language_code) & Q(translations__name__search=query) | \
+                                               Q(brand__translations__language_code = language_code) & Q(brand__translations__name__search=query)) | \
+                                               Q(Q(categories__translations__language_code = language_code) & Q(categories__translations__name__search=query)))
+
+            context['product_list'] = product_list.distinct()
+            context['query'] = query
+
+        return context
 
 class OrderList(OrderViewMixin, ListView):
     """ List orders for customer. """

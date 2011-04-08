@@ -6,6 +6,10 @@ from basic_webshop.views import *
 
 
 urlpatterns = patterns('',
+    # Product search
+    surl(r'^productsearch/',
+        ProductSearch.as_view(), name='product_search'),
+    
     # Catalogue
     surl(r'^categories/<category_slug:s>/<aspect=new|picks|sale|all>/$',
          CategoryAspectDetail.as_view(), name='category_aspect_detail'),
