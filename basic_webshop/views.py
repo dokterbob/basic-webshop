@@ -586,7 +586,12 @@ class OrderCreate(ProtectedView):
             order.check_stock()
 
             # Delete old potential errors for this cart
-            Order.objects.filter(cart=cart).exclude(pk=order.pk).delete()
+            # Make sure the current order is excluded, as well as orders
+            # for which a payment has been initiated.
+            old_orders = Order.objects.filter(cart=cart, payment_cluster__isnull=True).exclude(pk=order.pk)
+            logger.debug(u'Deleting old %d orders for cart %s',
+                         old_orders.count(), cart)
+            old_orders.delete()
 
         except:
             # Delete the order if something went wrong - as to prevent
