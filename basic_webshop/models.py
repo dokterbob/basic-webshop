@@ -108,7 +108,7 @@ class Address(CustomerAddressBase):
     postal_address2 = models.CharField(_('address 2'), blank=True, max_length=50)
     zip_code = models.CharField(_('zip code'), max_length=50)
     city = models.CharField(_('city'), max_length=50)
-    country = CountryField()
+    country = CountryField(verbose_name=_('country'))
     phone_number = models.CharField(_('phone number'), max_length=50, blank=True)
 
     class Meta:
@@ -389,9 +389,9 @@ class ProductImage(OrderedProductImageBase):
 
         count = self.__class__.objects.filter(product=self.product).count()
         if not self.name:
-            self.name = "%s %s - %d" % (self.product.brand.name,
-                                        self.product.name,
-                                        count+1)
+            self.name = u"%s %s - %d" % (self.product.brand.name,
+                                         self.product.name,
+                                         count+1)
 
         super(ProductImage, self).save()
 
@@ -737,7 +737,7 @@ class CategoryFeaturedProduct(models.Model):
     """ The order in which featured items are ordered when displayed. """
 
     def __unicode__(self):
-        return _('Featured product \'%s\'') % unicode(self.product)
+        return _(u'Featured product \'%s\'') % unicode(self.product)
 
 
 class Discount(NamedItemBase, ManyCategoryDiscountMixin, CouponDiscountMixin, \
