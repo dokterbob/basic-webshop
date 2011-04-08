@@ -98,7 +98,11 @@ admin.site.register(ShippingMethod, ShippingMethodAdmin)
 class ProductRatingAdmin(admin.ModelAdmin):
     date_hierarchy = 'date_added'
     list_filter = ('language', )
+    list_display = ('date_added', 'product', 'rating', 'user')
     readonly_fields = ('user', 'product', 'date_added', 'language')
+    search_fields = ('user__first_name', 'user__last_name',
+                     'product__translations__name',
+                     'product__brand__translations__name')
 
 admin.site.register(ProductRating, ProductRatingAdmin)
 
@@ -213,12 +217,12 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
     """ Model admin for products. """
 
     fieldsets = (
-        ('Required fields', {'fields':
+        (_('Required fields'), {'fields':
                     ('categories', 'stock', 'price')}),
-        ('Publication attributes', {
+        (_('Publication attributes'), {
             'fields': ('active', 'date_publish', 'sort_order', ),
             'classes': ('collapse',),}),
-        ('Optional metadata', {'fields':
+        (_('Optional metadata'), {'fields':
                     ('related', 'brand', 'unit', 'article_number',)}),
         # ('Dates', {'fields':
         #             ('date_added', 'date_modified', 'date_publish')}),
