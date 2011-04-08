@@ -213,12 +213,12 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
     """ Model admin for products. """
 
     fieldsets = (
-        ('Required fields', {'fields':
+        (_('Required fields'), {'fields':
                     ('categories', 'stock', 'price')}),
-        ('Publication attributes', {
+        (_('Publication attributes'), {
             'fields': ('active', 'date_publish', 'sort_order', ),
             'classes': ('collapse',),}),
-        ('Optional metadata', {'fields':
+        (_('Optional metadata'), {'fields':
                     ('related', 'brand', 'unit', 'article_number',)}),
         # ('Dates', {'fields':
         #             ('date_added', 'date_modified', 'date_publish')}),
