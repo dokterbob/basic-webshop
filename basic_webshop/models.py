@@ -529,7 +529,7 @@ class Order(ShippedOrderMixin,
     def generate_order_number(self):
         """
         Generate order numbers according to:
-        cosYYYYMMDDNN
+        cosYYYYMMDDNNN
         """
         assert not self.invoice_number, 'Invoice number already generated.'
 
