@@ -82,7 +82,7 @@ class ShippingTest(WebshopTestCase):
         self.assertEqual(s3, cheapest)
         self.assertEqual(cheapest.get_cost(), Decimal('4.00'))
 
-    def test_shippingorder(self):
+    def test_shippingordercountry(self):
         # Shipping method
         s1 = self.make_test_shippingmethod(order_cost=Decimal('4.00'))
         s1.name = 'expensive'
@@ -144,7 +144,160 @@ class ShippingTest(WebshopTestCase):
         self.assertEqual(o.get_price(), Decimal('13.00'))
 
 
+    def test_changecountry(self):
+        """
+        Change the country of an already existing order and see if the
+        shipping costs change with it.
+        """
+        # Shipping method
+        s1 = self.make_test_shippingmethod(order_cost=Decimal('4.00'))
+        s1.name = 'expensive'
+        s1.save()
+
+        # Get us a country
+        country1 = Country.objects.all()[1]
+        country2 = Country.objects.all()[2]
+
+        # Shipping method with country1 and country2
+        s2 = self.make_test_shippingmethod(order_cost=Decimal('3.00'))
+        s2.name = 'less expensive'
+        s2.save()
+
+        # Make sure the second method is only valid for this country
+        s2.countries.add(country2)
+
+        # Create product
+        p = self.make_test_product(price=Decimal('10.00'), slug='p1')
+        p.save()
+
+        # Create order
+        o = self.make_test_order()
+        o.shipping_address.country = country1
+        o.shipping_address.save()
+        o.save()
+
+        i = OrderItem(quantity=2, product=p, piece_price=p.get_price())
+        o.orderitem_set.add(i)
+
+        # Update the order: calculate costs etc.
+        o.update()
+
+        self.assertEqual(o.shipping_method, s1)
+        self.assertEqual(o.get_shipping_costs(), Decimal('4.00'))
+        self.assertEqual(o.order_shipping_costs, Decimal('4.00'))
+        self.assertEqual(o.get_order_shipping_costs(), Decimal('4.00'))
+        self.assertEqual(o.get_price_without_shipping(), Decimal('20.00'))
+        self.assertEqual(o.get_price(), Decimal('24.00'))
+
+        o.shipping_address.country = country2
+        o.shipping_address.save()
+
+        o.update()
+
+        self.assertEqual(o.shipping_method, s2)
+        self.assertEqual(o.get_shipping_costs(), Decimal('3.00'))
+        self.assertEqual(o.order_shipping_costs, Decimal('3.00'))
+        self.assertEqual(o.get_order_shipping_costs(), Decimal('3.00'))
+        self.assertEqual(o.get_price_without_shipping(), Decimal('20.00'))
+        self.assertEqual(o.get_price(), Decimal('23.00'))
+
+
+    def test_shippingorderamount(self):
+        """
+        Test for shipping methods for which the costs depend on the
+        order amount.
+        """
+        # Most expensive method, always valid
+        s1 = self.make_test_shippingmethod(order_cost=Decimal('4.00'))
+        s1.name = 'expensive'
+        s1.save()
+
+
+        # LEss expensive method, valid from order price of 2
+        s2 = self.make_test_shippingmethod(order_cost=Decimal('3.00'))
+        s2.minimal_order_price=Decimal('2.0')
+        s2.name = 'less expensive'
+        s2.save()
+
+        # Least expensive method, valid from order price of 10
+        s3 = self.make_test_shippingmethod(order_cost=Decimal('2.00'))
+        s3.minimal_order_price=Decimal('10.0')
+        s3.name = 'least expensive'
+        s3.save()
+
+        # Free shipping for a price of 11 or higher
+        s4 = self.make_test_shippingmethod(order_cost=Decimal('0.00'))
+        s4.minimal_order_price=Decimal('11.0')
+        s4.name = 'free shipping'
+        s4.save()
+
+        # Create product
+        p = self.make_test_product(price=Decimal('1.00'), slug='p1')
+        p.save()
+
+        # Create order with order price 1.0
+        o = self.make_test_order()
+        o.save()
+
+        i = OrderItem(quantity=1, product=p, piece_price=p.get_price())
+        o.orderitem_set.add(i)
+
+        # Update the order: calculate costs etc.
+        o.update()
+
+        self.assertEqual(o.get_price_without_shipping(), Decimal('1.00'))
+        self.assertEqual(o.get_shipping_costs(), Decimal('4.00'))
+        self.assertEqual(o.shipping_method, s1)
+
+
+        # Create order with order price 3.0
+        o = self.make_test_order()
+        o.save()
+
+        i = OrderItem(quantity=3, product=p, piece_price=p.get_price())
+        o.orderitem_set.add(i)
+
+        # Update the order: calculate costs etc.
+        o.update()
+
+        self.assertEqual(o.get_price_without_shipping(), Decimal('3.00'))
+        self.assertEqual(o.get_shipping_costs(), Decimal('3.00'))
+        self.assertEqual(o.shipping_method, s2)
+
+
+        # Create order with order price 10.0
+        o = self.make_test_order()
+        o.save()
+
+        i = OrderItem(quantity=10, product=p, piece_price=p.get_price())
+        o.orderitem_set.add(i)
+
+        # Update the order: calculate costs etc.
+        o.update()
+
+        self.assertEqual(o.get_price_without_shipping(), Decimal('10.00'))
+        self.assertEqual(o.get_shipping_costs(), Decimal('2.00'))
+        self.assertEqual(o.shipping_method, s3)
+
+
+        # Create order with order price 12.0
+        o = self.make_test_order()
+        o.save()
+
+        i = OrderItem(quantity=12, product=p, piece_price=p.get_price())
+        o.orderitem_set.add(i)
+
+        # Update the order: calculate costs etc.
+        o.update()
+
+        self.assertEqual(o.get_price_without_shipping(), Decimal('12.00'))
+        self.assertEqual(o.get_shipping_costs(), Decimal('0.00'))
+        self.assertEqual(o.shipping_method, s4)
+
+
     def test_shippingcart(self):
+        """ Basic tests for shipping costs related to the shopping cart. """
+
         # Shipping method
         s1 = self.make_test_shippingmethod(order_cost=Decimal('4.00'))
         s1.name = 'expensive'
@@ -176,4 +329,3 @@ class ShippingTest(WebshopTestCase):
         self.assertEqual(cart.get_order_shipping_costs(), Decimal('4.00'))
         self.assertEqual(cart.get_price_without_shipping(), Decimal('20.00'))
         self.assertEqual(cart.get_price(), Decimal('24.00'))
- 

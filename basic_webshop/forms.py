@@ -113,11 +113,11 @@ class AddressUpdateForm(forms.ModelForm):
     def save(self, commit=True):
         """ Make sure we never override an existing Address. """
         instance = super(AddressUpdateForm, self).save(commit=False)
-        instance.pk = None
 
         if commit and self.has_changed():
-            logger.debug('Saving new Address instance')
-            instance.save()
+            instance.pk = None
+            instance.save() #force_insert=True)
+            logger.debug('Saving new Address instance with PK %d', instance.pk)
 
         return instance
 

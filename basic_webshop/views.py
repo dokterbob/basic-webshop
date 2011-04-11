@@ -21,7 +21,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 from basic_webshop.models import \
-    Product, Category, Cart, CartItem, Brand, ProductRating, Order
+    Product, Category, Cart, CartItem, Brand, ProductRating, Order, Address
 
 from docdata.models import PaymentCluster
 
@@ -622,9 +622,11 @@ class OrderDetail(OrderViewMixin, DetailView):
     """ Overview for specific order. """
     pass
 
+
 class OrderInvoice(OrderViewMixin, DetailView):
     """ Overview for specific order. """
     template_name = 'basic_webshop/order_invoice.html'
+
 
 class OrderShipping(OrderViewMixin, UpdateView):
     """ Form view for shipping details """
@@ -640,6 +642,25 @@ class OrderShipping(OrderViewMixin, UpdateView):
         """ Redirect to the current order's overview URL. """
         order = self.order
         return reverse('order_detail', kwargs={'slug': order.order_number})
+
+    def form_valid(self, form):
+        """ Make sure we recalculate shipping costs here. """
+        result = super(OrderShipping, self).form_valid(form)
+
+        assert self.order.shipping_address.pk == form.instance.pk
+
+        # Make sure we associate the new PK of the shipping address
+        # explicitly to the order: Django doesn't see it as a new object
+        # and hence neglects any kind of saving. huhuh
+        # Shipping
+        self.order.shipping_address_id = form.instance.pk
+
+        self.order.update()
+        self.order.save()
+
+        assert form.instance.pk == Order.objects.get(pk=self.order.pk).shipping_address.pk
+
+        return result
 
 
 class OrderCheckout(OrderViewMixin, DetailView):

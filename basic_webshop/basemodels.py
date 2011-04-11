@@ -155,7 +155,7 @@ class CustomerAddressBase(models.Model):
     addressee = models.CharField(_('addressee'), max_length=255, blank=True)
     customer = models.ForeignKey(CUSTOMER_MODEL, editable=False)
 
-    def save(self):
+    def save(self, **kwargs):
         """
         Default the addressee to the full name of the user if none has
         been specified explicitly.
@@ -166,7 +166,7 @@ class CustomerAddressBase(models.Model):
 
             self.addressee = self.customer.get_full_name()
 
-        super(CustomerAddressBase, self).save()
+        super(CustomerAddressBase, self).save(**kwargs)
 
 
 # SHIPPING BASE CLASSES
