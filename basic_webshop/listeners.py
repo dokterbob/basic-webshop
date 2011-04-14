@@ -212,6 +212,7 @@ from basic_webshop import order_states
 
 class OrderPaidStatusChange(OrderPaymentListener):
     """ Generate a state change on an order when it's paid. """
+    old_state = order_states.ORDER_STATE_PENDING
     new_state = order_states.ORDER_STATE_PAID
     paid = True
 
@@ -219,12 +220,15 @@ class OrderPaidStatusChange(OrderPaymentListener):
         assert self.new_state
         order = sender.order
 
-        assert order.state == order_states.ORDER_STATE_PENDING
+        if order.state == old_state:
+            logger.debug('Changing state to %s for paid order %s',
+                         self.new_state, order)
 
-        logger.debug('Changing state to %s for paid order %s', self.new_state, order)
-
-        order.state = self.new_state
-        order.save()
+            order.state = self.new_state
+            order.save()
+        else:
+            logger.warning('Not changing state to %s for paid order %s, current state not %s',
+                         self.new_state, order, self.old_state)
 
 
 class OrderClosedNotPaidStatusChange(OrderPaymentListener):
@@ -335,7 +339,6 @@ class OrderStateChangeEmail(TranslatedEmailingListener, StatusChangeListener):
 class OrderPaidEmail(OrderStateChangeEmail):
     """ Send email when order paid. """
 
-    old_state = order_states.ORDER_STATE_PENDING
     state = order_states.ORDER_STATE_PAID
     body_template_name = 'basic_webshop/emails/order_paid_body.txt'
     subject_template_name = 'basic_webshop/emails/order_paid_subject.txt'
