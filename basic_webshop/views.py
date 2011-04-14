@@ -620,15 +620,19 @@ class ProductSearch(ListView):
         context = super(ProductSearch, self).get_context_data(*args, **kwargs)
 
         query = self.request.GET.get('q', None)
-
         if query:
             product_list = context['product_list']
 
-            language_code = get_language()
+            query_list = query.strip().split(' ')
+            context['query_list'] = query_list
 
-            product_list = product_list.filter(Q(Q(translations__language_code = language_code) & Q(translations__name__search=query) | \
-                                               Q(brand__translations__language_code = language_code) & Q(brand__translations__name__search=query)) | \
-                                               Q(Q(categories__translations__language_code = language_code) & Q(categories__translations__name__search=query)))
+            language_code = get_language()
+            
+            """ forloop filters each of search terms, so it's a pure and-filter """
+            for element in query_list:
+                product_list = product_list.filter(Q(Q(translations__language_code = language_code) & Q(translations__name__icontains=element) | \
+                                               Q(brand__translations__language_code = language_code) & Q(brand__translations__name__icontains=element)) | \
+                                               Q(Q(categories__translations__language_code = language_code) & Q(categories__translations__name__icontains=element)))
 
             context['product_list'] = product_list.distinct()
             context['query'] = query
