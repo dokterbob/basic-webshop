@@ -377,22 +377,37 @@ class ProductDetail(InShopViewMixin, DetailView):
         category_slug = self.request.COOKIES.get('category_slug', None)
         subcategory_slug = self.request.COOKIES.get('subcategory_slug', None)
 
+        fail = False 
+
         if category_slug:
+            categories = product.categories.all()
+
             logger.debug('Looking up category with slug %s for detail view',
                          category_slug)
-            category = get_object_or_404(Category.get_main_categories(), \
-                                         slug=category_slug)
+            try:
+                category = categories.get(slug=category_slug)
+            except Category.DoesNotExist:
+                fail = True
 
-            if subcategory_slug:
+            # Check if this is actually a top level category.
+            if not fail and not category.is_root_node():
+                fail = True
+
+            if not fail and subcategory_slug:
                 logger.debug('Looking up subcategory with slug %s for detail view',
                              subcategory_slug)
 
-                subcategory = get_object_or_404(category.get_subcategories(),
-                                                slug=subcategory_slug)
+                try:
+                    subcategories = category.get_subcategories()
+                    subcategory = subcategories.get(slug=subcategory_slug)
+                except Category.DoesNotExist:
+                    fail = True
             else:
                 subcategory = None
-        else:
-            # No category specified in cookie
+
+
+        if fail or not category_slug:
+            # No category or the wrong category specified in cookie
             # Grab the first category for lack of better logic
             try:
                 category = object.categories.all()[0]
