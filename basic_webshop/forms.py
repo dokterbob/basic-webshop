@@ -92,7 +92,8 @@ class CartItemForm(forms.ModelForm):
         product = cartitem.product
 
         cartitem = cartitem.cart.get_item(product=product)
-        total_quantity = cartitem.quantity + quantity
+        total_quantity = quantity
+
         if not product.is_available(total_quantity):
             raise forms.ValidationError(self.quantity_error)
 
