@@ -335,6 +335,7 @@ class OrderStateChangeEmail(TranslatedEmailingListener, StatusChangeListener):
 class OrderPaidEmail(OrderStateChangeEmail):
     """ Send email when order paid. """
 
+    old_state = order_states.ORDER_STATE_PENDING
     state = order_states.ORDER_STATE_PAID
     body_template_name = 'basic_webshop/emails/order_paid_body.txt'
     subject_template_name = 'basic_webshop/emails/order_paid_subject.txt'
