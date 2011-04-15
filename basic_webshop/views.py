@@ -104,26 +104,14 @@ class CategoryDetail(DetailView):
         # Only get brands that are available in the current category
         brands = Brand.objects.filter(product__in=products).distinct()
 
+        subcategories = object.get_subcategories()
         ancestors = object.get_ancestors(include_self=True)
-        category = subcategory = subsubcategory = subcategories = subsubcategories = None
-
-        if len(ancestors) >= 3:
-            subsubcategory = ancestors[2]
-        if len(ancestors) >= 2:
-            subcategory = ancestors[1]
-            subsubcategories = subcategory.get_subcategories()
-        if len(ancestors) >= 1:
-            category = ancestors[0]
-            subcategories = category.get_subcategories()
 
         context.update({
             'products': products,
             'brands': brands,
-            'category': category,
-            'subcategory': subcategory,
-            'subsubcategory': subsubcategory,
             'subcategories': subcategories,
-            'subsubcategories': subsubcategories,
+            'category_ancestors': ancestors
         })
 
         return context
@@ -141,19 +129,8 @@ class CategoryDetail(DetailView):
     def render_to_response(self, context):
         resp = super(CategoryDetail, self).render_to_response(context)
 
-        category_slug = self.kwargs.get('category_slug')
-
-        resp.set_cookie('category_slug', value=category_slug)
-        logger.debug('Setting category cookie to %s', category_slug)
-
-        subcategory_slug = self.kwargs.get('subcategory_slug', None)
-        if subcategory_slug:
-            logger.debug('Setting subcategory cookie to %s', subcategory_slug)
-            resp.set_cookie('subcategory_slug', value=subcategory_slug)
-        else:
-            # Make sure we delete the cookie when we're not in a subcat
-            logger.debug('Erasing subcategory cookie')
-            resp.delete_cookie('subcategory_slug')
+        resp.set_cookie('category_pk', value=self.object.pk)
+        logger.debug('Setting category_pk cookie to %s', self.object.pk)
 
         return resp
 
@@ -373,45 +350,28 @@ class ProductDetail(InShopViewMixin, DetailView):
         else:
             cartaddform = CartAddForm(product, cart, prefix='cartadd')
 
-        # Get category and/or subcategry from cookie
-        category_slug = self.request.COOKIES.get('category_slug', None)
-        subcategory_slug = self.request.COOKIES.get('subcategory_slug', None)
-
-        if category_slug:
-            logger.debug('Looking up category with slug %s for detail view',
-                         category_slug)
-            category = get_object_or_404(Category.get_main_categories(), \
-                                         slug=category_slug)
-
-            if subcategory_slug:
-                logger.debug('Looking up subcategory with slug %s for detail view',
-                             subcategory_slug)
-
-                subcategory = get_object_or_404(category.get_subcategories(),
-                                                slug=subcategory_slug)
-            else:
-                subcategory = None
-        else:
-            # No category specified in cookie
-            # Grab the first category for lack of better logic
+        category_pk = self.request.COOKIES.get('category_pk', None)
+        if category_pk:
             try:
-                category = object.categories.all()[0]
-            except IndexError:
-                logger.warning(u'No categories defined for %s', object)
+                category = Category.in_shop.get(product=product, pk=category_pk)
+            except Category.DoesNotExist:
                 category = None
+                logger.debug('Category for pk %d does not match product %s',
+                             category_pk, product)
 
-            if category.parent:
-                # Make sure we assign a level0 to category and level1 to
-                # subcategory
-                ancestors = category.get_ancestors(include_self=True)
+        else:
+            category = None
 
-                # We should have at least two levels of categories
-                assert len(ancestors) == 2
+        # If category not found by cookie, start guessing
+        if not category:
+            # Grab the first main category
+            try:
+                category = object.categories.filter(level=0)[0]
+            except IndexError:
+                category = None
+                logger.warning(u'No categories defined for %s', object)
 
-                category = ancestors[0]
-                subcategory = ancestors[1]
-            else:
-                subcategory = None
+        ancestors = category.get_ancestors(include_self=True)
 
         # Voterange is used to render the rating result
         voterange = xrange(1, 6)
@@ -438,7 +398,7 @@ class ProductDetail(InShopViewMixin, DetailView):
             'cartaddform': cartaddform,
             'loginform' : loginform,
             'category': category,
-            'subcategory': subcategory,
+            'category_ancestors': ancestors,
         })
 
         return context
