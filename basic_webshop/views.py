@@ -104,26 +104,14 @@ class CategoryDetail(DetailView):
         # Only get brands that are available in the current category
         brands = Brand.objects.filter(product__in=products).distinct()
 
+        subcategories = object.get_subcategories()
         ancestors = object.get_ancestors(include_self=True)
-        category = subcategory = subsubcategory = subcategories = subsubcategories = None
-
-        if len(ancestors) >= 3:
-            subsubcategory = ancestors[2]
-        if len(ancestors) >= 2:
-            subcategory = ancestors[1]
-            subsubcategories = subcategory.get_subcategories()
-        if len(ancestors) >= 1:
-            category = ancestors[0]
-            subcategories = category.get_subcategories()
 
         context.update({
             'products': products,
             'brands': brands,
-            'category': category,
-            'subcategory': subcategory,
-            'subsubcategory': subsubcategory,
             'subcategories': subcategories,
-            'subsubcategories': subsubcategories,
+            'category_ancestors': ancestors
         })
 
         return context
@@ -141,19 +129,8 @@ class CategoryDetail(DetailView):
     def render_to_response(self, context):
         resp = super(CategoryDetail, self).render_to_response(context)
 
-        category_slug = self.kwargs.get('category_slug')
-
-        resp.set_cookie('category_slug', value=category_slug)
-        logger.debug('Setting category cookie to %s', category_slug)
-
-        subcategory_slug = self.kwargs.get('subcategory_slug', None)
-        if subcategory_slug:
-            logger.debug('Setting subcategory cookie to %s', subcategory_slug)
-            resp.set_cookie('subcategory_slug', value=subcategory_slug)
-        else:
-            # Make sure we delete the cookie when we're not in a subcat
-            logger.debug('Erasing subcategory cookie')
-            resp.delete_cookie('subcategory_slug')
+        resp.set_cookie('category_pk', value=self.object.pk)
+        logger.debug('Setting category_pk cookie to %s', self.object.pk)
 
         return resp
 
@@ -373,60 +350,28 @@ class ProductDetail(InShopViewMixin, DetailView):
         else:
             cartaddform = CartAddForm(product, cart, prefix='cartadd')
 
-        # Get category and/or subcategry from cookie
-        category_slug = self.request.COOKIES.get('category_slug', None)
-        subcategory_slug = self.request.COOKIES.get('subcategory_slug', None)
-
-        fail = False 
-
-        if category_slug:
-            categories = product.categories.all()
-
-            logger.debug('Looking up category with slug %s for detail view',
-                         category_slug)
+        category_pk = self.request.COOKIES.get('category_pk', None)
+        if category_pk:
             try:
-                category = categories.get(slug=category_slug)
+                category = Category.in_shop.get(product=product, pk=category_pk)
             except Category.DoesNotExist:
-                fail = True
-
-            # Check if this is actually a top level category.
-            if not fail and not category.is_root_node():
-                fail = True
-
-            if not fail and subcategory_slug:
-                logger.debug('Looking up subcategory with slug %s for detail view',
-                             subcategory_slug)
-
-                try:
-                    subcategories = category.get_subcategories()
-                    subcategory = subcategories.get(slug=subcategory_slug)
-                except Category.DoesNotExist:
-                    fail = True
-            else:
-                subcategory = None
-
-
-        if fail or not category_slug:
-            # No category or the wrong category specified in cookie
-            # Grab the first category for lack of better logic
-            try:
-                category = object.categories.all()[0]
-            except IndexError:
-                logger.warning(u'No categories defined for %s', object)
                 category = None
+                logger.debug('Category for pk %d does not match product %s',
+                             category_pk, product)
 
-            if category.parent:
-                # Make sure we assign a level0 to category and level1 to
-                # subcategory
-                ancestors = category.get_ancestors(include_self=True)
+        else:
+            category = None
 
-                # We should have at least two levels of categories
-                assert len(ancestors) == 2
+        # If category not found by cookie, start guessing
+        if not category:
+            # Grab the first main category
+            try:
+                category = object.categories.filter(level=0)[0]
+            except IndexError:
+                category = None
+                logger.warning(u'No categories defined for %s', object)
 
-                category = ancestors[0]
-                subcategory = ancestors[1]
-            else:
-                subcategory = None
+        ancestors = category.get_ancestors(include_self=True)
 
         # Voterange is used to render the rating result
         voterange = xrange(1, 6)
@@ -453,7 +398,7 @@ class ProductDetail(InShopViewMixin, DetailView):
             'cartaddform': cartaddform,
             'loginform' : loginform,
             'category': category,
-            'subcategory': subcategory,
+            'category_ancestors': ancestors,
         })
 
         return context
@@ -627,6 +572,32 @@ class OrderCreate(ProtectedView):
         """ URL users are sent to when no order is created. """
         return reverse('cart_detail')
 
+class ProductSearch(ListView):
+    model = Product
+    template_name = 'basic_webshop/product_search.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductSearch, self).get_context_data(*args, **kwargs)
+
+        query = self.request.GET.get('q', None)
+        if query:
+            product_list = context['product_list']
+
+            query_list = query.strip().split()
+            context['query_list'] = query_list
+
+            language_code = get_language()
+            
+            """ forloop filters each of search terms, so it's a pure and-filter """
+            for element in query_list:
+                product_list = product_list.filter(Q(Q(translations__language_code = language_code) & Q(translations__name__icontains=element) | \
+                                               Q(brand__translations__language_code = language_code) & Q(brand__translations__name__icontains=element)) | \
+                                               Q(Q(categories__translations__language_code = language_code) & Q(categories__translations__name__icontains=element)))
+
+            context['product_list'] = product_list.distinct()
+            context['query'] = query
+
+        return context
 
 class OrderList(OrderViewMixin, ListView):
     """ List orders for customer. """
@@ -799,26 +770,3 @@ class OrderCheckoutStatus(OrderDetail):
         assert 'status' in self.kwargs
         context['status'] = self.kwargs['status']
 
-
-class ProductSearch(ListView):
-    model = Product
-    template_name = 'basic_webshop/product_search.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(ProductSearch, self).get_context_data(*args, **kwargs)
-
-        query = self.request.GET.get('q', None)
-
-        if query:
-            product_list = context['product_list']
-
-            language_code = get_language()
-
-            product_list = product_list.filter(Q(Q(translations__language_code = language_code) & Q(translations__name__search=query) | \
-                                               Q(brand__translations__language_code = language_code) & Q(brand__translations__name__search=query)) | \
-                                               Q(Q(categories__translations__language_code = language_code) & Q(categories__translations__name__search=query)))
-
-            context['product_list'] = product_list.distinct()
-            context['query'] = query
-
-        return context
