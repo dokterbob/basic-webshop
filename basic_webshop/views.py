@@ -582,6 +582,8 @@ class ProductSearch(ListView):
         query = self.request.GET.get('q', None)
         if query:
             product_list = context['product_list']
+            # Filter active products
+            product_list = product_list.filter(active=True)
 
             query_list = query.strip().split()
             context['query_list'] = query_list
