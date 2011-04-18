@@ -223,7 +223,8 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
             'fields': ('active', 'date_publish', 'sort_order', ),
             'classes': ('collapse',),}),
         (_('Optional metadata'), {'fields':
-                    ('related', 'brand', 'unit', 'article_number',)}),
+                    ('related', 'alternates', 
+                     'brand', 'unit', 'article_number',)}),
         # ('Dates', {'fields':
         #             ('date_added', 'date_modified', 'date_publish')}),
 
@@ -235,10 +236,10 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
     inlines = (ProductTranslationInline,
                ProductMediaInline,
                ProductImageInline,
-               ImageProductVariationInline,
-               ProductVariationTranslationInline,
+               #ImageProductVariationInline,
+               #ProductVariationTranslationInline,
               )
-    filter_horizontal = ('categories', 'related')
+    filter_horizontal = ('categories', 'related', 'alternates')
 
     list_display = ('display_name', 'default_image', 'admin_categories', \
                     'sort_order', 'stock', 'active', )
