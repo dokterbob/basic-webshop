@@ -9,6 +9,10 @@ from django.db.models import Q
 
 from django.core.urlresolvers import reverse
 
+from django.core.mail import send_mail
+
+from django.template import loader, RequestContext
+
 from django.forms.models import modelformset_factory
 
 from django.views.generic import DetailView, ListView, \
@@ -29,7 +33,7 @@ from webshop.core.views import InShopViewMixin
 
 from basic_webshop.forms import \
     RatingForm, CartAddForm, AddressUpdateForm, CartDiscountCouponForm, \
-    CartItemForm
+    CartItemForm, EmailForm
 
 from basic_webshop.order_states import *
 
@@ -317,6 +321,38 @@ class ProductDetail(InShopViewMixin, DetailView):
         else:
             ratingform = RatingForm(user, product, prefix='rating')
 
+        if self.request.method == 'POST' and \
+            'email_submit' in self.request.POST:
+
+            emailform = EmailForm(self.request.POST, prefix='email')
+
+            if emailform.is_valid():
+                from django.conf import settings
+                from django.contrib.sites.models import Site, RequestSite
+
+                email = emailform.cleaned_data['email']
+                recipient_list = [mail_tuple[1] for mail_tuple in settings.MANAGERS]
+
+                if Site._meta.installed:
+                    site = Site.objects.get_current()
+                else:
+                    site = RequestSite(self.request)
+
+                # Render the e-mail template
+                request_context = RequestContext(self.request, dict(dict(email=email), site=site))
+                msg = loader.render_to_string('basic_webshop/emails/backorder_request.txt', request_context)
+                subject = '%s: Aanvraag voor melding herbevoorrading' % (product.name, )
+
+                send_mail(fail_silently=False, recipient_list = recipient_list, message = msg, from_email = email, subject = subject)
+
+                logger.debug(u'Backorder made for email: %s product %s' % (email, product))
+
+                context.update({'backorder_sent': True})
+        else:
+            emailform = EmailForm(prefix='email')
+
+            
+
         # Cart adding
         cart = Cart.from_request(self.request)
         if self.request.method == 'POST' and \
@@ -397,6 +433,7 @@ class ProductDetail(InShopViewMixin, DetailView):
             'ratingform': ratingform,
             'cartaddform': cartaddform,
             'loginform' : loginform,
+            'emailform': emailform,
             'category': category,
             'category_ancestors': ancestors,
         })
