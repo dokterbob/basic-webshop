@@ -34,6 +34,8 @@ class RatingForm(forms.ModelForm):
 
         return instance
 
+class EmailForm(forms.Form):
+    email = forms.EmailField()
 
 class CartAddForm(forms.Form):
     """
