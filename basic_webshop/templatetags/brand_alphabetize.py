@@ -8,8 +8,8 @@ def firstletter(brand):
         if c in string.ascii_uppercase:
             return c
 
-    # TODO: Should this be silently ignored?
-    raise Exception("No letters in the alphabet found")
+    # give A if we cant find any letters.
+    return 'A'
 
 def brand_alphabetize(object_list):
     r_list = []
