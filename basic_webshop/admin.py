@@ -188,6 +188,8 @@ class ProductVariationTranslationInline(LimitedAdminInlineMixin, admin.TabularIn
 
 class ProductTranslationInline(TinyMCEAdminListMixin, TranslationInline):
     model = ProductTranslation
+    max_num = 2
+    extra = 2
 
     fieldsets = (
         (None, {'fields': ('language_code', 'name', 'description')}),
