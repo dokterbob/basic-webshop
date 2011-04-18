@@ -260,6 +260,10 @@ class Product(MultilingualModel, ActiveItemInShopBase, ProductBase, \
                             help_text=_('Unit in which a specific article is \
                             sold, eg. \'100 ml\' or \'0.75 g\'.'))
 
+    alternates = models.ManyToManyField('self', null=True, blank=True,
+                                     symmetrical=True,
+                                     verbose_name=_('variations'))
+
     class Meta(MultilingualModel.Meta, ActiveItemInShopBase.Meta, \
                ProductBase.Meta, CategorizedItemBase.Meta, \
                OrderedItemBase.Meta):
