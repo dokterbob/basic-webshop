@@ -20,11 +20,11 @@ def vat_amount(value):
 def vat_inclusive(value):
     """ Amount inlcuding VAT. """
     amount = float(value)
-    return value*(1+vat_factor)
+    return amount*(1+vat_factor)
 
 @register.filter
 def vat_exclusive(value):
     """ Amount inlcuding VAT. """
     amount = float(value)
-    return value*(1-vat_factor)
+    return amount*(1-vat_factor)
 
