@@ -220,7 +220,7 @@ class OrderPaidStatusChange(OrderPaymentListener):
         assert self.new_state
         order = sender.order
 
-        if order.state == old_state:
+        if order.state == self.old_state:
             logger.debug('Changing state to %s for paid order %s',
                          self.new_state, order)
 
