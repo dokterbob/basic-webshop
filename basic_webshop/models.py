@@ -666,8 +666,8 @@ class Category(MPTTCategoryBase, MultilingualModel, NonUniqueSlugItemBase, \
                                  blank=True, null=True)
     highlight_title = models.CharField(verbose_name=_('highlight title'),
                                       blank=True, max_length=100)
-    highlight_link = models.URLField(verbose_name=_('hightlight link'),
-                                     blank=True, verify_exists=True)
+    highlight_link = models.CharField(verbose_name=_('hightlight link'),
+                                     blank=True, max_length=256)
     highlight_text = models.TextField(verbose_name=('highlight text'),
                                       blank=True)
 
