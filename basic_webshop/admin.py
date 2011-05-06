@@ -343,7 +343,7 @@ class CategoryAdmin(MPTTModelAdmin):
                 % (obj.pk, products_count)
 
         if products_inactive_count:
-            value += u' <a href="">(%d inactive)</a>' % \
+            value += u' <a href="../product/?categories__id__exact=%d">(%d inactive)</a>' % \
                 (obj.pk, products_inactive_count)
 
         value += u'&nbsp;|&nbsp;<a href="../product/add/?categories=%d">Add</a>' \
