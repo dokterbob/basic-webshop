@@ -21,30 +21,10 @@ from sorl.thumbnail.admin import AdminInlineImageMixin
 from simplesite.settings import PAGEIMAGE_SIZE
 from simplesite.utils import ExtendibleModelAdminMixin
 
+from webshop.core.admin import PricedItemAdminMixin, \
+                               OrderStateChangeInline, \
+                               OrderItemInlineBase
 
-class PricedItemAdminMixin(object):
-    """ Admin mixin for priced items. """
-    def get_price(self, obj):
-        price = obj.get_price()
-        return price
-    get_price.short_description = _('price')
-
-
-class OrderStateChangeInline(admin.TabularInline):
-    model = OrderStateChange
-
-    fields = ('date', 'state', )
-    readonly_fields = ('date', 'state')
-
-    extra = 0
-    max_num = 0
-    can_delete = False
-
-
-class OrderItemInlineBase(admin.TabularInline):
-    extra = 0
-
-    readonly_fields = ('price', )
 
 class OrderItemInline(admin.TabularInline, PricedItemAdminMixin):
     model = OrderItem
