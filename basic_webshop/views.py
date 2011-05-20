@@ -339,7 +339,7 @@ class ProductDetail(InShopViewMixin, DetailView):
                     site = RequestSite(self.request)
 
                 # Render the e-mail template
-                request_context = RequestContext(self.request, dict(dict(email=email), site=site))
+                request_context = RequestContext(self.request, dict(email=email, site=site, product=product))
                 msg = loader.render_to_string('basic_webshop/emails/backorder_request.txt', request_context)
                 subject = '%s: Aanvraag voor melding herbevoorrading' % (product.name, )
 
