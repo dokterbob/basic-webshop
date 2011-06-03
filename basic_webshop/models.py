@@ -10,34 +10,34 @@ from django.utils.translation import get_language, ugettext_lazy as _
 
 from django.contrib.auth.models import UserManager, User
 
-from webshop.core.managers import ActiveItemManager
+from shopkit.core.managers import ActiveItemManager
 
-from webshop.core.models import ProductBase, CartBase, CartItemBase, \
+from shopkit.core.models import ProductBase, CartBase, CartItemBase, \
                                 OrderBase, OrderItemBase, UserCustomerBase, \
                                 OrderStateChangeBase
 
-from webshop.core.basemodels import NamedItemBase, ActiveItemInShopBase, \
+from shopkit.core.basemodels import NamedItemBase, ActiveItemInShopBase, \
                                     OrderedItemBase, DatedItemBase, \
                                     PublishDateItemBase
 
-from webshop.extensions.category.advanced.models import CategorizedItemBase, \
+from shopkit.extensions.category.advanced.models import CategorizedItemBase, \
                                                         MPTTCategoryBase
-from webshop.extensions.price.simple.models import PricedItemBase
-from webshop.extensions.variations.models import \
+from shopkit.extensions.price.simple.models import PricedItemBase
+from shopkit.extensions.variations.models import \
     OrderedProductVariationBase, VariationCartItemMixin, \
     VariationOrderItemMixin
 
-from webshop.extensions.images.models import OrderedProductImageBase, \
+from shopkit.extensions.images.models import OrderedProductImageBase, \
                                              ImagesProductMixin
-from webshop.extensions.stock.advanced.models import \
+from shopkit.extensions.stock.advanced.models import \
     StockedCartItemMixin, StockedCartMixin, \
     StockedOrderItemMixin, StockedOrderMixin, \
     StockedItemMixin
 
-from webshop.extensions.related.models import RelatedProductsMixin
-from webshop.extensions.brands.models import BrandBase, BrandedProductMixin
+from shopkit.extensions.related.models import RelatedProductsMixin
+from shopkit.extensions.brands.models import BrandBase, BrandedProductMixin
 
-from webshop.extensions.discounts.advanced.models import \
+from shopkit.extensions.discounts.advanced.models import \
     DiscountBase, ManyProductDiscountMixin, DateRangeDiscountMixin, \
     ManyCategoryDiscountMixin, LimitedUseDiscountMixin, CouponDiscountMixin, \
     OrderDiscountAmountMixin, ItemDiscountAmountMixin, \
@@ -45,7 +45,7 @@ from webshop.extensions.discounts.advanced.models import \
     DiscountedOrderMixin, DiscountedOrderItemMixin, DiscountCouponMixin, \
     DiscountedCartMixin, DiscountedCartItemMixin, AccountedDiscountedItemMixin
 
-from webshop.extensions.shipping.advanced.models import \
+from shopkit.extensions.shipping.advanced.models import \
     ShippedOrderMixin, ShippedOrderItemMixin, ShippableCustomerMixin, \
     ShippedCartMixin, ShippedCartItemMixin, \
     ShippingMethodBase, OrderShippingMethodMixin, MinimumOrderAmountShippingMixin
@@ -74,7 +74,7 @@ if cursor.db.vendor == 'sqlite':
 # Signal handling
 from docdata.signals import payment_status_changed
 
-from webshop.core.signals import order_state_change
+from shopkit.core.signals import order_state_change
 from basic_webshop.listeners import OrderPaidConfirm, \
     OrderPaidStatusChange, OrderClosedNotPaidStatusChange, \
     OrderPaidEmail, OrderFailedEmail, OrderRejectedEmail, OrderShippedEmail, \
@@ -163,7 +163,7 @@ class Customer(BilledCustomerMixin, ShippableCustomerMixin, UserCustomerBase):
             pass
 
 
-ARTICLE_NUMBER_LENGTH = getattr(settings, 'WEBSHOP_ARTICLE_NUMBER_LENGTH')
+ARTICLE_NUMBER_LENGTH = getattr(settings, 'SHOPKIT_ARTICLE_NUMBER_LENGTH')
 class ArticleNumberMixin(models.Model):
     """
     Item with a required article number, `article_number`, which is
@@ -521,7 +521,7 @@ class Order(ShippedOrderMixin,
 
         # Get the starting number from the settings file
         from django.conf import settings
-        start_number = getattr(settings, 'WEBSHOP_INVOICE_NUMBER_START', 1)
+        start_number = getattr(settings, 'SHOPKIT_INVOICE_NUMBER_START', 1)
 
         # When start > max: return start
         # Otherwise, return max

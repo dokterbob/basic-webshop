@@ -5,7 +5,7 @@ from django.conf import settings
 
 register = template.Library()
 
-VAT_PERCENTAGE = getattr(settings, 'WEBSHOP_VAT_PERCENTAGE', 19)
+VAT_PERCENTAGE = getattr(settings, 'SHOPKIT_VAT_PERCENTAGE', 19)
 
 vat_factor = VAT_PERCENTAGE/100.0
 

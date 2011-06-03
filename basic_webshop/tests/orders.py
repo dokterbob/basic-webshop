@@ -268,7 +268,7 @@ class OrderTest(WebshopTestCase):
     def test_orderstate_change(self):
         """ Test changing order states. """
 
-        from webshop.core.signals import order_state_change
+        from shopkit.core.signals import order_state_change
 
         def assert_state_change(sender, old_state, new_state, state_change, **kwargs):
             self.assert_(old_state != new_state or state_change.message)

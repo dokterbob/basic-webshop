@@ -129,7 +129,7 @@ class NamedItemTranslationMixin(object):
 
 # ADDRESS BASE CLASSES
 
-from webshop.core.settings import CUSTOMER_MODEL
+from shopkit.core.settings import CUSTOMER_MODEL
 
 
 class AddressBase(models.Model):

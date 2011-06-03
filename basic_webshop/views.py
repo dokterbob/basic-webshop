@@ -29,7 +29,7 @@ from basic_webshop.models import \
 
 from docdata.models import PaymentCluster
 
-from webshop.core.views import InShopViewMixin
+from shopkit.core.views import InShopViewMixin
 
 from basic_webshop.forms import \
     RatingForm, CartAddForm, AddressUpdateForm, CartDiscountCouponForm, \

@@ -9,7 +9,7 @@ from django.utils.translation import get_language
 
 from django.core.exceptions import ImproperlyConfigured
 
-from webshop.core.exceptions import AlreadyConfirmedException
+from shopkit.core.exceptions import AlreadyConfirmedException
 
 
 class Listener(object):

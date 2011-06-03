@@ -5,10 +5,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 
-from webshop.core.utils.admin import LimitedAdminInlineMixin
+from shopkit.core.utils.admin import LimitedAdminInlineMixin
 
-from webshop.extensions.variations.admin import ProductVariationInline
-from webshop.extensions.images.admin import ProductImageInline, \
+from shopkit.extensions.variations.admin import ProductVariationInline
+from shopkit.extensions.images.admin import ProductImageInline, \
                                             ImagesProductAdminMixin
 
 from multilingual_model.admin import TranslationInline
@@ -21,7 +21,7 @@ from sorl.thumbnail.admin import AdminInlineImageMixin
 from simplesite.settings import PAGEIMAGE_SIZE
 from simplesite.utils import ExtendibleModelAdminMixin
 
-from webshop.core.admin import PricedItemAdminMixin, \
+from shopkit.core.admin import PricedItemAdminMixin, \
                                OrderStateChangeInline, \
                                OrderItemInlineBase
 
@@ -235,7 +235,7 @@ class ProductAdmin(InlineButtonsAdminMixin, ImagesProductAdminMixin, \
 
     max_categories_display = 2
     def admin_categories(self, obj):
-        """ TODO: Move this over to django-webshop's extension. """
+        """ TODO: Move this over to django-shopkit's extension. """
         categories = obj.categories.all()
         categories_count = categories.count()
 
@@ -361,7 +361,7 @@ class DiscountAdmin(admin.ModelAdmin):
 
     max_products_display = 2
     def admin_products(self, obj):
-        """ TODO: Move this over to django-webshop's extension. """
+        """ TODO: Move this over to django-shopkit's extension. """
         products = obj.products
         products_count = products.count()
         if products_count == 0:

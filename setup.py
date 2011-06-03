@@ -36,7 +36,7 @@ except:
 setup(
     name = 'basic-webshop',
     version = "0.1",
-    description = 'A basic webshop application based on the `django-webshop` webshop framework, which is based again on Django.',
+    description = 'A basic webshop application based on the `django-shopkit` webshop framework, which is based again on Django.',
     long_description = README,
     install_requires=REQUIREMENTS,
     author = 'Mathijs de Bruin',
