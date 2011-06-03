@@ -2,7 +2,7 @@ from decimal import Decimal
 from basic_webshop.tests.base import WebshopTestCase
 
 from shopkit.core.tests import CoreTestMixin
-from shopkit.extensions.category.simple.tests import CategoryTestMixin
+from shopkit.category.simple.tests import CategoryTestMixin
 
 from basic_webshop.models import Product
 from basic_webshop.tests.discounts import DiscountTest

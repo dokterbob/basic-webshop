@@ -7,8 +7,8 @@ from django.core.urlresolvers import reverse
 
 from shopkit.core.utils.admin import LimitedAdminInlineMixin
 
-from shopkit.extensions.variations.admin import ProductVariationInline
-from shopkit.extensions.images.admin import ProductImageInline, \
+from shopkit.variations.admin import ProductVariationInline
+from shopkit.images.admin import ProductImageInline, \
                                             ImagesProductAdminMixin
 
 from multilingual_model.admin import TranslationInline

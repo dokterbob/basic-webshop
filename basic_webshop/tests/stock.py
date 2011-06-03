@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from shopkit.core.exceptions import AlreadyConfirmedException
-from shopkit.extensions.stock.exceptions import NoStockAvailableException
+from shopkit.stock.exceptions import NoStockAvailableException
 
 from basic_webshop.tests.base import WebshopTestCase
 from basic_webshop.models import \

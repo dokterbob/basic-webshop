@@ -24,7 +24,7 @@ SHOPKIT_DISCOUNT_MODEL = 'basic_webshop.Discount'
 SHOPKIT_SHIPPING_ADDRESS_MODEL = 'basic_webshop.Address'
 SHOPKIT_SHIPPING_METHOD_MODEL = 'basic_webshop.ShippingMethod'
 
-SHOPKIT_CURRENCY_PRICE_FIELD = 'shopkit.extensions.currency.simple.fields.PriceField'
+SHOPKIT_CURRENCY_PRICE_FIELD = 'shopkit.currency.simple.fields.PriceField'
 SHOPKIT_CURRENCY_FORMATTING = u"\u20AC %.2f"
 
 SHOPKIT_ARTICLE_NUMBER_LENGTH = 11

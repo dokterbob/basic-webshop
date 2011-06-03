@@ -20,24 +20,24 @@ from shopkit.core.basemodels import NamedItemBase, ActiveItemInShopBase, \
                                     OrderedItemBase, DatedItemBase, \
                                     PublishDateItemBase
 
-from shopkit.extensions.category.advanced.models import CategorizedItemBase, \
+from shopkit.category.advanced.models import CategorizedItemBase, \
                                                         MPTTCategoryBase
-from shopkit.extensions.price.simple.models import PricedItemBase
-from shopkit.extensions.variations.models import \
+from shopkit.price.simple.models import PricedItemBase
+from shopkit.variations.models import \
     OrderedProductVariationBase, VariationCartItemMixin, \
     VariationOrderItemMixin
 
-from shopkit.extensions.images.models import OrderedProductImageBase, \
+from shopkit.images.models import OrderedProductImageBase, \
                                              ImagesProductMixin
-from shopkit.extensions.stock.advanced.models import \
+from shopkit.stock.advanced.models import \
     StockedCartItemMixin, StockedCartMixin, \
     StockedOrderItemMixin, StockedOrderMixin, \
     StockedItemMixin
 
-from shopkit.extensions.related.models import RelatedProductsMixin
-from shopkit.extensions.brands.models import BrandBase, BrandedProductMixin
+from shopkit.related.models import RelatedProductsMixin
+from shopkit.brands.models import BrandBase, BrandedProductMixin
 
-from shopkit.extensions.discounts.advanced.models import \
+from shopkit.discounts.advanced.models import \
     DiscountBase, ManyProductDiscountMixin, DateRangeDiscountMixin, \
     ManyCategoryDiscountMixin, LimitedUseDiscountMixin, CouponDiscountMixin, \
     OrderDiscountAmountMixin, ItemDiscountAmountMixin, \
@@ -45,7 +45,7 @@ from shopkit.extensions.discounts.advanced.models import \
     DiscountedOrderMixin, DiscountedOrderItemMixin, DiscountCouponMixin, \
     DiscountedCartMixin, DiscountedCartItemMixin, AccountedDiscountedItemMixin
 
-from shopkit.extensions.shipping.advanced.models import \
+from shopkit.shipping.advanced.models import \
     ShippedOrderMixin, ShippedOrderItemMixin, ShippableCustomerMixin, \
     ShippedCartMixin, ShippedCartItemMixin, \
     ShippingMethodBase, OrderShippingMethodMixin, MinimumOrderAmountShippingMixin
