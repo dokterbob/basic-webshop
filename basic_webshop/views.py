@@ -235,15 +235,11 @@ class SubCategoryDetail(CategoryDetail):
             products = products.reverse()
 
 
-        from cosmania_site.models import RandomBannerModule
-        randombanners = RandomBannerModule.objects.all().filter(visible=True).order_by('?')
-
         context.update({
             'sort_order': sort_order,
             'sort_reverse': sort_reverse,
             'filter_brand': filter_brand,
             'products': products,
-            'randombanners': randombanners,
         })
 
         return context
